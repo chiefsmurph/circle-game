@@ -19,7 +19,7 @@ app.use(express.static(__dirname + '/public'));
 
 
 var count = 238226;
-var emailFile = 'email-list.txt';
+var emailFile = process.env.OPENSHIFT_DATA_DIR + '/email-list.txt';
 var emailList = [];
 
 // get current count
@@ -36,6 +36,9 @@ app.get('/getCounter', function(req, res, next) {
 });
 
 app.post('/submit-sig', function(req, res, next) {
+
+
+
   console.log(req.body);
 
   if (emailList.indexOf(req.body.email.toLowerCase()) > -1) {

@@ -10,7 +10,7 @@ od = new Odometer({
   el: el,
 
   // Any option (other than auto and selector) can be passed in here
-  theme: 'default'
+  theme: 'plaza'
 });
 
 
