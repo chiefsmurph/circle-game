@@ -22,8 +22,8 @@ $(function() {
 
   dialog = $( "#dialog-form" ).dialog({
     autoOpen: false,
-    height: 450,
-    width: 300,
+    height: 400,
+    width: 270,
     modal: true,
     // open: function(event, ui) {
     //   $( "#dialog-form" ).css('overflow', 'hidden');
@@ -39,9 +39,14 @@ $(function() {
         if (validateForm()) {
 
           $.post( '/submit-sig', tosend, function(data) {
-               docCookies.setItem('voted', 'alphabet');
+
                $('#addone').fadeOut('slow', function() {
-                 $('#status-panel').html(data.response);
+                 if (data.error) {
+                   $('#status-panel').html(data.error);
+                 } else {
+                   docCookies.setItem('voted', 'alphabet');
+                   $('#status-panel').html(data.response);
+                 }
                });
                console.log(data.response);
              },

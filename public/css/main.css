@@ -11,7 +11,10 @@ html {
 }
 
 body {
-  font-size: 1em;
+}
+
+#dialog-form {
+  font-size: 0.7em;
 }
 
 .container * {
@@ -59,7 +62,7 @@ h3 {
 
   border-radius: 30px;
   background-color: rgba(239,230,140,0.8);
-  border: 10px double #B3009D;
+  border: 10px double rgba(255,255,255,0.5);
 
 }
 
@@ -79,6 +82,8 @@ h3 {
   font-weight: bolder;
   font-size: 150%;
   color: red;
+  font-style: italic;
+  text-decoration: underline;
 }
 
 #addone {

@@ -40,7 +40,7 @@ app.post('/submit-sig', function(req, res, next) {
 
   if (emailList.indexOf(req.body.email.toLowerCase()) > -1) {
 
-    res.json({response: 'sorry that email has already been submitted'});
+    res.json({error: 'sorry that email has already been submitted'});
 
   } else {
 
