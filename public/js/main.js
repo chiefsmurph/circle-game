@@ -17,7 +17,7 @@ od = new Odometer({
 $(function() {
 
   if (docCookies.getItem('voted')) {
-    //$('#status-panel').html('Thank you for standing up to the Don and making your voice heard.');
+    $('#status-panel').html('Thank you for standing up to the Don and making your voice heard.');
   }
 
   dialog = $( "#dialog-form" ).dialog({
