@@ -33,19 +33,24 @@ $(function() {
           email: $('#email').val()
         };
 
-        
+        if (validateForm()) {
 
-        $.post( '/submit-sig', tosend, function(data) {
-             docCookies.setItem('voted', 'alphabet');
-             $('#addone').fadeOut('slow', function() {
-               $('#status-panel').html(data.response);
-             });
-             console.log(data.response);
-           },
-           'json' // I expect a JSON response
-        );
+          $.post( '/submit-sig', tosend, function(data) {
+               docCookies.setItem('voted', 'alphabet');
+               $('#addone').fadeOut('slow', function() {
+                 $('#status-panel').html(data.response);
+               });
+               console.log(data.response);
+             },
+             'json' // I expect a JSON response
+          );
 
-        dialog.dialog( "close" );
+          dialog.dialog( "close" );
+
+      } else {
+
+
+      }
 
 
       },

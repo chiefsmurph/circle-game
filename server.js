@@ -1,3 +1,4 @@
+var fs = require('fs');
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
@@ -18,26 +19,46 @@ app.use(express.static(__dirname + '/public'));
 
 
 var count = 238226;
+var emailFile = 'email-list.txt';
+var emailList = [];
 
+// get current count
+fs.readFileSync(emailFile).toString().split('\n').forEach(function (line) {
+  emailList.push(line.split(',')[0].toLowerCase());
+});
+
+count = emailList.length - 1;
 
 app.get('/getCounter', function(req, res, next) {
 
   res.json({count: count});
-
-
 
 });
 
 app.post('/submit-sig', function(req, res, next) {
   console.log(req.body);
 
-  count++;
-  
-  res.json({response: 'thank you!  your pledge has been received.'});
+  if (emailList.indexOf(req.body.email.toLowerCase()) > -1) {
 
-  setTimeout(function() {
-    io.sockets.emit('status', { count: count });
-  }, 1000);
+    res.json({response: 'sorry that email has already been submitted'});
+
+  } else {
+
+      fs.appendFile(emailFile, req.body.email + ',' + req.body.name, function (err) {
+
+        // success!
+        count++;
+        res.json({response: 'thank you!  your pledge has been received.'});
+        setTimeout(function() {
+          io.sockets.emit('status', { count: count });
+        }, 1000);
+
+      });
+
+  }
+
+
+
 });
 
 io.sockets.on('connection', function (socket) {
