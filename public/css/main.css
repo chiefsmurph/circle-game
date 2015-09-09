@@ -11,9 +11,8 @@ html {
 }
 
 .container * {
-    font-family: 'Molle', cursive;
-    font-style: italic;
-    font-weight: 400;
+    font-family: 'Satisfy', cursive;
+
 }
 
 button, h3, h3 *, #status-panel {
@@ -34,7 +33,7 @@ button {
 
 h1 {
   margin-top: 80px !important;
-  font-size: 290% !important;
+  font-size: 350% !important;
   font-weight: bolder;
 }
 
