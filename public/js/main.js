@@ -25,9 +25,9 @@ $(function() {
     height: 450,
     width: 300,
     modal: true,
-    open: function(event, ui) {
-      $( "#dialog-form" ).css('overflow', 'hidden');
-    },
+    // open: function(event, ui) {
+    //   $( "#dialog-form" ).css('overflow', 'hidden');
+    // },
     buttons: {
       "Sign the pledge": function() {
 
