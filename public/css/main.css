@@ -12,6 +12,8 @@ html {
 
 .container * {
     font-family: 'Molle', cursive;
+    font-style: italic;
+    font-weight: 400;
 }
 
 button, h3, h3 *, #status-panel {
