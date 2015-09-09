@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>The Trump Pledge</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- styles -->
+    <link href="/css/normalize.css" rel="stylesheet">
+    <link href="/css/skeleton.css" rel="stylesheet">
+
+        <link href="/css/main.css" rel="stylesheet">
+    <link href="/js/odometer-0.4.6/themes/odometer-theme-default.css" rel="stylesheet">
+
+    <link href='https://fonts.googleapis.com/css?family=Molle:400italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+
+  </head>
+  <body>
+
+    <div class="container">
+
+      <div class="row">
+        <div class="four columns"><img src="/img/trumpcutout.png" id='trumpman'></div>
+        <div class="eight columns">
+
+
+          <h1>The Real Trump Pledge</h1>
+
+        </div>
+      </div>
+      <div class="row" id='body'>
+
+          <div id="pledge">I will <strong>not</strong> be voting Republican in 2016 if Donald Trump is selected to be the nominee.</div>
+
+          <h3>current count:<br><span id='counter'></span></h3>
+
+      </div>
+
+      <div class="row" id="status-panel">
+        <button class="button button-primary" id="addone">Be a patriot and sign the pledge today!</button>
+      </div>
+
+
+
+
+    </div>
+
+
+    <div id="dialog-form" title="Stop the Don">
+      <p class="validateTips">All form fields are required.</p>
+
+      <form id='new-sig'>
+        <fieldset>
+          <label for="name">Name</label>
+          <input type="text" name="name" id="name" placeholder="Jane Smith" class="text ui-widget-content ui-corner-all">
+          <label for="email">Email</label>
+          <input type="text" name="email" id="email" placeholder="jane@smith.com" class="text ui-widget-content ui-corner-all">
+
+          <!-- Allow form submission with keyboard without duplicating the dialog button -->
+          <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+        </fieldset>
+      </form>
+    </div>
+
+
+    <script src="https://cdn.socket.io/socket.io-1.3.5.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script src="/js/odometer-0.4.6/odometer.js"></script>
+    <script src="/js/mozilla-cookies.js"></script>
+    <script src="/js/main.js"></script>
+  </body>
+</html>
