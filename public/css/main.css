@@ -10,6 +10,10 @@ html {
 
 }
 
+#toppane {
+  border-bottom: 1px solid black;
+  text-align: right;
+}
 
 #dialog-form {
   font-size: 0.7em;
