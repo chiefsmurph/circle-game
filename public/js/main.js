@@ -40,7 +40,7 @@ $(function() {
 
   var loaders = [];
   for (var i = 0; i < imagestoload.length; i++) {
-    loaders.push(imagestoload[i].url, imagestoload[i].element);
+    loaders.push(loadSprite(imagestoload[i].url, imagestoload[i].element));
   }
 
   $.when.apply(null, loaders).done(function() {
