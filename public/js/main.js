@@ -2,59 +2,62 @@
 var socket = io.connect(window.location.hostname + ":" + window.location.port);
 var count = 0;
 
+var imagestoload = [
+  {
+    url: 'img/yorktown-min.jpg',
+    element: '#bg img'
+  },
+  {
+    url: '/img/trumpcutout-min.png',
+    element: '#trumpman'
+  }
+];
+
+function loadSprite(src, el) {
+    var deferred = $.Deferred();
+    var sprite = new Image();
+    sprite.onload = function() {
+        $(el).attr('src', src);
+        deferred.resolve();
+    };
+    sprite.src = src;
+    return deferred.promise();
+}
+
+var loaders = [];
+for (var i = 0; i < imagestoload.length; i++) {
+  loaders.push(loadSprite(imagestoload[i].url, imagestoload[i].element));
+}
+
+$.when.apply(null, loaders).done(function() {
+
+  // get the current counter
+  $.get( "/getCounter", function( data ) {
+    $('#counter').html(data.count);
+    console.log(data);
+  });
+
+  // setup counter watching socket
+  socket.on('status', function (data) {
+    $('#counter').html(data.count);
+  });
+
+
+  $('#splashscreen').fadeOut(500, function() {
+
+  });
+
+
+});
+
+
 $(function() {
 
   // ONCE THE DOM HAS LOADED...
 
   // first off load the images for the page
 
-  var imagestoload = [
-    {
-      url: 'img/yorktown-min.jpg',
-      element: '#bg img'
-    },
-    {
-      url: '/img/trumpcutout-min.png',
-      element: '#trumpman'
-    }
-  ];
 
-  function loadSprite(src, el) {
-      var deferred = $.Deferred();
-      var sprite = new Image();
-      sprite.onload = function() {
-          $(el).attr('src', src);
-          deferred.resolve();
-      };
-      sprite.src = src;
-      return deferred.promise();
-  }
-
-  var loaders = [];
-  for (var i = 0; i < imagestoload.length; i++) {
-    loaders.push(loadSprite(imagestoload[i].url, imagestoload[i].element));
-  }
-
-  $.when.apply(null, loaders).done(function() {
-
-    // get the current counter
-    $.get( "/getCounter", function( data ) {
-      $('#counter').html(data.count);
-      console.log(data);
-    });
-
-    // setup counter watching socket
-    socket.on('status', function (data) {
-      $('#counter').html(data.count);
-    });
-
-
-    $('#splashscreen').fadeOut(500, function() {
-
-    });
-
-
-  });
 
 
   // FIRST OFF INITIALIZATIONS
