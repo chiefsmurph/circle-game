@@ -80,8 +80,9 @@ app.post('/submit-sig', function(req, res, next) {
         console.log('about to insert');
         var queryText = 'INSERT INTO pledges(flname, email) VALUES($1, $2) RETURNING id'
         client.query(queryText, [req.body.name, req.body.email], function(err, result) {
-          if(!err) {
-            console.log('success!!!');
+          console.log('err' + err);
+          if(result) {
+            console.log('success!!!' + result);
           }
         });
       });
