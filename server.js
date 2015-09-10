@@ -38,11 +38,20 @@ pg.connect(process.env.DATABASE_URL, function(err, client) {
 */
 
 // get current count
-fs.readFileSync(emailFile).toString().split('\n').forEach(function (line) {
-  emailList.push(line.split(',')[0].toLowerCase());
+pg.connect(process.env.DATABASE_URL, function(err, client) {
+  var query = client.query('SELECT * FROM pledges', function(err, result) {
+    count = result.rows.length;
+  });
+
+
 });
 
-count = emailList.length - 1;
+
+// fs.readFileSync(emailFile).toString().split('\n').forEach(function (line) {
+//   emailList.push(line.split(',')[0].toLowerCase());
+// });
+//
+// count = emailList.length - 1;
 
 app.get('/getCounter', function(req, res, next) {
 
@@ -53,10 +62,8 @@ app.get('/getCounter', function(req, res, next) {
 app.get('/getsigs', function(req, res, next) {
 
   pg.connect(process.env.DATABASE_URL, function(err, client) {
-    var query = client.query('SELECT * FROM pledges');
-    console.log('selected from db');
-    query.on('row', function(row) {
-      console.log('row: ' + JSON.stringify(row));
+    var query = client.query('SELECT * FROM pledges', function(err, result) {
+      res.send(JSON.stringify(result.rows));
     });
 
 
@@ -83,21 +90,14 @@ app.post('/submit-sig', function(req, res, next) {
           console.log('err' + err);
           if(result) {
             console.log('success!!!' + result);
+
+            count++;
+            res.json({response: 'thank you!  your pledge has been received.'});
+            setTimeout(function() {
+              io.sockets.emit('status', { count: count });
+            }, 1000);
           }
         });
-      });
-
-
-
-      fs.appendFile(emailFile, req.body.email + ',' + req.body.name, function (err) {
-
-        // success!
-        count++;
-        res.json({response: 'thank you!  your pledge has been received.'});
-        setTimeout(function() {
-          io.sockets.emit('status', { count: count });
-        }, 1000);
-
       });
 
   }
