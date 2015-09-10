@@ -27,6 +27,7 @@ var emailList = [];
 
 // setup db
 
+/*
 pg.connect(process.env.DATABASE_URL, function(err, client) {
   var query = client.query('CREATE TABLE pledges (fsname varchar(520), email varchar(250))');
   console.log('creating table');
@@ -34,6 +35,7 @@ pg.connect(process.env.DATABASE_URL, function(err, client) {
     console.log('row: ' + JSON.stringify(row));
   });
 });
+*/
 
 // get current count
 fs.readFileSync(emailFile).toString().split('\n').forEach(function (line) {
