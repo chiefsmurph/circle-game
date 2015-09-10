@@ -41,7 +41,7 @@ pg.connect(process.env.DATABASE_URL, function(err, client) {
 pg.connect(process.env.DATABASE_URL, function(err, client) {
   var query = client.query('SELECT * FROM pledges', function(err, result) {
 
-    for (var i = 0; i < result.rows.length) {
+    for (var i = 0; i < result.rows.length; i++) {
       emailList.push(result.rows[i].email.toLowerCase());
       count++;
     }
@@ -90,6 +90,10 @@ app.post('/submit-sig', function(req, res, next) {
   if (emailList.indexOf(req.body.email.toLowerCase()) > -1) {
 
     res.json({error: 'sorry that email has already been submitted'});
+
+  } else if (!req.body.email.match(/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/) ) {
+
+    res.json({error: 'dont be such a n00b.'});
 
   } else {
 
