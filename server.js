@@ -58,9 +58,9 @@ app.get('/getsigs', function(req, res, next) {
     query.on('row', function(row) {
       console.log('row: ' + JSON.stringify(row));
     });
-  });
 
-  res.send('alpha');
+
+  });
 
 });
 
@@ -77,12 +77,17 @@ app.post('/submit-sig', function(req, res, next) {
   } else {
 
       pg.connect(process.env.DATABASE_URL, function(err, client) {
-        var query = client.query('INSERT INTO pledges(fsname, email) VALUES ("' + req.body.name + '", "' + req.body.email + '")');
-        console.log('inserted to db');
-        query.on('row', function(row) {
-          console.log('row: ' + JSON.stringify(row));
+        console.log('about to insert');
+        var queryText = 'INSERT INTO pledges(flname, email) VALUES($1, $2) RETURNING id'
+        client.query(queryText, [req.body.name, req.body.email], function(err, result) {
+          if(err) //handle error
+          else {
+            console.log('success!!!');
+          }
         });
       });
+
+
 
       fs.appendFile(emailFile, req.body.email + ',' + req.body.name, function (err) {
 
