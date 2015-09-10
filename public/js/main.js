@@ -59,12 +59,6 @@ $(function() {
 
   // FIRST OFF INITIALIZATIONS
 
-  // get the current counter
-  $.get( "/getCounter", function( data ) {
-    $('#counter').html(data.count);
-    console.log(data);
-  });
-
   // jquery dialog
   dialog = $( "#dialog-form" ).dialog({
     autoOpen: false,
@@ -119,6 +113,12 @@ $(function() {
   if (docCookies.getItem('voted')) {
     $('#status-panel').html('Thank you for standing up to the Don and making your voice heard.');
   }
+
+  // get the current counter
+  $.get( "/getCounter", function( data ) {
+    $('#counter').html(data.count);
+    console.log(data);
+  });
 
   // setup counter watching socket
   socket.on('status', function (data) {
