@@ -12,7 +12,12 @@ html {
   z-index: 1000;
 }
 
-#splashcreen * {
+#splashcreen #fountainG {
+
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+
   z-index: 1000;
 }
 
