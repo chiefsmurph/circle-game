@@ -27,19 +27,20 @@ var emailList = [];
 
 // setup db
 
-/*
+
 pg.connect(process.env.DATABASE_URL, function(err, client) {
-  var query = client.query('CREATE TABLE pledges (fsname varchar(520), email varchar(250))');
-  console.log('creating table');
+  var query = client.query('ALTER TABLE pledges ADD COLUMN party varchar(250) NOT NULL DEFAULT "null"');
+  console.log('adding pledge col');
   query.on('row', function(row) {
     console.log('row: ' + JSON.stringify(row));
   });
 });
-*/
+
 
 // get current count
 pg.connect(process.env.DATABASE_URL, function(err, client) {
   var query = client.query('SELECT * FROM pledges', function(err, result) {
+
 
     for (var i = 0; i < result.rows.length; i++) {
       emailList.push(result.rows[i].email.toLowerCase());
