@@ -1,20 +1,12 @@
 // establish socket connection
 var socket = io.connect(window.location.hostname + ":" + window.location.port);
 var count = 0;
-var od;
-
-// init odomoter
-var el = document.querySelector('#counter');
-
-od = new Odometer({
-  el: el,
-
-  // Any option (other than auto and selector) can be passed in here
-  theme: 'plaza'
-});
-
 
 $(function() {
+
+  // ONCE THE DOM HAS LOADED...
+
+  // first off load the images for the page
 
   var imagestoload = [
     {
@@ -44,15 +36,36 @@ $(function() {
   }
 
   $.when.apply(null, loaders).done(function() {
-      $('#splashscreen').fadeOut(2000);
-      // callback when everything was loaded
+      $('#splashscreen').fadeOut(1200);
+
+
+      // only after the images have loaded and the splash screen fadeout should the dialog
+
+      setTimeout(function () {
+        var el = document.querySelector('#counter');
+
+        var od = new Odometer({
+          el: el,
+
+          // Any option (other than auto and selector) can be passed in here
+          theme: 'plaza'
+        });
+      }, 1000);
+
+
+
   });
 
 
-  if (docCookies.getItem('voted')) {
-    $('#status-panel').html('Thank you for standing up to the Don and making your voice heard.');
-  }
+  // FIRST OFF INITIALIZATIONS
 
+  // get the current counter
+  $.get( "/getCounter", function( data ) {
+    $('#counter').html(data.count);
+    console.log(data);
+  });
+
+  // jquery dialog
   dialog = $( "#dialog-form" ).dialog({
     autoOpen: false,
     height: 440,
@@ -64,35 +77,31 @@ $(function() {
     buttons: {
       "Sign the pledge": function() {
 
-        var tosend = {
-          name: $('#name').val(),
-          email: $('#email').val()
-        };
+          var tosend = {
+            name: $('#name').val(),
+            email: $('#email').val()
+          };
 
-        if (validateForm()) {
+          if (validateForm()) {
 
-          $.post( '/submit-sig', tosend, function(data) {
+            $.post( '/submit-sig', tosend, function(data) {
 
-               $('#addone').fadeOut('slow', function() {
-                 if (data.error) {
-                   $('#status-panel').html(data.error);
-                 } else {
-                   docCookies.setItem('voted', 'alphabet');
-                   $('#status-panel').html(data.response);
-                 }
-               });
-               console.log(data.response);
-             },
-             'json' // I expect a JSON response
-          );
+                 $('#addone').fadeOut('slow', function() {
+                   if (data.error) {
+                     $('#status-panel').html(data.error);
+                   } else {
+                     docCookies.setItem('voted', 'alphabet');
+                     $('#status-panel').html(data.response);
+                   }
+                 });
+                 console.log(data.response);
+               },
+               'json' // I expect a JSON response
+            );
 
-          dialog.dialog( "close" );
+            dialog.dialog( "close" );
 
-      } else {
-
-
-      }
-
+        }
 
       },
       Cancel: function() {
@@ -105,19 +114,24 @@ $(function() {
     }
   });
 
-  $.get( "/getCounter", function( data ) {
-    $('#counter').html(data.count);
-    console.log(data);
-  });
+  // check if they have already pledged
 
+  if (docCookies.getItem('voted')) {
+    $('#status-panel').html('Thank you for standing up to the Don and making your voice heard.');
+  }
 
+  // setup counter watching socket
   socket.on('status', function (data) {
     $('#counter').html(data.count);
   });
 
+  // and "pledge" button event handler
+
   $('#addone').click(function() {
     dialog.dialog( "open" );
   });
+
+  //END INITS
 
 
 
