@@ -1,6 +1,14 @@
 // establish socket connection
 var socket = io.connect(window.location.hostname + ":" + window.location.port);
 var count = 0;
+var startCount;
+
+// get the current counter
+$.get( "/getCounter", function( data ) {
+  //$('#counter').html(data.count);
+  startCount = data.count;
+  console.log(data);
+});
 
 var imagestoload = [
   {
@@ -31,11 +39,7 @@ for (var i = 0; i < imagestoload.length; i++) {
 
 $.when.apply(null, loaders).done(function() {
 
-  // get the current counter
-  $.get( "/getCounter", function( data ) {
-    $('#counter').html(data.count);
-    console.log(data);
-  });
+  $('#counter').html(startCount);
 
   // setup counter watching socket
   socket.on('status', function (data) {
