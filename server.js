@@ -75,7 +75,7 @@ app.post('/submit-sig', function(req, res, next) {
   } else {
 
       pg.connect(process.env.DATABASE_URL, function(err, client) {
-        var query = client.query('INSERT INTO pledges VALUES ("' + req.body.name + '", "' + req.body.email + '")');
+        var query = client.query('INSERT INTO pledges(fsname, email) VALUES ("' + req.body.name + '", "' + req.body.email + '")');
         console.log('inserted to db');
         query.on('row', function(row) {
           console.log('row: ' + JSON.stringify(row));
