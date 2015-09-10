@@ -10,6 +10,10 @@ html {
 
 }
 
+.validateTips {
+  margin-bottom: 5px;
+}
+
 #top {
   padding-bottom: 5px;
   width: 100%;

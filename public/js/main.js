@@ -22,7 +22,7 @@ $(function() {
 
   dialog = $( "#dialog-form" ).dialog({
     autoOpen: false,
-    height: 400,
+    height: 440,
     width: 270,
     modal: true,
     // open: function(event, ui) {
