@@ -39,15 +39,16 @@ for (var i = 0; i < imagestoload.length; i++) {
 
 $.when.apply(null, loaders).done(function() {
 
-  $('#counter').html(startCount);
-
   // setup counter watching socket
   socket.on('status', function (data) {
     $('#counter').html(data.count);
   });
 
   $('#fountainG').fadeOut(500, function() {
+
     $('#splashscreen').fadeOut(500, function() {
+
+          $('#counter').html(startCount);
 
     });
   });
