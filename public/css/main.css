@@ -71,13 +71,6 @@ button, h3, h3 *, #status-panel {
   font-family: 'Source Sans Pro', cursive !important;
 }
 
-button {
-  padding: 18px 28px;
-  font-size: 22px !important; //change this to your desired size
-  line-height: normal;
-  text-shadow : 0 0 2px black;
-}
-
 #body {
   font-size: 200%;
   text-align: center;
@@ -142,6 +135,10 @@ h3 {
 
 #addone {
     vertical-align: middle;
+    padding: 18px 28px;
+    font-size: 22px !important; //change this to your desired size
+    line-height: normal;
+    text-shadow : 0 0 2px black;
 }
 
 IMG#trumpman {
