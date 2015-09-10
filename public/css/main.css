@@ -134,10 +134,7 @@ h3 {
 }
 
 #addone {
-    vertical-align: middle;
-    padding: 18px 28px;
-    font-size: 22px !important; //change this to your desired size
-    line-height: normal;
+    font-size: 22px;
     text-shadow : 0 0 2px black;
 }
 
