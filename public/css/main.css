@@ -24,7 +24,8 @@ html {
 }
 
 #dialog-form div {
-  width: 265px;
+  width: 235px;
+  line-height: 1;
 }
 
 .container * {
