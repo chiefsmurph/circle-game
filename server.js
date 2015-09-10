@@ -78,7 +78,7 @@ app.post('/submit-sig', function(req, res, next) {
 
       pg.connect(process.env.DATABASE_URL, function(err, client) {
         console.log('about to insert');
-        var queryText = 'INSERT INTO pledges(flname, email) VALUES($1, $2) RETURNING id'
+        var queryText = 'INSERT INTO pledges(fsname, email) VALUES($1, $2) RETURNING id'
         client.query(queryText, [req.body.name, req.body.email], function(err, result) {
           console.log('err' + err);
           if(result) {
