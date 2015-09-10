@@ -11,8 +11,9 @@ html {
 }
 
 #top {
-  border-bottom: 1px solid black;
-  text-align: right;
+  padding-bottom: 5px;
+  border-bottom: 4px dashed rgba(255,255,255,0.5);
+  float: right;
 }
 
 #dialog-form {
