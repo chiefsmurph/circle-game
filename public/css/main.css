@@ -14,7 +14,10 @@ html {
   padding-bottom: 5px;
   border-bottom: 4px dashed rgba(255,255,255,0.5);
   width: 100%;
-  text-align: right;
+}
+
+#top div {
+  float: right;
 }
 
 #dialog-form {
