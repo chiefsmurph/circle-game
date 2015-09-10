@@ -37,20 +37,19 @@ $(function() {
 
   $.when.apply(null, loaders).done(function() {
 
+    // get the current counter
+    $.get( "/getCounter", function( data ) {
+      $('#counter').html(data.count);
+      console.log(data);
+    });
 
-    $('#splashscreen').fadeOut(1200, function() {
+    // setup counter watching socket
+    socket.on('status', function (data) {
+      $('#counter').html(data.count);
+    });
 
-      // get the current counter
-      $.get( "/getCounter", function( data ) {
-        $('#counter').html(data.count);
-        console.log(data);
-      });
 
-      // setup counter watching socket
-      socket.on('status', function (data) {
-        $('#counter').html(data.count);
-      });
-
+    $('#splashscreen').fadeOut(500, function() {
 
     });
 
