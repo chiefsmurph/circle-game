@@ -1,3 +1,5 @@
+console.log('DB URL!!! ' + process.env.DATABASE_URL);
+
 var fs = require('fs');
 var express = require('express');
 var app = express();
@@ -19,7 +21,7 @@ app.use(express.static(__dirname + '/public'));
 
 
 var count = 238226;
-var emailFile = process.env.OPENSHIFT_DATA_DIR + '/email-list.txt';
+var emailFile = 'email-list.txt';
 var emailList = [];
 
 // get current count
