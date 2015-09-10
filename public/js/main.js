@@ -36,28 +36,41 @@ $(function() {
   }
 
   $.when.apply(null, loaders).done(function() {
-      $('#splashscreen').fadeOut(1200);
 
 
-      // only after the images have loaded and the splash screen fadeout should the dialog
+    $('#splashscreen').fadeOut(1200, function() {
 
-      setTimeout(function () {
-        var el = document.querySelector('#counter');
+      // get the current counter
+      $.get( "/getCounter", function( data ) {
+        $('#counter').html(data.count);
+        console.log(data);
+      });
 
-        var od = new Odometer({
-          el: el,
+      // setup counter watching socket
+      socket.on('status', function (data) {
+        $('#counter').html(data.count);
+      });
 
-          // Any option (other than auto and selector) can be passed in here
-          theme: 'plaza'
-        });
-      }, 1000);
 
+    });
 
 
   });
 
 
   // FIRST OFF INITIALIZATIONS
+
+
+  // only after the images have loaded and the splash screen fadeout should the dialog
+  var el = document.querySelector('#counter');
+
+  var od = new Odometer({
+    el: el,
+
+    // Any option (other than auto and selector) can be passed in here
+    theme: 'plaza'
+  });
+
 
   // jquery dialog
   dialog = $( "#dialog-form" ).dialog({
@@ -113,17 +126,6 @@ $(function() {
   if (docCookies.getItem('voted')) {
     $('#status-panel').html('Thank you for standing up to the Don and making your voice heard.');
   }
-
-  // get the current counter
-  $.get( "/getCounter", function( data ) {
-    $('#counter').html(data.count);
-    console.log(data);
-  });
-
-  // setup counter watching socket
-  socket.on('status', function (data) {
-    $('#counter').html(data.count);
-  });
 
   // and "pledge" button event handler
 
