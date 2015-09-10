@@ -42,10 +42,12 @@ $.when.apply(null, loaders).done(function() {
     $('#counter').html(data.count);
   });
 
+  $('#fountainG').fadeOut(500, function() {
+    $('#splashscreen').fadeOut(500, function() {
 
-  $('#splashscreen').fadeOut(500, function() {
-
+    });
   });
+
 
 
 });
