@@ -16,6 +16,41 @@ od = new Odometer({
 
 $(function() {
 
+  var imagestoload = [
+    {
+      url: 'img/yorktown-min.jpg',
+      element: '#bg img'
+    },
+    {
+      url: '/img/trumpcutout-min.png',
+      element: '#trumpman'
+    }
+  ];
+
+  function loadSprite(src, el) {
+      var deferred = $.Deferred();
+      var sprite = new Image();
+      sprite.onload = function() {
+          $(el).attr('src', src);
+          deferred.resolve();
+      };
+      sprite.src = src;
+      return deferred.promise();
+  }
+
+  var loaders = [];
+  for (var i = 0; i < imagestoload.length; i++) {
+    loaders.push(imagestoload[i].url, imagestoload[i].element);
+  }
+
+  $.when.apply(null, loaders).done(function() {
+    setTimeout(function() {
+      $('#splashscreen').fadeOut(5000);
+    }, 500);
+      // callback when everything was loaded
+  });
+
+
   if (docCookies.getItem('voted')) {
     $('#status-panel').html('Thank you for standing up to the Don and making your voice heard.');
   }
