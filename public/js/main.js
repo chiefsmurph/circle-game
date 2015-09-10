@@ -44,9 +44,7 @@ $(function() {
   }
 
   $.when.apply(null, loaders).done(function() {
-    setTimeout(function() {
-      $('#splashscreen').fadeOut(5000);
-    }, 500);
+      $('#splashscreen').fadeOut(2000);
       // callback when everything was loaded
   });
 
