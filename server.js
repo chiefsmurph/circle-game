@@ -21,7 +21,7 @@ app.use(bodyParser.json())
 app.use(express.static(__dirname + '/public'));
 
 
-var count = 238226;
+var count = 0;
 var emailFile = 'email-list.txt';
 var emailList = [];
 
