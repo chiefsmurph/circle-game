@@ -40,7 +40,17 @@ pg.connect(process.env.DATABASE_URL, function(err, client) {
 // get current count
 pg.connect(process.env.DATABASE_URL, function(err, client) {
   var query = client.query('SELECT * FROM pledges', function(err, result) {
-    count = result.rows.length;
+
+    for (var i = 0; i < result.rows.length) {
+      emailList.push(result.rows[i].email.toLowerCase());
+      count++;
+    }
+
+    console.log('current count: ' + count);
+    console.log('current emails: ' + emailList);
+
+
+
   });
 
 
