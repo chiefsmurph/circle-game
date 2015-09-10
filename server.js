@@ -28,6 +28,7 @@ var emailList = [];
 // setup db
 
 
+/*
 pg.connect(process.env.DATABASE_URL, function(err, client) {
   var query = client.query('ALTER TABLE pledges ADD COLUMN party varchar(250) NOT NULL DEFAULT "null"');
   console.log('adding pledge col');
@@ -35,7 +36,7 @@ pg.connect(process.env.DATABASE_URL, function(err, client) {
     console.log('row: ' + JSON.stringify(row));
   });
 });
-
+*/
 
 // get current count
 pg.connect(process.env.DATABASE_URL, function(err, client) {
