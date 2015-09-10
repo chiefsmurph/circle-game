@@ -23,6 +23,10 @@ html {
   font-size: 0.7em;
 }
 
+#dialog-form div {
+  width: 265px;
+}
+
 .container * {
     font-family: 'Satisfy', cursive;
 
