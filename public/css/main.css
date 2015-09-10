@@ -73,8 +73,9 @@ button, h3, h3 *, #status-panel {
 
 button {
   padding: 18px 28px;
-    font-size: 22px !important; //change this to your desired size
-    line-height: normal;
+  font-size: 22px !important; //change this to your desired size
+  line-height: normal;
+  text-shadow : 0 0 2px black;
 }
 
 #body {
