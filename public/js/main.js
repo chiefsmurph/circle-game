@@ -54,8 +54,7 @@ $(function() {
 
   // FIRST OFF INITIALIZATIONS
 
-
-
+  $( "#dialog-form" ).show();
 
   // jquery dialog
   dialog = $( "#dialog-form" ).dialog({
