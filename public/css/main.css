@@ -1,7 +1,6 @@
 html {
   background-color: #C0C0C0;
   padding-top: 100px;
-  background-image: url('/img/always-grey.png');
 }
 #splashscreen {
   position: fixed;
@@ -29,7 +28,7 @@ html {
   width: 200%;
   height: 200%;
 }
-#bg img {
+#bg div {
   position: absolute;
   top: 0;
   left: 0;
@@ -38,6 +37,7 @@ html {
   margin: auto;
   min-width: 50%;
   min-height: 50%;
+  background-image: url('/img/always-grey.png');
 }
 
 .validateTips {
