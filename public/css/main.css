@@ -111,7 +111,7 @@ h3 {
   border-radius: 30px;
   background-color: rgba(239,230,140,0.8);
   border: 10px double rgba(255,255,255,0.5);
-
+  background-image: url('/img/binding-light.png');
   display: none;
 
 }
@@ -133,7 +133,7 @@ h3 {
   color: #990000;
   font-style: italic;
   text-decoration: underline;
-  height: 60px;
+  height: 60  px;
 }
 
 #addone {
