@@ -134,7 +134,10 @@ h3 {
   color: #990000;
   font-style: italic;
   text-decoration: underline;
-  height: 60  px;
+}
+
+#status-panel div {
+  height: 60px;
 }
 
 #addone {
