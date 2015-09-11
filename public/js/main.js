@@ -29,8 +29,9 @@ socket.on('status', function (data) {
 
 $(window).load(function() {
 
-  $('#bg').show();
   $('#splashscreen').fadeOut(500, function() {
+
+    $('#bg').show();
     $('.container').fadeIn(500, function() {
 
           $('#counter').html(startCount);
