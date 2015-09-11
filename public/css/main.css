@@ -136,8 +136,8 @@ h3 {
   text-decoration: underline;
 }
 
-#status-panel div {
-  height: 60px;
+#status-panel span {
+  height: 65px;
 }
 
 #addone {
