@@ -10,41 +10,15 @@ $.get( "/getCounter", function( data ) {
   console.log(data);
 });
 
-var imagestoload = [
-  {
-    url: 'img/yorktown-min.jpg',
-    element: '#bg img'
-  },
-  {
-    url: '/img/trumpcutout-min.png',
-    element: '#trumpman'
-  }
-];
+// setup counter watching socket
+socket.on('status', function (data) {
+  $('#counter').html(data.count);
+});
 
-function loadSprite(src, el) {
-    var deferred = $.Deferred();
-    var sprite = new Image();
-    sprite.onload = function() {
-        $(el).attr('src', src);
-        deferred.resolve();
-    };
-    sprite.src = src;
-    return deferred.promise();
-}
 
-var loaders = [];
-for (var i = 0; i < imagestoload.length; i++) {
-  loaders.push(loadSprite(imagestoload[i].url, imagestoload[i].element));
-}
+$(window).load(function() {
 
-$.when.apply(null, loaders).done(function() {
-
-  // setup counter watching socket
-  socket.on('status', function (data) {
-    $('#counter').html(data.count);
-  });
-
-  $('#fountainG').fadeOut(500, function() {
+  $('.container').fadeIn(500, function() {
 
     $('#splashscreen').fadeOut(500, function() {
 
@@ -53,9 +27,9 @@ $.when.apply(null, loaders).done(function() {
     });
   });
 
+})
 
 
-});
 
 
 $(function() {
