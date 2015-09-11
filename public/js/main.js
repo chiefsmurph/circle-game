@@ -3,6 +3,17 @@ var socket = io.connect(window.location.hostname + ":" + window.location.port);
 var count = 0;
 var startCount;
 
+// only after the images have loaded and the splash screen fadeout should the dialog
+var el = document.querySelector('#counter');
+
+var od = new Odometer({
+  el: el,
+
+  // Any option (other than auto and selector) can be passed in here
+  theme: 'plaza'
+});
+
+
 // get the current counter
 $.get( "/getCounter", function( data ) {
   //$('#counter').html(data.count);
@@ -18,9 +29,9 @@ socket.on('status', function (data) {
 
 $(window).load(function() {
 
-  $('.container').fadeIn(500, function() {
 
-    $('#splashscreen').fadeOut(500, function() {
+  $('#splashscreen').fadeOut(500, function() {
+    $('.container').fadeIn(500, function() {
 
           $('#counter').html(startCount);
 
@@ -44,15 +55,6 @@ $(function() {
   // FIRST OFF INITIALIZATIONS
 
 
-  // only after the images have loaded and the splash screen fadeout should the dialog
-  var el = document.querySelector('#counter');
-
-  var od = new Odometer({
-    el: el,
-
-    // Any option (other than auto and selector) can be passed in here
-    theme: 'plaza'
-  });
 
 
   // jquery dialog
