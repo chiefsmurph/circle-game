@@ -114,6 +114,7 @@ $(function() {
   // and "pledge" button event handler
 
   $('#addone').click(function() {
+    this.blur();
     dialog.dialog( "open" );
   });
 
