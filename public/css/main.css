@@ -92,7 +92,7 @@ h3 {
   border: 10px double rgba(255,255,255,0.9);
   border-radius: 10px;
   background-color: rgba(38,140,60,0.5);
-  background-image: url('/img/binding-light.png');
+  background-image: url('/img/dark-stripes-light.png');
   line-height: 2.5;
 }
 
@@ -111,7 +111,7 @@ h3 {
 
   border-radius: 30px;
   background-color: rgba(239,230,140,0.8);
-  background-image: url('/img/dark-stripes-light.png');
+  background-image: url('/img/binding-light.png');
   border: 10px double rgba(255,255,255,0.5);
   display: none;
 
