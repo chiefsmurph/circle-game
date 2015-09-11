@@ -133,11 +133,8 @@ h3 {
   font-size: 150%;
   color: #990000;
   font-style: italic;
-  text-decoration: underline;
-}
-
-#status-panel span {
   height: 65px;
+  text-decoration: underline;
 }
 
 #addone {
