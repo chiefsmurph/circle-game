@@ -29,7 +29,7 @@ socket.on('status', function (data) {
 
 $(window).load(function() {
 
-
+  $('#bg').show();
   $('#splashscreen').fadeOut(500, function() {
     $('.container').fadeIn(500, function() {
 
