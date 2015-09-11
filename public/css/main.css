@@ -1,7 +1,7 @@
 html {
   background-color: #C0C0C0;
   padding-top: 100px;
-  background-image: url('/img/back-pattern.png');
+  background-image: url('/img/always-grey.png');
 }
 #splashscreen {
   position: fixed;
@@ -105,7 +105,7 @@ h3 {
 }
 
 .container {
-  margin: 60px auto 150px !important;
+  margin: 20px auto 150px !important;
   padding: 10px 20px;
 
   border-radius: 30px;
