@@ -33,8 +33,9 @@ io.sockets.on('connection', function (socket) {
       setTimeout(function() {
         io.sockets.emit('startGame');
         inGame = true;
+        waitingCount = 0;
       }, 1000);
-      console.log('start game')
+      console.log('start game num: ' + numPlayers);
 
     } else {
       console.log('only ' + numPlayers + ' are here currently');
@@ -57,7 +58,6 @@ io.sockets.on('connection', function (socket) {
     if (numPlayers === finishedCalc + waitingCount) {
       console.log('game over and all users finishedcalc');
       finishedCalc = 0;
-      waitingCount = 0;
       setTimeout(function() {
 
         checkAndStart();
