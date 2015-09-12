@@ -66,9 +66,10 @@ io.sockets.on('connection', function (socket) {
     }
   })
 
-  numPlayers++;
-  socket.emit('setColor', {color: possibleColors[ numPlayers % possibleColors.length ]});
 
+  socket.emit('setColor', {color: possibleColors[ numPlayers % possibleColors.length ]});
+  numPlayers++;
+  
   if (inGame) {
     waitingCount++;
   } else {
@@ -79,9 +80,5 @@ io.sockets.on('connection', function (socket) {
     console.log('circle: ' +  JSON.stringify(circle));
     io.sockets.emit('newCircle', {x: circle.x, y: circle.y, rad: circle.rad, col: circle.col});
   });
-
-});
-
-io.sockets.on('addCircle', function(socket) {
 
 });
