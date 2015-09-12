@@ -6,6 +6,8 @@ var io = require('socket.io')(server);
 var port = process.env.PORT || 5000; // Use the port that Heroku
 server.listen(port);
 
+console.log('listening for http and socket requests on port ' + port);
+
 var bodyParser = require('body-parser')
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -17,10 +19,29 @@ app.use(bodyParser.json())
 app.use(express.static(__dirname + '/public'));
 
 
-var count = 0;
+var count = 50;
 
 io.sockets.on('connection', function (socket) {
+
+  socket.on('addCircle', function(circle) {
+    console.log('circle: ' + circle);
+    io.sockets.emit('newCircle', {x: circle.x, y: circle.y, rad: 10});
+  });
+
   setTimeout(function() {
-    io.sockets.emit('status', { count: count }); // note the use of io.sockets to emit but socket.on to listen
+        count = 50;
+        console.log('sending status ' + count);
+    io.sockets.emit('newCircle', { x: count, y: count, rad: 30 }); // note the use of io.sockets to emit but socket.on to listen
   }, 2000);
+
+  setTimeout(function() {
+    count = 100;
+    io.sockets.emit('newCircle', { x: count, y: count, rad: 60 }); // note the use of io.sockets to emit but socket.on to listen
+    console.log('sending status ' + count);
+  }, 5000);
+
+});
+
+io.sockets.on('addCircle', function(socket) {
+
 });

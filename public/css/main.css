@@ -1,15 +1,23 @@
 html {
   background-color: rgba(135,206,250,0.4);
+  text-align: center;
 }
 #gamearea {
 
+  margin: 0 auto;
   position: relative;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 100px;
 
   width: 500px;
   height: 500px;
   background-color: black;
-  border: 6px double red;
+  overflow: hidden;
 
+}
+
+.circle {
+  background-color: orange;
+  position: absolute;
+  width: 0;
+  height: 0;
 }
