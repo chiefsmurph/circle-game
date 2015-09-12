@@ -183,18 +183,18 @@ $(function() {
   // FIRST OFF INITIALIZATIONS
 
 
-  $('#gamearea').bind('mousedown touchstart', function (e) {
+  $('#gamearea').on('mousedown touchstart', function (e) {
 
     if (activeGame) {
 
       var elm = $(this);
-      xPos = (event.type.toLowerCase() === 'mousedown')
-                    ? event.pageX
-                    : event.originalEvent.touches[0].pageX;
+      xPos = (e.type.toLowerCase() === 'mousedown')
+                    ? e.pageX
+                    : e.originalEvent.touches[0].pageX;
       xPos -= elm.offset().left;
-      yPos = (event.type.toLowerCase() === 'mousedown')
-                    ? event.pageY
-                    : event.originalEvent.touches[0].pageY;
+      yPos = (e.type.toLowerCase() === 'mousedown')
+                    ? e.pageY
+                    : e.originalEvent.touches[0].pageY;
       yPos -= elm.offset().top;
 
       var endPt = {
@@ -230,14 +230,17 @@ $(function() {
 
     }
 
+    e.preventDefault();
+
   });
 
-  $('#gamearea').bind('mouseup touchend', function() {
+  $('#gamearea').on('mouseup touchend', function() {
 
         $('#yourClicker').stop();
         $('#yourClicker').hide();
         socket.emit('addCircle', {x: xPos, y: yPos, rad: $('#yourClicker').width(), col: myColor});
 
+        e.preventDefault();
   });
 
 
