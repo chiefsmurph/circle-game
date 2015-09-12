@@ -18,68 +18,109 @@ app.use(bodyParser.json())
 
 app.use(express.static(__dirname + '/public'));
 
-var numPlayers = 0;
-var curPlayerId = 0;
-var possibleColors = ['orange', 'green', 'blue', 'red'];
-var inGame = false;
-var finishedCalc = 0;
-var waitingCount = 0;
+var rooms = {};
 
-io.sockets.on('connection', function (socket) {
+var newRoom = function(roomName) {
 
-  var checkAndStart = function() {
+  rooms[roomName] = {};
+  rooms[roomName].numPlayers = 0;
+  rooms[roomName].curPlayerId = 0;
+  rooms[roomName].inGame = false;
+  rooms[roomName].finishedCalc = 0;
+  rooms[roomName].waitingCount = 0;
 
-    if (numPlayers > 1) {
+  rooms[roomName].checkAndStart = function() {
+
+    if (rooms[roomName].numPlayers > 1) {
       setTimeout(function() {
-        io.sockets.emit('startGame');
-        inGame = true;
-        waitingCount = 0;
+        io.sockets.in(roomName).emit('startGame');
+        rooms[roomName].inGame = true;
+        rooms[roomName].waitingCount = 0;
       }, 1000);
-      console.log('start game num: ' + numPlayers);
+      console.log('start game num: ' + rooms[roomName].numPlayers);
 
     } else {
-      console.log('only ' + numPlayers + ' are here currently');
+      console.log('only ' + rooms[roomName].numPlayers + ' are here currently');
     }
 
   };
 
+}
+
+var currentUserId = 0;
+var playerIdToRoom = {};
+
+var possibleColors = ['orange', 'green', 'blue', 'red'];
+
+
+io.sockets.on('connection', function (socket) {
+
+  var myUserId = currentUserId;
+  var myRoom = 'public';
+
+  currentUserId++;
+
   socket.on('disconnect', function() {
-    console.log('user left');
-    numPlayers--;
-    if (numPlayers === 1) {
-      inGame = false;
-      io.sockets.emit('loner');
+    console.log(myUserId + ' ' + myRoom + ' disconnected');
+    if (rooms[myRoom]) {
+      rooms[myRoom].numPlayers--;
+
+      if (rooms[myRoom].numPlayers === 1) {
+        rooms[myRoom].inGame = false;
+        io.sockets.in(myRoom).emit('loner');
+      }
     }
+
+
+  });
+
+  socket.on('joinRoom', function(data) {
+
+    myRoom = data.room;
+
+    playerIdToRoom[myUserId] = myRoom;
+    socket.join(myRoom);
+
+    console.log('user number ' + myUserId + ' joining room "' + myRoom + '"');
+
+    if (!rooms[myRoom]) {
+      newRoom(myRoom);
+    }
+
+    rooms[myRoom].numPlayers++;
+    rooms[myRoom].curPlayerId++;
+    socket.emit('setColor', {color: possibleColors[ rooms[myRoom].curPlayerId % possibleColors.length ]});
+
+    if (rooms[myRoom].inGame) {
+      rooms[myRoom].waitingCount++;
+    } else {
+
+      // CHECK AND IF MORE THAN ONE PERSON HERE START A GAME
+      rooms[myRoom].checkAndStart();
+
+    }
+
+
   });
 
   socket.on('finishedCalc', function() {
     console.log('user finishedcalc');
-    finishedCalc++;
-    if (numPlayers === finishedCalc + waitingCount) {
+    rooms[myRoom].finishedCalc++;
+    if (rooms[myRoom].numPlayers === rooms[myRoom].finishedCalc + rooms[myRoom].waitingCount) {
       console.log('game over and all users finishedcalc');
-      finishedCalc = 0;
+      rooms[myRoom].finishedCalc = 0;
       setTimeout(function() {
 
-        checkAndStart();
+        rooms[myRoom].checkAndStart();
 
       }, 5000); // wait 5 sec before starting new game
     }
   });
 
-  socket.emit('setColor', {color: possibleColors[ curPlayerId % possibleColors.length ]});
-  numPlayers++;
-  curPlayerId++;
-
-
-  if (inGame) {
-    waitingCount++;
-  } else {
-    checkAndStart();
-  }
 
   socket.on('addCircle', function(circle) {
-    console.log('circle: ' +  JSON.stringify(circle));
-    io.sockets.emit('newCircle', {x: circle.x, y: circle.y, rad: circle.rad, col: circle.col});
+    console.log('circle: ' +  JSON.stringify(circle) + ' goes to ' + myRoom);
+    io.sockets.in(myRoom).emit('newCircle', {x: circle.x, y: circle.y, rad: circle.rad, col: circle.col});
   });
 
 });

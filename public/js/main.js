@@ -6,6 +6,9 @@ var timer;  // actual timer setinterval
 var activeGame = false;
 var myColor;
 
+console.log('sending join room public');
+socket.emit('joinRoom', {room: 'public'});
+
 var setStatus = function(text, length, cb) {
   $('#statusPanel').show();
   $('#statusPanel').html(text);
@@ -22,6 +25,7 @@ socket.on('startGame', function(data) {
 
   if (!activeGame) {
       console.log('new game');
+      activeGame = true;
       $('#rulesPanel').hide();
       setStatus('3', 1000, function() {
         setStatus('2', 1000, function() {
@@ -29,7 +33,6 @@ socket.on('startGame', function(data) {
             setStatus('GO!', 1000, function() {
 
               // GAME STARTING..........
-              activeGame = true;
 
               // setup ticker
               ticker = 30;
