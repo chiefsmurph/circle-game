@@ -19,36 +19,40 @@ var setStatus = function(text, length, cb) {
 };
 
 socket.on('startGame', function(data) {
-  console.log('new game');
-  setStatus('3', 1000, function() {
-    setStatus('2', 1000, function() {
-      setStatus('1', 1000, function() {
-        setStatus('GO!', 1000, function() {
 
-          activeGame = true;
+  if (!inGame) {
+      console.log('new game');
+      setStatus('3', 1000, function() {
+        setStatus('2', 1000, function() {
+          setStatus('1', 1000, function() {
+            setStatus('GO!', 1000, function() {
 
-          // setup ticker
-          ticker = 30;
-          $('#ticker').text(ticker);
-          $('#ticker').show();
-          timer = setInterval(function() {
-            ticker--;
-            $('#ticker').text(ticker);
-            if (ticker === 0) {
-              // game finished
-              $('#gamearea').find('.circle').stop();
-              window.clearInterval(timer);
-              timer = null;
-              activeGame = false;
-              $('#ticker').hide();
-              calculateWinner();
-            }
-          }, 1000);
+              activeGame = true;
 
+              // setup ticker
+              ticker = 30;
+              $('#ticker').text(ticker);
+              $('#ticker').show();
+              timer = setInterval(function() {
+                ticker--;
+                $('#ticker').text(ticker);
+                if (ticker === 0) {
+                  // game finished
+                  $('#gamearea').find('.circle').stop();
+                  window.clearInterval(timer);
+                  timer = null;
+                  activeGame = false;
+                  $('#ticker').hide();
+                  calculateWinner();
+                }
+              }, 1000);
+
+            });
+          });
         });
       });
-    });
-  });
+
+  }
 });
 
 socket.on('loner', function() {
