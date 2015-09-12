@@ -32,28 +32,18 @@ io.sockets.on('connection', function (socket) {
 
   numPlayers++;
   socket.emit('setColor', {color: possibleColors[ numPlayers % possibleColors.length ]});
+  
   if (numPlayers > 1) {
     io.sockets.emit('startGame');
     console.log('start game')
   } else {
     console.log('only ' + numPlayers + ' are here currently');
   }
+
   socket.on('addCircle', function(circle) {
     console.log('circle: ' +  JSON.stringify(circle));
     io.sockets.emit('newCircle', {x: circle.x, y: circle.y, rad: circle.rad, col: circle.col});
   });
-
-  setTimeout(function() {
-        count = 50;
-        console.log('sending status ' + count);
-    io.sockets.emit('newCircle', { x: count, y: count, rad: 30 }); // note the use of io.sockets to emit but socket.on to listen
-  }, 2000);
-
-  setTimeout(function() {
-    count = 100;
-    io.sockets.emit('newCircle', { x: count, y: count, rad: 60 }); // note the use of io.sockets to emit but socket.on to listen
-    console.log('sending status ' + count);
-  }, 5000);
 
 });
 

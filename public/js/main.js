@@ -23,7 +23,7 @@ socket.on('startGame', function(data) {
     setStatus('2', 1000, function() {
       setStatus('1', 1000, function() {
         setStatus('GO!', 1000, function() {
-          $('#gamearea').find('.circle').remove();
+
           activeGame = true;
 
           // setup ticker
@@ -84,8 +84,8 @@ var calculateWinner = function() {
           }
         }
 
-        setStatus('winner: ' + colorRGBtoName[topColor] + ' ' + topColor, 4000, function() {});
-
+        setStatus('winner: ' + colorRGBtoName[topColor], 4000, function() {});
+        $('#gamearea').find('.circle').remove();
 
     }
 
