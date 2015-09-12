@@ -20,7 +20,7 @@ var setStatus = function(text, length, cb) {
 
 socket.on('startGame', function(data) {
 
-  if (!inGame) {
+  if (!activeGame) {
       console.log('new game');
       setStatus('3', 1000, function() {
         setStatus('2', 1000, function() {
