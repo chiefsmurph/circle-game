@@ -28,6 +28,9 @@ io.sockets.on('connection', function (socket) {
   socket.on('disconnect', function() {
     console.log('user left');
     numPlayers--;
+    if (numPlayers === 1) {
+      io.sockets.emit('loner');
+    }
   })
 
   numPlayers++;

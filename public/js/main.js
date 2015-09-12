@@ -35,6 +35,7 @@ socket.on('startGame', function(data) {
             if (ticker === 0) {
               window.clearInterval(timer);
               activeGame = false;
+              $('#ticker').hide();
               calculateWinner();
             }
           }.bind(this), 1000);
@@ -44,6 +45,12 @@ socket.on('startGame', function(data) {
     });
   });
 });
+
+socket.on('loner', function() {
+
+    setStatus('Waiting for other players');
+});
+
 
 var calculateWinner = function() {
 
@@ -85,7 +92,9 @@ var calculateWinner = function() {
         }
 
         setStatus('winner: ' + colorRGBtoName[topColor], 4000, function() {});
-        $('#gamearea').find('.circle').remove();
+        $('#gamearea').find('.circle').fadeOut(1500, function() {
+          $(this).remove();
+        });
 
     }
 
