@@ -66,10 +66,10 @@ io.sockets.on('connection', function (socket) {
     }
   })
 
-
-  socket.emit('setColor', {color: possibleColors[ numPlayers % possibleColors.length ]});
   numPlayers++;
-  
+  socket.emit('setColor', {color: possibleColors[ numPlayers % possibleColors.length ]});
+
+
   if (inGame) {
     waitingCount++;
   } else {
