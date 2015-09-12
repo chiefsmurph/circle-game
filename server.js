@@ -21,9 +21,9 @@ app.use(express.static(__dirname + '/public'));
 
 var numPlayers = 0;
 var possibleColors = ['orange', 'green', 'blue', 'red'];
-var count = 50;
 var inGame = false;
 var finishedCalc = 0;
+var waitingCount = 0;
 
 io.sockets.on('connection', function (socket) {
 
@@ -54,9 +54,10 @@ io.sockets.on('connection', function (socket) {
   socket.on('finishedCalc', function() {
     console.log('user finishedcalc');
     finishedCalc++;
-    if (numPlayers === finishedCalc) {
+    if (numPlayers === finishedCalc + waitingCount) {
       console.log('game over and all users finishedcalc');
       finishedCalc = 0;
+      waitingCount = 0;
       setTimeout(function() {
 
         checkAndStart();
@@ -68,8 +69,11 @@ io.sockets.on('connection', function (socket) {
   numPlayers++;
   socket.emit('setColor', {color: possibleColors[ numPlayers % possibleColors.length ]});
 
-
-  checkAndStart();
+  if (inGame) {
+    waitingCount++;
+  } else {
+    checkAndStart();
+  }
 
   socket.on('addCircle', function(circle) {
     console.log('circle: ' +  JSON.stringify(circle));
