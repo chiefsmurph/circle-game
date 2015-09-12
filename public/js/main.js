@@ -188,8 +188,14 @@ $(function() {
     if (activeGame) {
 
       var elm = $(this);
-      xPos = e.pageX - elm.offset().left;
-      yPos = e.pageY - elm.offset().top;
+      xPos = (event.type.toLowerCase() === 'mousedown')
+                    ? event.pageX
+                    : event.originalEvent.touches[0].pageX;
+      xPos -= elm.offset().left;
+      yPos = (event.type.toLowerCase() === 'mousedown')
+                    ? event.pageY
+                    : event.originalEvent.touches[0].pageY;
+      yPos -= elm.offset().top;
 
       var endPt = {
         x: xPos - (maxClickerSize / 2),
