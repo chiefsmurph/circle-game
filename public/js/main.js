@@ -47,10 +47,15 @@ socket.on('startGame', function(data) {
 });
 
 socket.on('loner', function() {
-
+    clearCircles();
     setStatus('Waiting for other players');
 });
 
+var clearCircles = function() {
+  $('#gamearea').find('.circle').fadeOut(1500, function() {
+    $(this).remove();
+  });
+}
 
 var calculateWinner = function() {
 
@@ -92,9 +97,7 @@ var calculateWinner = function() {
         }
 
         setStatus('winner: ' + colorRGBtoName[topColor], 4000, function() {});
-        $('#gamearea').find('.circle').fadeOut(1500, function() {
-          $(this).remove();
-        });
+        clearCircles();
 
     }
 
