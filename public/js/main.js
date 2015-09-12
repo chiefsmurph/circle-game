@@ -96,7 +96,12 @@ var calculateWinner = function() {
           }
         }
 
-        setStatus('winner: ' + colorRGBtoName[topColor], 4000, function() {});
+        setStatus('winner: ' + colorRGBtoName[topColor], 4000, function() {
+
+          $('#statusPanel').show();
+          $('#statusPanel').html('<a href="#">play again</a>');
+
+        });
         clearCircles();
 
     }
