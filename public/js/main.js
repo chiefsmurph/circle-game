@@ -2,6 +2,7 @@
 var socket = io.connect(window.location.hostname + ":" + window.location.port);
 var maxClickerSize = 170;
 var ticker;   // time left on ticker
+var timer;  // actual timer setinterval
 var activeGame = false;
 var myColor;
 
@@ -30,10 +31,11 @@ socket.on('startGame', function(data) {
           ticker = 30;
           $('#ticker').text(ticker);
           $('#ticker').show();
-          var timer = setInterval(function() {
+          timer = setInterval(function() {
             ticker--;
             $('#ticker').text(ticker);
             if (ticker === 0) {
+              // game finished
               window.clearInterval(timer);
               activeGame = false;
               $('#ticker').hide();
@@ -49,6 +51,7 @@ socket.on('startGame', function(data) {
 
 socket.on('loner', function() {
 
+    window.clearInterval(timer);
     $('#ticker').fadeOut();
     clearCircles();
     setStatus('Waiting for other players');
@@ -106,7 +109,7 @@ var calculateWinner = function() {
           setStatus('Waiting for new game to start');
 
         });
-        
+
         setTimeout(function() {
           clearCircles();
         }, 1000);
