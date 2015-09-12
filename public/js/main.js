@@ -96,7 +96,7 @@ var calculateWinner = function() {
           }
         }
 
-        setStatus('winner: ' + colorRGBtoName[topColor], 4000, function() {
+        setStatus('winner: ' + ((colorRGBtoName[topColor]) ? colorRGBtoName[topColor] : 'tie'), 4000, function() {
 
           setStatus('Waiting for new game to start');
 
