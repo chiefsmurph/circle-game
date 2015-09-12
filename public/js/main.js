@@ -183,7 +183,7 @@ $(function() {
   // FIRST OFF INITIALIZATIONS
 
 
-  $('#gamearea').mousedown(function (e) {
+  $('#gamearea').bind('mousedown touchstart', function (e) {
 
     if (activeGame) {
 
@@ -224,19 +224,15 @@ $(function() {
 
     }
 
-  }).mouse2touch();
+  });
 
-  $('#gamearea').mouseup(function() {
-
-    if (activeGame) {
+  $('#gamearea').bind('mouseup touchend', function() {
 
         $('#yourClicker').stop();
         $('#yourClicker').hide();
         socket.emit('addCircle', {x: xPos, y: yPos, rad: $('#yourClicker').width(), col: myColor});
 
-    }
-
-  }).mouse2touch();
+  });
 
 
   //END INITS
