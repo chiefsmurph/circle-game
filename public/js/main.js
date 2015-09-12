@@ -63,7 +63,7 @@ var calculateWinner = function() {
     '0,0,255': 'blue',
     '0,128,0': 'green',
     '255,165,0': 'orange',
-
+    '255,0,0': 'red'
   };
 
   console.log('calculating');
@@ -98,8 +98,7 @@ var calculateWinner = function() {
 
         setStatus('winner: ' + colorRGBtoName[topColor], 4000, function() {
 
-          $('#statusPanel').show();
-          $('#statusPanel').html('<a href="#">play again</a>');
+          setStatus('Waiting for new game to start');
 
         });
         clearCircles();
