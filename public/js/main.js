@@ -53,6 +53,7 @@ socket.on('startGame', function(data) {
 
 socket.on('loner', function() {
 
+    activeGame = false;
     window.clearInterval(timer);
     timer = null;
     $('#ticker').fadeOut();
