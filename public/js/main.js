@@ -224,7 +224,7 @@ $(function() {
 
     }
 
-  });
+  }).mouse2touch();
 
   $('#gamearea').mouseup(function() {
 
@@ -236,7 +236,7 @@ $(function() {
 
     }
 
-  });
+  }).mouse2touch();
 
 
   //END INITS
