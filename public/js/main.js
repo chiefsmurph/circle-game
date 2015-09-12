@@ -23,6 +23,7 @@ socket.on('startGame', function(data) {
     setStatus('2', 1000, function() {
       setStatus('1', 1000, function() {
         setStatus('GO!', 1000, function() {
+          $('#gamearea').find('.circle').remove();
           activeGame = true;
 
           // setup ticker
@@ -32,9 +33,9 @@ socket.on('startGame', function(data) {
             ticker--;
             $('#ticker').text(ticker);
             if (ticker === 0) {
-              calculateWinner();
               window.clearInterval(timer);
               activeGame = false;
+              calculateWinner();
             }
           }.bind(this), 1000);
 
@@ -48,7 +49,9 @@ var calculateWinner = function() {
 
   var colorRGBtoName = {
     '0,0,255': 'blue',
-    '0,120,0': 'green'
+    '0,128,0': 'green',
+    '255,165,0': 'orange',
+
   };
 
   console.log('calculating');
