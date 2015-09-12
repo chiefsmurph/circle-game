@@ -18,8 +18,8 @@ app.use(bodyParser.json())
 
 app.use(express.static(__dirname + '/public'));
 
-
 var numPlayers = 0;
+var curPlayerId = 0;
 var possibleColors = ['orange', 'green', 'blue', 'red'];
 var inGame = false;
 var finishedCalc = 0;
@@ -64,10 +64,11 @@ io.sockets.on('connection', function (socket) {
 
       }, 5000); // wait 5 sec before starting new game
     }
-  })
+  });
 
+  socket.emit('setColor', {color: possibleColors[ curPlayerId % possibleColors.length ]});
   numPlayers++;
-  socket.emit('setColor', {color: possibleColors[ numPlayers % possibleColors.length ]});
+  curPlayerId++;
 
 
   if (inGame) {

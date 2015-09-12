@@ -8,7 +8,7 @@ var myColor;
 
 var setStatus = function(text, length, cb) {
   $('#statusPanel').show();
-  $('#statusPanel').text(text);
+  $('#statusPanel').html(text);
 
   if (length) {
     setTimeout(function() {
@@ -22,22 +22,25 @@ socket.on('startGame', function(data) {
 
   if (!activeGame) {
       console.log('new game');
+      $('#rulesPanel').hide();
       setStatus('3', 1000, function() {
         setStatus('2', 1000, function() {
           setStatus('1', 1000, function() {
             setStatus('GO!', 1000, function() {
 
+              // GAME STARTING..........
               activeGame = true;
 
               // setup ticker
               ticker = 30;
               $('#ticker').text(ticker);
               $('#ticker').show();
+
               timer = setInterval(function() {
                 ticker--;
                 $('#ticker').text(ticker);
                 if (ticker === 0) {
-                  // game finished
+                  // GAME FINISHED.......
                   $('#gamearea').find('.circle').stop();
                   window.clearInterval(timer);
                   timer = null;
@@ -61,6 +64,7 @@ socket.on('loner', function() {
     window.clearInterval(timer);
     timer = null;
     $('#ticker').fadeOut();
+    $('#rulesPanel').show();
     clearCircles();
     setStatus('Waiting for other players');
 });
@@ -100,7 +104,7 @@ var calculateWinner = function() {
             colorScores[rgb] = (colorScores[rgb]) ? colorScores[rgb] + 1 : 1;
 
         }
-
+        console.log(colorScores);
         var topScore = 0;
         var topColor;
         for (var color in colorScores) {
@@ -114,7 +118,8 @@ var calculateWinner = function() {
 
             socket.emit('finishedCalc');
 
-          setStatus('Waiting for new game to start');
+            setStatus('Waiting for new<br>game to start');
+            $('#rulesPanel').show();
 
         });
 
@@ -234,7 +239,7 @@ $(function() {
 
   });
 
-  $('#gamearea').on('mouseup touchend', function() {
+  $('#gamearea').on('mouseup touchend', function(e) {
 
         $('#yourClicker').stop();
         $('#yourClicker').hide();
