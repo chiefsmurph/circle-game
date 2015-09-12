@@ -25,9 +25,18 @@ var count = 50;
 
 io.sockets.on('connection', function (socket) {
 
+  socket.on('disconnect', function() {
+    numPlayers--;
+  })
+
   numPlayers++;
   socket.emit('setColor', {color: possibleColors[ numPlayers % possibleColors.length ]});
-
+  if (numPlayers > 1) {
+    io.sockets.emit('startGame');
+    console.log('start game')
+  } else {
+    console.log('only ' + numPlayers + ' are here currently');
+  }
   socket.on('addCircle', function(circle) {
     console.log('circle: ' +  JSON.stringify(circle));
     io.sockets.emit('newCircle', {x: circle.x, y: circle.y, rad: circle.rad, col: circle.col});
