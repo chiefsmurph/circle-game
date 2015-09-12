@@ -36,12 +36,14 @@ socket.on('startGame', function(data) {
             $('#ticker').text(ticker);
             if (ticker === 0) {
               // game finished
+              $('#gamearea').find('.circle').stop();
               window.clearInterval(timer);
+              timer = null;
               activeGame = false;
               $('#ticker').hide();
               calculateWinner();
             }
-          }.bind(this), 1000);
+          }, 1000);
 
         });
       });
@@ -52,6 +54,7 @@ socket.on('startGame', function(data) {
 socket.on('loner', function() {
 
     window.clearInterval(timer);
+    timer = null;
     $('#ticker').fadeOut();
     clearCircles();
     setStatus('Waiting for other players');
