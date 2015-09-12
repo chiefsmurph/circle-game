@@ -22,28 +22,54 @@ app.use(express.static(__dirname + '/public'));
 var numPlayers = 0;
 var possibleColors = ['orange', 'green', 'blue', 'red'];
 var count = 50;
+var inGame = false;
+var finishedCalc = 0;
 
 io.sockets.on('connection', function (socket) {
+
+  var checkAndStart = function() {
+
+    if (numPlayers > 1) {
+      setTimeout(function() {
+        io.sockets.emit('startGame');
+        inGame = true;
+      }, 1000);
+      console.log('start game')
+
+    } else {
+      console.log('only ' + numPlayers + ' are here currently');
+    }
+
+  };
 
   socket.on('disconnect', function() {
     console.log('user left');
     numPlayers--;
     if (numPlayers === 1) {
+      inGame = false;
       io.sockets.emit('loner');
+    }
+  });
+
+  socket.on('finishedCalc', function() {
+    console.log('user finishedcalc');
+    finishedCalc++;
+    if (numPlayers === finishedCalc) {
+      console.log('game over and all users finishedcalc');
+      finishedCalc = 0;
+      setTimeout(function() {
+
+        checkAndStart();
+
+      }, 5000); // wait 5 sec before starting new game
     }
   })
 
   numPlayers++;
   socket.emit('setColor', {color: possibleColors[ numPlayers % possibleColors.length ]});
 
-  if (numPlayers > 1) {
-    setTimeout(function() {
-      io.sockets.emit('startGame');
-    }, 1000);
-    console.log('start game')
-  } else {
-    console.log('only ' + numPlayers + ' are here currently');
-  }
+
+  checkAndStart();
 
   socket.on('addCircle', function(circle) {
     console.log('circle: ' +  JSON.stringify(circle));

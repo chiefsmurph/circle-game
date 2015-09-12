@@ -29,6 +29,7 @@ socket.on('startGame', function(data) {
           // setup ticker
           ticker = 30;
           $('#ticker').text(ticker);
+          $('#ticker').show();
           var timer = setInterval(function() {
             ticker--;
             $('#ticker').text(ticker);
@@ -47,6 +48,8 @@ socket.on('startGame', function(data) {
 });
 
 socket.on('loner', function() {
+
+    $('#ticker').fadeOut();
     clearCircles();
     setStatus('Waiting for other players');
 });
@@ -98,10 +101,15 @@ var calculateWinner = function() {
 
         setStatus('winner: ' + ((colorRGBtoName[topColor]) ? colorRGBtoName[topColor] : 'tie'), 4000, function() {
 
+            socket.emit('finishedCalc');
+
           setStatus('Waiting for new game to start');
 
         });
-        clearCircles();
+        
+        setTimeout(function() {
+          clearCircles();
+        }, 1000);
 
     }
 
