@@ -32,9 +32,11 @@ io.sockets.on('connection', function (socket) {
 
   numPlayers++;
   socket.emit('setColor', {color: possibleColors[ numPlayers % possibleColors.length ]});
-  
+
   if (numPlayers > 1) {
-    io.sockets.emit('startGame');
+    setTimeout(function() {
+      io.sockets.emit('startGame');
+    }, 1000);
     console.log('start game')
   } else {
     console.log('only ' + numPlayers + ' are here currently');

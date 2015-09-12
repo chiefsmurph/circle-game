@@ -27,7 +27,7 @@ socket.on('startGame', function(data) {
           activeGame = true;
 
           // setup ticker
-          ticker = 10;
+          ticker = 30;
           $('#ticker').text(ticker);
           var timer = setInterval(function() {
             ticker--;
