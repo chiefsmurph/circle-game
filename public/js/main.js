@@ -1,7 +1,7 @@
 // establish socket connection
 var socket = io.connect(window.location.hostname + ":" + window.location.port);
 var maxClickerSize = 170;
-var ticker = 30;
+var ticker;   // time left on ticker
 var activeGame = false;
 var myColor;
 
@@ -26,21 +26,69 @@ socket.on('startGame', function(data) {
           activeGame = true;
 
           // setup ticker
+          ticker = 10;
           $('#ticker').text(ticker);
           var timer = setInterval(function() {
             ticker--;
             $('#ticker').text(ticker);
             if (ticker === 0) {
-              clearInterval(timer);
+              calculateWinner();
+              window.clearInterval(timer);
               activeGame = false;
             }
-          }, 1000);
+          }.bind(this), 1000);
 
         });
       });
     });
   });
 });
+
+var calculateWinner = function() {
+
+  var colorRGBtoName = {
+    '0,0,255': 'blue',
+    '0,120,0': 'green'
+  };
+
+  console.log('calculating');
+  setStatus('Calculating winner...');
+
+  html2canvas($('#gamearea'), {
+    onrendered: function(canvas) {
+
+        console.log('got the canvas');
+        console.log('canvas' + canvas);
+
+        var c = canvas.getContext('2d');
+        var colorScores = {};
+
+        var pixelData = c.getImageData(0, 0, canvas.width, canvas.height).data;
+
+        for (var i = 0; i < pixelData.length; i+=4) {
+
+            var rgb = pixelData[i] + ',' + pixelData[i+1] + ',' + pixelData[i+2];
+            colorScores[rgb] = (colorScores[rgb]) ? colorScores[rgb] + 1 : 1;
+
+        }
+
+        var topScore = 0;
+        var topColor;
+        for (var color in colorScores) {
+          if (colorScores[color] > topScore && color != "0,0,0" && color != "255,255,255") {
+            topScore = colorScores[color];
+            topColor = color;
+          }
+        }
+
+        setStatus('winner: ' + colorRGBtoName[topColor] + ' ' + topColor, 4000, function() {});
+
+
+    }
+
+  });
+
+}
 
 
 socket.on('setColor', function(data) {
@@ -77,7 +125,7 @@ socket.on('newCircle', function (data) {
         borderTopRightRadius: data.rad,
         borderBottomLeftRadius: data.rad,
         borderBottomRightRadius: data.rad
-      }, data.rad * 10);
+      }, data.rad * 20);
 
   }
 
@@ -86,6 +134,8 @@ socket.on('newCircle', function (data) {
 
 
 $(function() {
+
+  setStatus('Waiting for other players');
 
   var xPos,   // coordinates of current click
       yPos;
@@ -124,7 +174,7 @@ $(function() {
         borderTopRightRadius: maxClickerSize,
         borderBottomLeftRadius: maxClickerSize,
         borderBottomRightRadius: maxClickerSize
-      }, maxClickerSize * 20, 'linear', function() {
+      }, maxClickerSize * 9, 'linear', function() {
 
         // if user holds down for full second
         $('#yourClicker').hide();
