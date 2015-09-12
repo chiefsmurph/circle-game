@@ -19,13 +19,18 @@ app.use(bodyParser.json())
 app.use(express.static(__dirname + '/public'));
 
 
+var numPlayers = 0;
+var possibleColors = ['orange', 'green', 'blue', 'red'];
 var count = 50;
 
 io.sockets.on('connection', function (socket) {
 
+  numPlayers++;
+  socket.emit('setColor', {color: possibleColors[ numPlayers % possibleColors.length ]});
+
   socket.on('addCircle', function(circle) {
-    console.log('circle: ' + circle);
-    io.sockets.emit('newCircle', {x: circle.x, y: circle.y, rad: 10});
+    console.log('circle: ' +  JSON.stringify(circle));
+    io.sockets.emit('newCircle', {x: circle.x, y: circle.y, rad: circle.rad, col: circle.col});
   });
 
   setTimeout(function() {
