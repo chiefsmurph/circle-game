@@ -78,7 +78,7 @@ socket.on('startGame', function(data) {
                           activeGame = true;
 
                           // setup ticker
-                          ticker = 30;
+                          ticker = 10;
                           $('#ticker').text(ticker);
                           $('#ticker').show();
 
@@ -161,7 +161,11 @@ var calculateWinner = function() {
   console.log('calculating');
   setStatus('Calculating winner...');
 
-  html2canvas($('#gamearea'), {
+  var $copyBoard = $('#gamearea').find('.circle').clone();
+
+  $('#hiddenGameArea').append($copyBoard);
+
+  html2canvas($('#hiddenGameArea'), {
     onrendered: function(canvas) {
 
         console.log('got the canvas');
@@ -189,6 +193,9 @@ var calculateWinner = function() {
         socket.emit('finishedCalc', {pixelData: sendablePixelData});
 
         setStatus('Calculating winner-sent...');
+        $('#hiddenGameArea').empty();
+
+
 
     }
 
@@ -205,7 +212,7 @@ socket.on('winner', function(data) {
 
     var topColor = data.topColor;
     console.log('topColor: ' + topColor);
-    setStatus('winner: ' + ((colorRGBtoName[topColor]) ? colorRGBtoName[topColor] : 'tie'), 4000, function() {
+    setStatus('winner: ' + ((colorRGBtoName[topColor]) ? colorRGBtoName[topColor] + '<br><br>and won by...<br><i>' + data.winBy + ' points</i>'  : 'tie'), 4000, function() {
 
         setStatus('Waiting for new<br>game to start');
         $('#rulesPanel').show();

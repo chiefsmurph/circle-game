@@ -198,16 +198,30 @@ io.sockets.on('connection', function (socket) {
       // now that we have the average rgb data
       // figure out the top score
 
-      var topScore = 0;
-      var topColor;
+      // new way of determining top score
+      var sortableScores = [];
       for (var color in avgRGBCounts) {
-        if (avgRGBCounts[color] > topScore) {
-          topScore = avgRGBCounts[color];
-          topColor = color;
-        }
+            sortableScores.push([color, avgRGBCounts[color]]);
       }
+      sortableScores.sort(function(a, b) {return b[1] - a[1]});
+      console.log('sortablescores ' + JSON.stringify(sortableScores));
+      var winBy = Math.round((sortableScores[0][1] - sortableScores[1][1]) / 10);
 
-      io.sockets.in(myRoom).emit('winner', {topColor: topColor});
+      // old way of determining top score
+
+      // var topScore = 0;
+      // var topColor;
+      // for (var color in avgRGBCounts) {
+      //   if (avgRGBCounts[color] > topScore) {
+      //     topScore = avgRGBCounts[color];
+      //     topColor = color;
+      //   }
+      // }
+
+      io.sockets.in(myRoom).emit('winner', {
+        topColor: (winBy !== 0) ? sortableScores[0][0] : '0,0,0', // tie if tie or nothing on the board
+        winBy: winBy
+      });
 
       console.log('game over and all users finishedcalc');
       rooms[myRoom].finishedCalc = 0;
