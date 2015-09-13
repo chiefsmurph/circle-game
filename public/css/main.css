@@ -76,6 +76,7 @@ html {
   text-align: center;
   padding: 0px;
   font-size: 33px;
+  display: none;
 }
 #gamearea #roomChooser button {
   border-radius: 5px;

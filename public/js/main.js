@@ -245,6 +245,7 @@ socket.on('newCircle', function (data) {
 $(function() {
 
   setStatus('Choose a room');
+  $('#roomChooser').show();
 
   var xPos,   // coordinates of current click
       yPos;
