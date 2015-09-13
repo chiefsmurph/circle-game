@@ -89,6 +89,7 @@ html, body {
   margin-bottom: 24px;
   background-color: white;
 }
+#roomChooser button:focus {outline:0;}
 #roomChooser #customText {
   display: none;
   height: 45px;
@@ -134,4 +135,24 @@ html, body {
 
 #hiddenGameArea {
   background-image: url('');
+}
+
+#titleScreen {
+  font-size: 40px;
+}
+#titleScreen * {
+  position: absolute;
+  left: 25px;
+  width: 450px;
+  text-align: center;
+  z-index: 10000000;
+  color: white;
+}
+#titleScreen #circle-text {
+  font-size: 80px;
+  top: -80px;
+}
+#titleScreen #battle-text {
+  font-size: 60px;
+  bottom: -60px;
 }

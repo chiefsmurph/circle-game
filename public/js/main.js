@@ -53,6 +53,24 @@ var setStatus = function(text, length, cb) {
 
 };
 
+var showTitleScreen = function(cb) {
+
+  $('#circle-text').animate({top: '130px'}, 3500, 'easeOutQuart');
+  $('#battle-text').animate({bottom: '240px'}, 3500, 'easeOutQuart', function() {
+
+    setTimeout(function() {
+      $('#titleScreen').fadeOut('slow', function() {
+
+        cb();
+
+      });
+    }, 1500);
+
+
+  });
+
+}
+
 socket.on('startGame', function(data) {
 
   if (!activeGame) {
@@ -271,8 +289,16 @@ socket.on('newCircle', function (data) {
 
 $(function() {
 
-  setStatus('Choose a room');
-  $('#roomChooser').show();
+  setTimeout(function() {
+
+    showTitleScreen(function() {
+
+      setStatus('Choose a room');
+      $('#roomChooser').show();
+
+    });
+
+  }, 200);
 
   var xPos,   // coordinates of current click
       yPos;
