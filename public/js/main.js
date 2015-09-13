@@ -5,9 +5,13 @@ var ticker;   // time left on ticker
 var timer;  // actual timer setinterval
 var activeGame = false;
 var myColor;
+var numPlayers = 1;
 
 console.log('sending join room public');
+
 socket.emit('joinRoom', {room: 'public'});
+$('#curRoom').text('public');
+
 
 var setStatus = function(text, length, cb) {
   $('#statusPanel').show();
@@ -25,52 +29,91 @@ socket.on('startGame', function(data) {
 
   if (!activeGame) {
       console.log('new game');
-      activeGame = true;
+
       $('#rulesPanel').hide();
       setStatus('3', 1000, function() {
-        setStatus('2', 1000, function() {
-          setStatus('1', 1000, function() {
-            setStatus('GO!', 1000, function() {
 
-              // GAME STARTING..........
+        if (numPlayers > 1) {
+          setStatus('2', 1000, function() {
 
-              // setup ticker
-              ticker = 30;
-              $('#ticker').text(ticker);
-              $('#ticker').show();
+            if (numPlayers > 1) {
+              setStatus('1', 1000, function() {
 
-              timer = setInterval(function() {
-                ticker--;
-                $('#ticker').text(ticker);
-                if (ticker === 0) {
-                  // GAME FINISHED.......
-                  $('#gamearea').find('.circle').stop();
-                  window.clearInterval(timer);
-                  timer = null;
-                  activeGame = false;
-                  $('#ticker').hide();
-                  calculateWinner();
+                if (numPlayers > 1) {
+                  setStatus('GO!', 1000, function() {
+
+                    if (numPlayers > 1) {
+
+
+
+                          // GAME STARTING..........
+                          activeGame = true;
+
+                          // setup ticker
+                          ticker = 30;
+                          $('#ticker').text(ticker);
+                          $('#ticker').show();
+
+                          timer = setInterval(function() {
+                            ticker--;
+                            $('#ticker').text(ticker);
+                            if (ticker === 0) {
+                              // GAME FINISHED.......
+                              $('#gamearea').find('.circle').stop();
+                              window.clearInterval(timer);
+                              timer = null;
+                              activeGame = false;
+                              $('#ticker').hide();
+                              $('#bottomStatus').hide();
+                              calculateWinner();
+                            }
+                          }, 1000);
+
+                    } else {
+                      backToWaiting();
+                    }
+
+                  });
+                } else {
+                  backToWaiting();
                 }
-              }, 1000);
 
-            });
+              });
+            } else {
+              backToWaiting();
+            }
+
           });
-        });
+        } else {
+          backToWaiting();
+        }
+
       });
 
   }
 });
 
-socket.on('loner', function() {
+socket.on('playerCount', function(data) {
 
-    activeGame = false;
-    window.clearInterval(timer);
-    timer = null;
-    $('#ticker').fadeOut();
-    $('#rulesPanel').show();
-    clearCircles();
-    setStatus('Waiting for other players');
+    numPlayers = data.count;
+    $('#numPlayers').text(numPlayers);
+    if (numPlayers === 1) {
+      activeGame = false;
+      backToWaiting();
+    }
+
 });
+
+var backToWaiting = function() {
+
+  window.clearInterval(timer);
+  timer = null;
+  $('#ticker').fadeOut();
+  $('#rulesPanel').show();
+  clearCircles();
+  setStatus('Waiting for other players');
+
+}
 
 var clearCircles = function() {
   $('#gamearea').find('.circle').fadeOut(1500, function() {
@@ -123,6 +166,7 @@ var calculateWinner = function() {
 
             setStatus('Waiting for new<br>game to start');
             $('#rulesPanel').show();
+            $('#bottomStatus').show();
 
         });
 
@@ -244,11 +288,16 @@ $(function() {
 
   $('#gamearea').on('mouseup touchend', function(e) {
 
+    if (activeGame) {
+
         $('#yourClicker').stop();
         $('#yourClicker').hide();
         socket.emit('addCircle', {x: xPos, y: yPos, rad: $('#yourClicker').width(), col: myColor});
 
-        e.preventDefault();
+    }
+
+    e.preventDefault();
+
   });
 
 

@@ -23,11 +23,12 @@ var rooms = {};
 var newRoom = function(roomName) {
 
   rooms[roomName] = {};
-  rooms[roomName].numPlayers = 0;
-  rooms[roomName].curPlayerId = 0;
-  rooms[roomName].inGame = false;
-  rooms[roomName].finishedCalc = 0;
-  rooms[roomName].waitingCount = 0;
+  rooms[roomName].numPlayers = 0;   // realtime count of number of players
+  rooms[roomName].curPlayerId = 0;  // increments for each player that joins the room
+  rooms[roomName].inGame = false;   // is there an active game going on in this room?
+  rooms[roomName].finishedCalc = 0; // number of players that have calculated and sent in the RGBcount for the current game
+  rooms[roomName].waitingCount = 0; // number of people waiting to play
+  rooms[roomName].RGBCounts = {};   // object to hold rgb data for each user
 
   rooms[roomName].checkAndStart = function() {
 
@@ -48,10 +49,7 @@ var newRoom = function(roomName) {
 }
 
 var currentUserId = 0;
-var playerIdToRoom = {};
-
 var possibleColors = ['orange', 'green', 'blue', 'red'];
-
 
 io.sockets.on('connection', function (socket) {
 
@@ -64,10 +62,9 @@ io.sockets.on('connection', function (socket) {
     console.log(myUserId + ' ' + myRoom + ' disconnected');
     if (rooms[myRoom]) {
       rooms[myRoom].numPlayers--;
-
+      io.sockets.in(myRoom).emit('playerCount', {count: rooms[myRoom].numPlayers});
       if (rooms[myRoom].numPlayers === 1) {
         rooms[myRoom].inGame = false;
-        io.sockets.in(myRoom).emit('loner');
       }
     }
 
@@ -77,8 +74,6 @@ io.sockets.on('connection', function (socket) {
   socket.on('joinRoom', function(data) {
 
     myRoom = data.room;
-
-    playerIdToRoom[myUserId] = myRoom;
     socket.join(myRoom);
 
     console.log('user number ' + myUserId + ' joining room "' + myRoom + '"');
@@ -89,15 +84,15 @@ io.sockets.on('connection', function (socket) {
 
     rooms[myRoom].numPlayers++;
     rooms[myRoom].curPlayerId++;
+
     socket.emit('setColor', {color: possibleColors[ rooms[myRoom].curPlayerId % possibleColors.length ]});
+    io.sockets.in(myRoom).emit('playerCount', {count: rooms[myRoom].numPlayers});
 
     if (rooms[myRoom].inGame) {
       rooms[myRoom].waitingCount++;
     } else {
-
       // CHECK AND IF MORE THAN ONE PERSON HERE START A GAME
       rooms[myRoom].checkAndStart();
-
     }
 
 
