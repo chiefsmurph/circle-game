@@ -29,6 +29,7 @@ html {
   position: absolute;
   width: 0;
   height: 0;
+  opacity: 0.9;
 }
 
 #gamearea #yourClicker {
