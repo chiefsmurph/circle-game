@@ -15,7 +15,7 @@ console.log('sending join room public');
 var chooseRoom = function(roomToGo) {
   roomToGo = roomToGo || $('#customRoomName').val();
 
-
+  $('#statusPanel').fadeOut(1000);
   $('#roomChooser').fadeOut(1000, function() {
 
     socket.emit('joinRoom', {room: roomToGo});
