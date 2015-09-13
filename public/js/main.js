@@ -17,8 +17,7 @@ var activeGame = false;
 var myColor;
 var numPlayers = 1;
 
-console.log('sending join room public');
-
+// console.log('sending join room public');
 // socket.emit('joinRoom', {room: 'public'});
 // $('#curRoom').text('public');
 
@@ -79,7 +78,7 @@ socket.on('startGame', function(data) {
                           activeGame = true;
 
                           // setup ticker
-                          ticker = 10;
+                          ticker = 30;
                           $('#ticker').text(ticker);
                           $('#ticker').show();
 
@@ -198,6 +197,11 @@ var calculateWinner = function() {
 }
 
 socket.on('winner', function(data) {
+
+    window.clearInterval(timer);
+    timer = null;
+    activeGame = false;
+    $('#ticker').hide();
 
     var topColor = data.topColor;
     console.log('topColor: ' + topColor);

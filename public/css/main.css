@@ -20,10 +20,12 @@ html {
   overflow: hidden;
   box-shadow: 8px 8px 8px #929292;
   cursor: default;
+  background-image: url('/img/always-grey.png');
 }
 
 #gamearea .circle {
   background-color: orange;
+  background-image: url('/img/dark-stripes-light.png');
   position: absolute;
   width: 0;
   height: 0;

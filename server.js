@@ -52,14 +52,17 @@ var newRoom = function(roomName) {
 
   };
 
-  rooms[roomName].waitFiveThenCheckAndStart = function() {
+  rooms[roomName].waitFiveThenCheckAndStart = function(t) {
 
-    if (rooms[roomName].timerToStart) clearTimeout(rooms[roomName].timerToStart);
+    if (rooms[roomName].timerToStart) {
+      clearTimeout(rooms[roomName].timerToStart);
+      rooms[roomName].timerToStart = null;
+    }
     rooms[roomName].timerToStart = setTimeout( function() {
 
         rooms[roomName].checkAndStart();
 
-    }, 5000);
+    }, t || 5000);
 
   };
 
@@ -215,12 +218,7 @@ io.sockets.on('connection', function (socket) {
       rooms[myRoom].timerToStart = null;
       rooms[myRoom].curPlayingQueue = [];
 
-      setTimeout(function() {
-
-        console.log('checking and starting');
-        rooms[myRoom].checkAndStart();
-
-      }, 5000); // wait 5 sec before starting new game
+      rooms[myRoom].waitFiveThenCheckAndStart(10000);
 
 
     };
