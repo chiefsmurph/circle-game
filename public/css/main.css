@@ -20,7 +20,7 @@ html {
   overflow: hidden;
   box-shadow: 8px 8px 8px #929292;
   cursor: default;
-  background-image: url('/img/always-grey.png');
+  background-image: url('/img/asfalt-light.png');
 }
 
 #gamearea .circle {
