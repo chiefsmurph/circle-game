@@ -2,7 +2,7 @@ html, body {
   background-color: rgba(100,0,0,0.5);
   background-image: url('/img/back-pattern.png');
   text-align: center;
-  height: 100%;
+  height: 110%;
 }
 * {
   -moz-box-sizing: border-box;
@@ -18,7 +18,7 @@ html, body {
   height: 500px;
   background-color: black;
   overflow: hidden;
-  box-shadow: 4px 4px 20px rgba(255,255,255,0.3);
+  /*box-shadow: 4px 4px 20px rgba(255,255,255,0.3);*/
   cursor: default;
 }
 #gamearea {
@@ -71,18 +71,21 @@ html, body {
   display: none;
 }
 #rulesPanel li {
-  margin: 0px 15px 10px 20px;
+  margin: 0px 15px 20px 20px;
 }
 #roomChooser {
   position: absolute;
   top: 100px;
-  left: 46px;
+  left: 50px;
   width: 400px;
   z-index: 100000000;
   text-align: center;
   padding: 0px;
   font-size: 33px;
   display: none;
+}
+#roomChooser ul {
+  padding: 0;
 }
 #roomChooser button {
   border: 2px solid white;
@@ -94,7 +97,7 @@ html, body {
 #roomChooser button:hover {
   background-color: yellow;
 }
-#roomChooser button:focus {outline:0;}
+button:focus {outline:0;}
 #roomChooser #customText {
   display: none;
   height: 45px;
@@ -169,4 +172,39 @@ html, body {
   display: none;
   top: 80px;
   z-index: 10000;
+}
+
+#infoPanel {
+  font-family: monospace;
+  margin: 0 auto 20px;
+  position: relative;
+  top: -400px;
+  width: 500px;
+  height: 100px;
+  background-color: grey;
+  overflow: hidden;
+  /*box-shadow: 4px 4px 20px rgba(255,255,255,0.3);*/
+  cursor: default;
+  border-radius: 0 0 10px 10px;
+}
+#infoPanel table {
+  width: 100%;
+}
+#infoPanel table table {
+  width: 300px;
+}
+#infoPanel table table td {
+  border-left: 1px solid black;
+  border-bottom: 1px solid black;
+}
+#streakGames, #streakPoints, #topGames, #topPoints {
+  width: 70px;
+}
+#infoPanel table button {
+  line-height: 1.2;
+  margin: 10px 0 0;
+  border: 1px solid black;
+}
+#infoPanel table button:hover:enabled {
+  background-color: white;
 }

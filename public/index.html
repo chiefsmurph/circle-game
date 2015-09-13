@@ -66,8 +66,43 @@
           </ol>
       </div>
       <div id='ticker'></div>
-      <div id='bottomStatus'>room: <span id='curRoom'></span> || # of players: <span id='numPlayers'></span></div>
+
       <div id='yourClicker'></div>
+    </div>
+    <div id='infoPanel'>
+
+      <table>
+        <tr>
+          <td>
+            <button disabled="true">back to roomchooser</button>
+            <button disabled="true">submit topStreak</button>
+          </td>
+          <td>
+            <table>
+              <tr>
+                <td rowspan='2'>current streak:</td>
+                <td>games</td>
+                <td id='streakGames'>--</td>
+              </tr>
+              <tr>
+                <td>points</td>
+                <td id='streakPoints'>-----</td>
+              </tr>
+              <td rowspan='2'>top streak:</td>
+              <td>games</td>
+              <td id='topGames'>--</td>
+            </tr>
+            <tr>
+              <td>points</td>
+              <td id='topPoints'>-----</td>
+            </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+
+      <div id='bottomStatus'>room: <span id='curRoom'></span> || # of players: <span id='numPlayers'></span></div>
+
     </div>
 
     <!-- javascript includes -->
