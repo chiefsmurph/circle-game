@@ -1,6 +1,16 @@
 // establish socket connection
 var socket = io.connect(window.location.hostname + ":" + window.location.port);
-var maxClickerSize = 170;
+
+var maxClickerSize = 170; // bigger = easier, smaller = harder
+var clickerSpeed = 9; // higher = longer, lower = faster
+
+var colorRGBtoName = {
+  '0,0,255': 'blue',
+  '0,128,0': 'green',
+  '255,165,0': 'orange',
+  '255,0,0': 'red'
+};
+
 var ticker;   // time left on ticker
 var timer;  // actual timer setinterval
 var activeGame = false;
@@ -63,13 +73,13 @@ socket.on('startGame', function(data) {
 
                     if (numPlayers > 1) {
 
-
+                          socket.emit('addToRound');    // for keeping track of the users playing the current round
 
                           // GAME STARTING..........
                           activeGame = true;
 
                           // setup ticker
-                          ticker = 30;
+                          ticker = 10;
                           $('#ticker').text(ticker);
                           $('#ticker').show();
 
@@ -123,6 +133,13 @@ socket.on('playerCount', function(data) {
 
 });
 
+socket.on('setSettings', function(data) {
+
+    maxClickerSize = data.maxClickerSize;
+    clickerSpeed = data.clickerSpeed;
+
+});
+
 var backToWaiting = function() {
 
   window.clearInterval(timer);
@@ -141,13 +158,6 @@ var clearCircles = function() {
 }
 
 var calculateWinner = function() {
-
-  var colorRGBtoName = {
-    '0,0,255': 'blue',
-    '0,128,0': 'green',
-    '255,165,0': 'orange',
-    '255,0,0': 'red'
-  };
 
   console.log('calculating');
   setStatus('Calculating winner...');
@@ -170,34 +180,40 @@ var calculateWinner = function() {
 
         }
         console.log(colorScores);
-        var topScore = 0;
-        var topColor;
-        for (var color in colorScores) {
-          if (colorScores[color] > topScore && color != "0,0,0" && color != "255,255,255") {
-            topScore = colorScores[color];
-            topColor = color;
-          }
+
+        var sendablePixelData = {};
+        var importantRGB = Object.keys(colorRGBtoName);
+        for (var i = 0; i < importantRGB.length; i++) {
+          sendablePixelData[importantRGB[i]] = (colorScores[importantRGB[i]]) ? colorScores[importantRGB[i]] : 0;
         }
+        console.log('sendable'  + JSON.stringify(sendablePixelData));
+        socket.emit('finishedCalc', {pixelData: sendablePixelData});
 
-        setStatus('winner: ' + ((colorRGBtoName[topColor]) ? colorRGBtoName[topColor] : 'tie'), 4000, function() {
-
-            socket.emit('finishedCalc');
-
-            setStatus('Waiting for new<br>game to start');
-            $('#rulesPanel').show();
-            $('#bottomStatus').show();
-
-        });
-
-        setTimeout(function() {
-          clearCircles();
-        }, 1000);
+        setStatus('Calculating winner-sent...');
 
     }
 
   });
 
 }
+
+socket.on('winner', function(data) {
+
+    var topColor = data.topColor;
+    console.log('topColor: ' + topColor);
+    setStatus('winner: ' + ((colorRGBtoName[topColor]) ? colorRGBtoName[topColor] : 'tie'), 4000, function() {
+
+        setStatus('Waiting for new<br>game to start');
+        $('#rulesPanel').show();
+        $('#bottomStatus').show();
+
+    });
+
+    setTimeout(function() {
+      clearCircles();
+    }, 1000);
+
+});
 
 
 socket.on('setColor', function(data) {
@@ -290,7 +306,7 @@ $(function() {
         borderTopRightRadius: maxClickerSize,
         borderBottomLeftRadius: maxClickerSize,
         borderBottomRightRadius: maxClickerSize
-      }, maxClickerSize * 9, 'linear', function() {
+      }, maxClickerSize * clickerSpeed, 'linear', function() {
 
         // if user holds down for full second
         $('#yourClicker').hide();
@@ -299,8 +315,8 @@ $(function() {
       });
 
       console.log(xPos, yPos);
+      e.preventDefault();
 
-          e.preventDefault();
     }
 
 
@@ -313,8 +329,8 @@ $(function() {
         $('#yourClicker').stop();
         $('#yourClicker').hide();
         socket.emit('addCircle', {x: xPos, y: yPos, rad: $('#yourClicker').width(), col: myColor});
+        e.preventDefault();
 
-            e.preventDefault();
     }
 
 
