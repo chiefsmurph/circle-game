@@ -9,9 +9,25 @@ var numPlayers = 1;
 
 console.log('sending join room public');
 
-socket.emit('joinRoom', {room: 'public'});
-$('#curRoom').text('public');
+// socket.emit('joinRoom', {room: 'public'});
+// $('#curRoom').text('public');
 
+var chooseRoom = function(roomToGo) {
+  roomToGo = roomToGo || $('#customRoomName').val();
+  socket.emit('joinRoom', {room: roomToGo});
+  $('#curRoom').text(roomToGo);
+
+  $('#roomChooser').fadeOut(1000, function() {
+    setStatus('Waiting for other players');
+    $('#rulesPanel').show();
+    $('#bottomStatus').show();
+  });
+
+};
+
+var showCustomText = function() {
+  $('#customText').fadeIn();
+};
 
 var setStatus = function(text, length, cb) {
   $('#statusPanel').show();
@@ -225,7 +241,7 @@ socket.on('newCircle', function (data) {
 
 $(function() {
 
-  setStatus('Waiting for other players');
+  setStatus('Choose a room');
 
   var xPos,   // coordinates of current click
       yPos;
@@ -280,9 +296,9 @@ $(function() {
 
       console.log(xPos, yPos);
 
+          e.preventDefault();
     }
 
-    e.preventDefault();
 
   });
 
@@ -294,9 +310,9 @@ $(function() {
         $('#yourClicker').hide();
         socket.emit('addCircle', {x: xPos, y: yPos, rad: $('#yourClicker').width(), col: myColor});
 
+            e.preventDefault();
     }
 
-    e.preventDefault();
 
   });
 

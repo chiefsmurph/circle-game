@@ -24,6 +24,16 @@
 
     <div id='gamearea'>
       <div id='statusPanel'></div>
+      <div id='roomChooser'>
+        <ul>
+          <li><button onclick='chooseRoom("beginner")'>beginner</button></li>
+          <li><button onclick='chooseRoom("intermediate")'>intermediate</button></li>
+          <li><button onclick='chooseRoom("advanced")'>advanced</button></li>
+
+          <li><button onclick='showCustomText()'>custom</button></li>
+          <div id='customText'><input type='text' id='customRoomName'><input type='button' onclick='chooseRoom()' value='GO!'></div>
+        </ul>
+      </div>
       <div id='rulesPanel'>
           <ol>
             <li>Start clicking.</li>
