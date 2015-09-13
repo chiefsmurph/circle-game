@@ -85,9 +85,14 @@ html, body {
   display: none;
 }
 #roomChooser button {
-  border-radius: 5px;
+  border: 2px solid white;
+  border-radius: 8px;
   margin-bottom: 24px;
   background-color: white;
+  padding: 0 20px;
+}
+#roomChooser button:hover {
+  background-color: yellow;
 }
 #roomChooser button:focus {outline:0;}
 #roomChooser #customText {
@@ -140,7 +145,7 @@ html, body {
 #titleScreen {
   font-size: 40px;
 }
-#titleScreen * {
+#titleScreen > * {
   position: absolute;
   left: 25px;
   width: 450px;
@@ -155,4 +160,13 @@ html, body {
 #titleScreen #battle-text {
   font-size: 60px;
   bottom: -60px;
+}
+#titleScreen #battle-text {
+  font-size: 60px;
+  bottom: -60px;
+}
+#titleScreen #circle-battle-icon {
+  display: none;
+  top: 80px;
+  z-index: 10000;
 }

@@ -55,8 +55,14 @@ var setStatus = function(text, length, cb) {
 
 var showTitleScreen = function(cb) {
 
+  setTimeout(function() {
+    $('#circle-battle-icon').fadeIn(3000);
+  }, 500);
+
   $('#circle-text').animate({top: '130px'}, 3500, 'easeOutQuart');
   $('#battle-text').animate({bottom: '240px'}, 3500, 'easeOutQuart', function() {
+
+
 
     setTimeout(function() {
       $('#titleScreen').fadeOut('slow', function() {
@@ -64,7 +70,7 @@ var showTitleScreen = function(cb) {
         cb();
 
       });
-    }, 1500);
+    }, 900);
 
 
   });
