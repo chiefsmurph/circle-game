@@ -450,7 +450,7 @@ $(function() {
 
   $(window).blur(function() {
     console.log('blur');
-    backToRoomChooser();
+    //backToRoomChooser();
   });
 
 
