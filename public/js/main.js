@@ -16,6 +16,7 @@ var timer;  // actual timer setinterval
 var activeGame = false;
 var myColor;
 var numPlayers = 1;
+var lastClickCoords = {};
 
 // console.log('sending join room public');
 // socket.emit('joinRoom', {room: 'public'});
@@ -418,10 +419,15 @@ $(function() {
         borderBottomRightRadius: maxClickerSize
       }, maxClickerSize * clickerSpeed, 'linear', function() {
 
-        // if user holds down for full second
-        $('#yourClicker').hide();
-        console.log('here');
-        socket.emit('addCircle', {x: xPos, y: yPos, rad: maxClickerSize, col: myColor});
+        if (lastClickCoords.xPos !== xPos || lastClickCoords.yPos !== yPos) {
+
+          // if user holds down for full second
+          $('#yourClicker').hide();
+          console.log('here');
+          socket.emit('addCircle', {x: xPos, y: yPos, rad: maxClickerSize, col: myColor});
+          lastClickCoords.xPos = xPos;
+          lastClickCoords.yPos = yPos;
+        }
 
       });
 
@@ -437,11 +443,18 @@ $(function() {
 
     if (activeGame) {
 
+      if (lastClickCoords.xPos !== xPos || lastClickCoords.yPos !== yPos) {
+
         $('#yourClicker').stop();
         $('#yourClicker').hide();
         console.log('there');
         socket.emit('addCircle', {x: xPos, y: yPos, rad: $('#yourClicker').width(), col: myColor});
+        lastClickCoords.xPos = xPos;
+        lastClickCoords.yPos = yPos;
+        
         e.preventDefault();
+
+      }
 
     }
 
