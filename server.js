@@ -147,31 +147,35 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('joinRoom', function(data) {
 
-    myRoom = data.room;
-    socket.join(myRoom);
+    if (myRoom !== data.room) {  // ignore duplicate requests to join room
 
-    console.log('user number ' + myUserId + ' joining room "' + myRoom + '"');
+      myRoom = data.room;
+      socket.join(myRoom);
 
-    if (!rooms[myRoom]) {
-      newRoom(myRoom);
-    }
+      console.log('user number ' + myUserId + ' joining room "' + myRoom + '"');
 
-    rooms[myRoom].numPlayers++;
-    rooms[myRoom].curPlayerId++;
+      if (!rooms[myRoom]) {
+        newRoom(myRoom);
+      }
 
-    socket.emit('setColor', {color: possibleColors[ rooms[myRoom].curPlayerId % possibleColors.length ]});
-    io.sockets.in(myRoom).emit('playerCount', {count: rooms[myRoom].numPlayers});
+      rooms[myRoom].numPlayers++;
+      rooms[myRoom].curPlayerId++;
 
-    if (roomSettings.hasOwnProperty(myRoom)) {
-      console.log('setSettings: ' + JSON.stringify(roomSettings[myRoom]) + ' in ' + myRoom);
-      io.sockets.in(myRoom).emit('setSettings', roomSettings[myRoom]);
-    }
+      socket.emit('setColor', {color: possibleColors[ rooms[myRoom].curPlayerId % possibleColors.length ]});
+      io.sockets.in(myRoom).emit('playerCount', {count: rooms[myRoom].numPlayers});
 
-    if (rooms[myRoom].inGame) {
-      rooms[myRoom].waitingCount++;
-    } else {
-      // CHECK AND IF MORE THAN ONE PERSON HERE START A GAME
-      rooms[myRoom].waitFiveThenCheckAndStart();
+      if (roomSettings.hasOwnProperty(myRoom)) {
+        console.log('setSettings: ' + JSON.stringify(roomSettings[myRoom]) + ' in ' + myRoom);
+        io.sockets.in(myRoom).emit('setSettings', roomSettings[myRoom]);
+      }
+
+      if (rooms[myRoom].inGame) {
+        rooms[myRoom].waitingCount++;
+      } else {
+        // CHECK AND IF MORE THAN ONE PERSON HERE START A GAME
+        rooms[myRoom].waitFiveThenCheckAndStart();
+      }
+
     }
 
 
