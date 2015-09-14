@@ -22,6 +22,7 @@ var numPlayers = 1;
 // $('#curRoom').text('public');
 
 var chooseRoom = function(roomToGo) {
+
   roomToGo = roomToGo || $('#customRoomName').val();
 
   $('#statusPanel').fadeOut(1000);
@@ -31,8 +32,9 @@ var chooseRoom = function(roomToGo) {
     $('#curRoom').text(roomToGo);
 
     setStatus('Waiting for other players');
-    $('#rulesPanel').show();
+    $('#rulesPanel').removeClass('hider');
     $('#bottomStatus').show();
+    $('#backRoomButton').prop('disabled', false);
   });
 
 };
@@ -75,14 +77,47 @@ var showTitleScreen = function(cb) {
 
   });
 
-}
+};
+
+var backToRoomChooser = function() {
+
+  socket.emit('leaveRoom');
+
+  ticker = 0;   // time left on ticker
+  window.clearInterval(timer);
+  timer = null;  // actual timer setinterval
+  activeGame = false;
+  myColor = null;
+  numPlayers = 0;
+
+  // if there are circles clear them
+  $('#gamearea').find('.circle').fadeOut(200, function() {
+    $(this).remove();
+  });
+
+  $('#rulesPanel').addClass('hider');
+  $('#ticker').hide();
+  $('#bottomStatus').hide();
+
+
+  $('#roomChooser').show();
+  setStatus('Choose a room');
+
+  $('#colorBox').addClass('hider');
+
+  console.log('leaving room');
+  $('#curRoom').text('');
+
+  $('#backRoomButton').prop('disabled', true);
+
+};
 
 socket.on('startGame', function(data) {
 
   if (!activeGame) {
       console.log('new game');
 
-      $('#rulesPanel').hide();
+      $('#rulesPanel').addClass('hider');
       setStatus('3', 1000, function() {
 
         if (numPlayers > 1) {
@@ -168,11 +203,11 @@ var backToWaiting = function() {
   window.clearInterval(timer);
   timer = null;
   $('#ticker').fadeOut();
-  $('#rulesPanel').show();
+  $('#rulesPanel').removeClass('hider');
   clearCircles();
   setStatus('Waiting for other players');
 
-}
+};
 
 var clearCircles = function() {
   $('#gamearea').find('.circle').fadeOut(1500, function() {
@@ -236,10 +271,35 @@ socket.on('winner', function(data) {
 
     var topColor = data.topColor;
     console.log('topColor: ' + topColor);
+
+    // display winner and winBy
     setStatus('winner: ' + ((colorRGBtoName[topColor]) ? colorRGBtoName[topColor] + '<br><br>and won by...<br><i>' + data.winBy + ' points</i>'  : 'tie'), 4000, function() {
 
+        // update high score table if user is winner
+        if (colorRGBtoName[topColor] === myColor) {
+
+          $('#streakGames').text( parseInt($('#streakGames').text()) + 1 );
+          $('#streakPoints').text( parseInt($('#streakPoints').text()) + data.winBy );
+
+          // and then compare the currentstreak's gamecount with the topstreak gamecount
+          if ($('#streakGames').text() > $('#topGames').text() ) {
+
+            $('#topGames').text( $('#streakGames').text() );
+            $('#topPoints').text( $('#streakPoints').text() );
+
+          }
+
+        } else {
+
+          // if not winner then reset current streak
+          $('#streakGames').text('00');
+          $('#streakPoints').text('00000');
+
+        }
+
+        // back to the waiting for new game
         setStatus('Waiting for new<br>game to start');
-        $('#rulesPanel').show();
+        $('#rulesPanel').removeClass('hider');
         $('#bottomStatus').show();
 
     });
@@ -254,6 +314,9 @@ socket.on('winner', function(data) {
 socket.on('setColor', function(data) {
   myColor = data.color;
   $('.circle').css('background-color', myColor);
+  $('#colorBox').text(myColor);
+  $('#colorBox').css('background-color', myColor);
+  $('#colorBox').removeClass('hider');
   console.log('my color...' + myColor);
 });
 
@@ -314,6 +377,10 @@ $(function() {
   // FIRST OFF INITIALIZATIONS
 
 
+  // event handlers
+
+  // mouse
+
   $('#gamearea').on('mousedown touchstart', function (e) {
 
     if (activeGame) {
@@ -353,6 +420,7 @@ $(function() {
 
         // if user holds down for full second
         $('#yourClicker').hide();
+        console.log('here');
         socket.emit('addCircle', {x: xPos, y: yPos, rad: maxClickerSize, col: myColor});
 
       });
@@ -371,12 +439,18 @@ $(function() {
 
         $('#yourClicker').stop();
         $('#yourClicker').hide();
+        console.log('there');
         socket.emit('addCircle', {x: xPos, y: yPos, rad: $('#yourClicker').width(), col: myColor});
         e.preventDefault();
 
     }
 
 
+  });
+
+  $(window).blur(function() {
+    console.log('blur');
+    backToRoomChooser();
   });
 
 

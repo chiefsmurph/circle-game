@@ -58,7 +58,7 @@ html, body {
 }
 #rulesPanel {
   position: absolute;
-  top: 190px;
+  top: 180px;
   left: 46px;
   width: 400px;
   z-index: 100000000;
@@ -68,7 +68,6 @@ html, body {
   font-size: 23px;
   border: 3px solid white;
   border-radius: 20px;
-  display: none;
 }
 #rulesPanel li {
   margin: 0px 15px 20px 20px;
@@ -180,7 +179,6 @@ button:focus {outline:0;}
   position: relative;
   top: -400px;
   width: 500px;
-  height: 100px;
   background-color: grey;
   overflow: hidden;
   /*box-shadow: 4px 4px 20px rgba(255,255,255,0.3);*/
@@ -197,6 +195,15 @@ button:focus {outline:0;}
   border-left: 1px solid black;
   border-bottom: 1px solid black;
 }
+#infoPanel table table tr:last-child td {
+  border-bottom-width: 0;
+}
+#infoPanel table table tr:last-child td {
+  border-bottom-width: 0;
+}
+#infoPanel table table tr:nth-child(4) td:first-child {
+  border-bottom-width: 0;
+}
 #streakGames, #streakPoints, #topGames, #topPoints {
   width: 70px;
 }
@@ -205,6 +212,19 @@ button:focus {outline:0;}
   margin: 10px 0 0;
   border: 1px solid black;
 }
-#infoPanel table button:hover:enabled {
+#infoPanel table button:enabled {
   background-color: white;
+}
+#infoPanel table button:hover:enabled {
+  background-color: yellow;
+}
+#infoPanel #colorBox {
+  border: 1px solid black;
+  margin: 4px auto;
+  padding: 4px auto;
+  width: 70px;
+  background-color: green;
+}
+.hider {
+   visibility:hidden;
 }

@@ -58,7 +58,7 @@
           <div id='customText'><input type='text' id='customRoomName'><input type='button' onclick='chooseRoom()' value='GO!'></div>
         </ul>
       </div>
-      <div id='rulesPanel'>
+      <div id='rulesPanel' class='hider'>
           <ol>
             <li>Start clicking.</li>
             <li>Longer clicks = bigger circles</li>
@@ -68,40 +68,45 @@
       <div id='ticker'></div>
 
       <div id='yourClicker'></div>
+      <div id='bottomStatus'>room: <span id='curRoom'></span> || # of players: <span id='numPlayers'></span></div>
+
     </div>
     <div id='infoPanel'>
 
       <table>
         <tr>
           <td>
-            <button disabled="true">back to roomchooser</button>
+            <button disabled="true" onclick='backToRoomChooser()' id='backRoomButton'>back to roomchooser</button>
             <button disabled="true">submit topStreak</button>
           </td>
           <td>
             <table>
               <tr>
+                <td>your color:</td>
+                <td colspan='2'><div id='colorBox' class='hider'>green</div></td>
+              </tr>
+              <tr>
                 <td rowspan='2'>current streak:</td>
                 <td>games</td>
-                <td id='streakGames'>--</td>
+                <td id='streakGames'>00</td>
               </tr>
               <tr>
                 <td>points</td>
-                <td id='streakPoints'>-----</td>
+                <td id='streakPoints'>00000</td>
               </tr>
-              <td rowspan='2'>top streak:</td>
-              <td>games</td>
-              <td id='topGames'>--</td>
-            </tr>
-            <tr>
-              <td>points</td>
-              <td id='topPoints'>-----</td>
-            </tr>
+              <tr>
+                <td rowspan='2'>top streak:</td>
+                <td>games</td>
+                <td id='topGames'>00</td>
+              </tr>
+              <tr>
+                <td>points</td>
+                <td id='topPoints'>00000</td>
+              </tr>
             </table>
           </td>
         </tr>
       </table>
-
-      <div id='bottomStatus'>room: <span id='curRoom'></span> || # of players: <span id='numPlayers'></span></div>
 
     </div>
 

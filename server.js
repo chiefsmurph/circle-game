@@ -78,6 +78,22 @@ var newRoom = function(roomName) {
 
   };
 
+  rooms[roomName].userLeaving = function(id) {
+    rooms[roomName].numPlayers--;
+    rooms[roomName].curPlayingQueue.splice(rooms[roomName].curPlayingQueue.indexOf(id), 1);    // remove user from the room queue
+
+    io.sockets.in(roomName).emit('playerCount', {count: rooms[roomName].numPlayers});
+    if (rooms[roomName].numPlayers < 2) {
+      rooms[roomName].inGame = false;
+      rooms[roomName].finishedCalc = 0;
+      rooms[roomName].waitingCount = 0;
+      rooms[roomName].RGBCounts = {};
+      clearTimeout(rooms[roomName].timerToStart);
+      rooms[roomName].timerToStart = null;
+    }
+
+  }
+
 }
 
 var currentUserId = 0;
@@ -107,19 +123,8 @@ io.sockets.on('connection', function (socket) {
   socket.on('disconnect', function() {
     console.log(myUserId + ' ' + myRoom + ' disconnected');
     if (rooms[myRoom]) {
-      rooms[myRoom].numPlayers--;
-      rooms[myRoom].curPlayingQueue.splice(rooms[myRoom].curPlayingQueue.indexOf(myUserId), 1);    // remove current user from their room
-
-      io.sockets.in(myRoom).emit('playerCount', {count: rooms[myRoom].numPlayers});
-      if (rooms[myRoom].numPlayers === 1) {
-        rooms[myRoom].inGame = false;
-        rooms[myRoom].finishedCalc = 0;
-        rooms[myRoom].waitingCount = 0;
-        rooms[myRoom].RGBCounts = {};
-        rooms[myRoom].timerToStart = null;
-      }
+      rooms[myRoom].userLeaving(myUserId);
     }
-
 
   });
 
@@ -128,6 +133,16 @@ io.sockets.on('connection', function (socket) {
     rooms[myRoom].curPlayingQueue.push(myUserId);
 
   });
+
+
+  socket.on('leaveRoom', function() {
+
+      console.log('user' + myUserId + ' leaving ' + myRoom);
+      socket.leave(myRoom);
+      rooms[myRoom].userLeaving(myUserId);
+
+  });
+
 
   socket.on('joinRoom', function(data) {
 
