@@ -116,6 +116,7 @@ button:focus {outline:0;}
   border: 1px solid navy;
   border-left: 0;
   border-radius: 0 10px 10px 0;
+  background-color: grey;
 }
 #bottomStatus {
   position: absolute;

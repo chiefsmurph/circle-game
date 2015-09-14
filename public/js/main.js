@@ -206,6 +206,7 @@ var backToWaiting = function() {
   timer = null;
   $('#ticker').fadeOut();
   $('#rulesPanel').removeClass('hider');
+  $('#backRoomButton').prop('disabled', false);
   clearCircles();
   setStatus('Waiting for other players');
 
