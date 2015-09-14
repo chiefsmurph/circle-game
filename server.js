@@ -140,6 +140,7 @@ io.sockets.on('connection', function (socket) {
       console.log('user' + myUserId + ' leaving ' + myRoom);
       socket.leave(myRoom);
       rooms[myRoom].userLeaving(myUserId);
+      myRoom = null;
 
   });
 
