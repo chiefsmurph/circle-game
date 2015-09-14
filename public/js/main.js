@@ -117,7 +117,7 @@ socket.on('startGame', function(data) {
 
   if (!activeGame) {
       console.log('new game');
-
+      $('#backRoomButton').prop('disabled', true);  // no back to room during countdown
       $('#rulesPanel').addClass('hider');
       setStatus('3', 1000, function() {
 
@@ -141,6 +141,7 @@ socket.on('startGame', function(data) {
                           ticker = 30;
                           $('#ticker').text(ticker);
                           $('#ticker').show();
+                          $('#backRoomButton').prop('disabled', false);
 
                           timer = setInterval(function() {
                             ticker--;
@@ -451,7 +452,7 @@ $(function() {
         socket.emit('addCircle', {x: xPos, y: yPos, rad: $('#yourClicker').width(), col: myColor});
         lastClickCoords.xPos = xPos;
         lastClickCoords.yPos = yPos;
-        
+
         e.preventDefault();
 
       }
