@@ -96,7 +96,7 @@ html, body {
 #roomChooser button:hover {
   background-color: yellow;
 }
-button:focus {outline:0;}
+button:focus, input[type='button']:focus {outline:0;}
 #roomChooser #customText {
   display: none;
   height: 45px;
