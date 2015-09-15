@@ -174,7 +174,7 @@ socket.on('startGame', function(data) {
                           activeGame = true;
 
                           // setup ticker
-                          ticker = 5;
+                          ticker = 30;
                           $('#ticker').text(ticker);
                           $('#ticker').show();
                           $('#backRoomButton').prop('disabled', false);
