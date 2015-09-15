@@ -223,9 +223,14 @@ button:focus, input[type='button']:focus {outline:0;}
   border: 1px solid black;
   margin: 4px auto;
   padding: 4px auto;
-  width: 70px;
-  background-color: green;
+  width: 90px;
 }
+
+
 .hider {
    visibility:hidden;
+}
+.watch-mode {
+  background-color: white;
+  color: black;
 }

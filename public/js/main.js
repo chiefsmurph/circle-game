@@ -315,12 +315,28 @@ socket.on('winner', function(data) {
 
 
 socket.on('setColor', function(data) {
+
   myColor = data.color;
-  $('.circle').css('background-color', myColor);
-  $('#colorBox').text(myColor);
-  $('#colorBox').css('background-color', myColor);
-  $('#colorBox').removeClass('hider');
-  console.log('my color...' + myColor);
+
+  if (myColor) {
+
+    $('.circle').css('background-color', myColor);
+    $('#colorBox').text(myColor);
+    $('#colorBox').css('background-color', myColor);
+    $('#colorBox').removeClass('watch-mode');
+    $('#colorBox').removeClass('hider');
+    console.log('my color...' + myColor);
+
+  } else {
+
+    // didnt get a color because room is currently full
+    console.log('waiting for there to be space in the room');
+    $('#colorBox').text('WATCHING');
+    $('#colorBox').attr('class', 'watch-mode');
+
+  }
+
+
 });
 
 // setup counter watching socket
@@ -386,7 +402,7 @@ $(function() {
 
   $('#gamearea').on('mousedown touchstart', function (e) {
 
-    if (activeGame) {
+    if (activeGame && myColor !== null) {
 
       var elm = $(this);
       xPos = (e.type.toLowerCase() === 'mousedown')
@@ -443,7 +459,7 @@ $(function() {
 
   $('#gamearea').on('mouseup touchend', function(e) {
 
-    if (activeGame) {
+    if (activeGame && myColor !== null) {
 
       if (lastClickCoords.xPos !== xPos || lastClickCoords.yPos !== yPos) {
 

@@ -18,83 +18,7 @@ app.use(bodyParser.json())
 
 app.use(express.static(__dirname + '/public'));
 
-var rooms = {};
-
-var newRoom = function(roomName) {
-
-  rooms[roomName] = {};
-  rooms[roomName].numPlayers = 0;       // realtime count of number of players
-  rooms[roomName].curPlayingQueue = [];  // queue of current players (contains id's)
-  rooms[roomName].curPlayerId = 0;      // increments for each player that joins the room
-  rooms[roomName].inGame = false;       // is there an active game going on in this room?
-  rooms[roomName].finishedCalc = 0;     // number of players that have calculated and sent in the RGBcount for the current game
-  rooms[roomName].waitingCount = 0;     // number of people waiting to play
-  rooms[roomName].RGBCounts = {};       // object to hold rgb data for each user
-  rooms[roomName].timerToStart = null;  // timer before new game (adds 5sec for each join)
-
-  rooms[roomName].checkAndStart = function() {
-
-    if (rooms[roomName].numPlayers > 1) {
-
-      io.sockets.in(roomName).emit('startGame');
-
-      rooms[roomName].inGame = true;
-      rooms[roomName].finishedCalc = 0;
-      rooms[roomName].waitingCount = 0;
-      rooms[roomName].RGBCounts = {};
-      rooms[roomName].timerToStart = null;
-
-      console.log('start game num: ' + rooms[roomName].numPlayers);
-
-    } else {
-      console.log('only ' + rooms[roomName].numPlayers + ' are here currently');
-    }
-
-  };
-
-  rooms[roomName].waitFiveThenCheckAndStart = function(t) {
-
-    if (rooms[roomName].timerToStart) {
-      clearTimeout(rooms[roomName].timerToStart);
-      rooms[roomName].timerToStart = null;
-    }
-    rooms[roomName].timerToStart = setTimeout( function() {
-
-        rooms[roomName].checkAndStart();
-
-    }, t || 5000);
-
-  };
-
-  rooms[roomName].hasAllRGBCounts = function() {
-
-    var hasAllOfThem = true;
-    for (var i = 0; i < rooms[roomName].curPlayingQueue.length; i++) {
-      if ( !rooms[roomName].RGBCounts.hasOwnProperty(rooms[roomName].curPlayingQueue[i]) ) {
-        hasAllOfThem = false;
-      }
-    }
-    return hasAllOfThem;
-
-  };
-
-  rooms[roomName].userLeaving = function(id) {
-    rooms[roomName].numPlayers--;
-    rooms[roomName].curPlayingQueue.splice(rooms[roomName].curPlayingQueue.indexOf(id), 1);    // remove user from the room queue
-
-    io.sockets.in(roomName).emit('playerCount', {count: rooms[roomName].numPlayers});
-    if (rooms[roomName].numPlayers < 2) {
-      rooms[roomName].inGame = false;
-      rooms[roomName].finishedCalc = 0;
-      rooms[roomName].waitingCount = 0;
-      rooms[roomName].RGBCounts = {};
-      clearTimeout(rooms[roomName].timerToStart);
-      rooms[roomName].timerToStart = null;
-    }
-
-  }
-
-}
+// CONFIG
 
 var currentUserId = 0;
 var possibleColors = ['orange', 'green', 'blue', 'red'];
@@ -113,6 +37,153 @@ var roomSettings = {
   }
 };
 
+
+// WHATS A ROOM?
+
+var rooms = {};
+
+var newRoom = function(roomName) {
+
+  rooms[roomName] = {};
+  rooms[roomName].numPlayers = 0;               // realtime count of number of players
+  rooms[roomName].curPlayingQueue = [];         // queue of userId's of people in current game
+  rooms[roomName].inGame = false;               // is there an active game going on in this room?
+  rooms[roomName].finishedCalc = 0;             // number of players that have calculated and sent in the RGBcount for the current game
+  rooms[roomName].numWaitingForNewGame = 0;     // number of people waiting for new game to start
+  rooms[roomName].waitingForSpaceQueue = [];    // queue of userId's of people waiting for space in the room ('watch mode')
+  rooms[roomName].RGBCounts = {};               // object to hold rgb data for each user
+  rooms[roomName].timerToStart = null;          // timer before new game (adds 5sec for each join)
+
+  // color -> userId
+  rooms[roomName].colorBank = {};
+  rooms[roomName].socketBank = {};       // userId -> Socket
+
+
+  // HELPER FUNCTIONS
+
+  rooms[roomName].sendAll = function(event, obj) {   // void
+
+    io.sockets.in(roomName).emit(event, obj);
+
+  };
+
+  rooms[roomName].checkAndStart = function() {  // void
+
+    if (rooms[roomName].numPlayers > 1) {
+
+      io.sockets.in(roomName).emit('startGame');
+
+      rooms[roomName].inGame = true;
+      rooms[roomName].finishedCalc = 0;
+      rooms[roomName].numWaitingForNewGame = 0;
+      rooms[roomName].RGBCounts = {};
+      rooms[roomName].timerToStart = null;
+
+      console.log('start game num: ' + rooms[roomName].numPlayers);
+
+    } else {
+      console.log('only ' + rooms[roomName].numPlayers + ' are here currently');
+    }
+
+  };
+
+  rooms[roomName].waitFiveThenCheckAndStart = function(t) {   // void
+
+    if (rooms[roomName].timerToStart) {
+      clearTimeout(rooms[roomName].timerToStart);
+      rooms[roomName].timerToStart = null;
+    }
+    rooms[roomName].timerToStart = setTimeout( function() {
+
+        rooms[roomName].checkAndStart();
+
+    }, t || 5000);
+
+  };
+
+  rooms[roomName].hasAllRGBCounts = function() {    // boolean
+
+    var hasAllOfThem = true;
+    for (var i = 0; i < rooms[roomName].curPlayingQueue.length; i++) {
+      if ( !rooms[roomName].RGBCounts.hasOwnProperty(rooms[roomName].curPlayingQueue[i]) ) {
+        hasAllOfThem = false;
+      }
+    }
+    return hasAllOfThem;
+
+  };
+
+  // more important room methods
+
+  rooms[roomName].setupNewUser = function(id, sock) {
+
+    var col = rooms[roomName].getUnusedColorName();
+    console.log('col ' + col);
+    rooms[roomName].numPlayers++;
+    rooms[roomName].colorBank[id] = col;
+    rooms[roomName].socketBank[id] = sock;
+
+    sock.emit('setColor', {color: col});
+
+    if (!col) {
+      console.log('adding ' + id + ' to queue');
+      rooms[roomName].waitingForSpaceQueue.push(id);
+    }
+    rooms[roomName].sendAll('playerCount', {count: rooms[roomName].numPlayers});
+
+  };
+
+  rooms[roomName].userLeaving = function(id) {
+    rooms[roomName].numPlayers--;
+    rooms[roomName].curPlayingQueue.splice(rooms[roomName].curPlayingQueue.indexOf(id), 1);     // remove user from the room queue
+
+    // remove user from socketBank
+    rooms[roomName].socketBank[id] = null;
+    delete rooms[roomName].socketBank[id];
+    // remove user from colorBand
+    rooms[roomName].colorBank[id] = null;
+    delete rooms[roomName].colorBank[id];
+
+    rooms[roomName].sendAll('playerCount', {count: rooms[roomName].numPlayers});
+
+    if (rooms[roomName].numPlayers < 2) {
+      // stop game if only one person in room
+      rooms[roomName].inGame = false;
+      rooms[roomName].finishedCalc = 0;
+      rooms[roomName].numWaitingForNewGame = 0;
+      rooms[roomName].RGBCounts = {};
+      clearTimeout(rooms[roomName].timerToStart);
+      rooms[roomName].timerToStart = null;
+    }
+
+  };
+
+  rooms[roomName].getUnusedColorName = function() {
+
+    var allColors = possibleColors.slice(0);
+    console.log('allcols' + allColors + ' and ' + possibleColors);
+    var takenColors = new Array;
+    for (var col in rooms[roomName].colorBank) {
+      takenColors.push(rooms[roomName].colorBank[col]);
+    }
+    console.log('takencols' + JSON.stringify(takenColors));
+    var remainingColors = allColors.filter(function(i) {
+      return takenColors.indexOf(i) < 0;
+    });
+    console.log('remainingColors ' + remainingColors);
+    if (remainingColors.length) {
+      return remainingColors[ Math.floor( Math.random() * remainingColors.length ) ];
+    }
+    return null;
+
+  };
+
+}
+
+
+// SOCKET STUFF
+
+
 io.sockets.on('connection', function (socket) {
 
   var myUserId = currentUserId;
@@ -120,9 +191,24 @@ io.sockets.on('connection', function (socket) {
 
   currentUserId++;
 
+  var passColorOff = function() {   // void
+
+    if (rooms[myRoom].colorBank[myUserId] && rooms[myRoom].waitingForSpaceQueue.length > 0) {
+      // person in front of the queue gets the person leaving's old color
+      var firstInLine = rooms[myRoom].waitingForSpaceQueue.shift(); // id of first in line
+      console.log('giving color ' + rooms[myRoom].colorBank[myUserId] + ' to user ' + firstInLine);
+      rooms[myRoom].socketBank[ firstInLine ].emit('setColor', {color: rooms[myRoom].colorBank[myUserId] });
+      rooms[myRoom].colorBank[ firstInLine ] = rooms[myRoom].colorBank[myUserId];
+    } else {
+      console.log('couldnt pass color off ' + myUserId + ' ' + myRoom + ' ' + rooms[myRoom].colorBank[myUserId] + ' and ' + rooms[myRoom].waitingForSpaceQueue);
+    }
+
+  };
+
   socket.on('disconnect', function() {
     console.log(myUserId + ' ' + myRoom + ' disconnected');
     if (rooms[myRoom]) {
+      passColorOff();
       rooms[myRoom].userLeaving(myUserId);
     }
 
@@ -139,7 +225,12 @@ io.sockets.on('connection', function (socket) {
 
       console.log('user' + myUserId + ' leaving ' + myRoom);
       socket.leave(myRoom);
+      passColorOff();
       rooms[myRoom].userLeaving(myUserId);
+
+
+      rooms[myRoom].colorBank[myUserId] = null;
+      delete rooms[myRoom].colorBank[myUserId];
       myRoom = null;
 
   });
@@ -158,19 +249,16 @@ io.sockets.on('connection', function (socket) {
         newRoom(myRoom);
       }
 
-      rooms[myRoom].numPlayers++;
-      rooms[myRoom].curPlayerId++;
-
-      socket.emit('setColor', {color: possibleColors[ rooms[myRoom].curPlayerId % possibleColors.length ]});
-      io.sockets.in(myRoom).emit('playerCount', {count: rooms[myRoom].numPlayers});
+      rooms[myRoom].setupNewUser(myUserId, socket);
 
       if (roomSettings.hasOwnProperty(myRoom)) {
         console.log('setSettings: ' + JSON.stringify(roomSettings[myRoom]) + ' in ' + myRoom);
-        io.sockets.in(myRoom).emit('setSettings', roomSettings[myRoom]);
+        rooms[myRoom].sendAll('setSettings', roomSettings[myRoom]);
       }
 
       if (rooms[myRoom].inGame) {
-        rooms[myRoom].waitingCount++;
+        // of already in game then
+        rooms[myRoom].numWaitingForNewGame++;
       } else {
         // CHECK AND IF MORE THAN ONE PERSON HERE START A GAME
         rooms[myRoom].waitFiveThenCheckAndStart();
@@ -238,7 +326,7 @@ io.sockets.on('connection', function (socket) {
       //   }
       // }
 
-      io.sockets.in(myRoom).emit('winner', {
+      rooms[myRoom].sendAll('winner', {
         topColor: (winBy !== 0) ? sortableScores[0][0] : '0,0,0', // tie if tie or nothing on the board
         winBy: winBy
       });
@@ -246,14 +334,12 @@ io.sockets.on('connection', function (socket) {
       console.log('game over and all users finishedcalc');
       rooms[myRoom].finishedCalc = 0;
       rooms[myRoom].inGame = false;
-      rooms[myRoom].finishedCalc = 0;
-      rooms[myRoom].waitingCount = 0;
+      rooms[myRoom].numWaitingForNewGame = 0;
       rooms[myRoom].RGBCounts = {};
       rooms[myRoom].timerToStart = null;
       rooms[myRoom].curPlayingQueue = [];
-
-      rooms[myRoom].waitFiveThenCheckAndStart(10000);
-
+      rooms[myRoom].socketBank = {};
+      rooms[myRoom].waitFiveThenCheckAndStart(10000); // wait 10 then start
 
     };
 
@@ -262,7 +348,7 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('addCircle', function(circle) {
     console.log('circle: ' +  JSON.stringify(circle) + ' goes to ' + myRoom);
-    io.sockets.in(myRoom).emit('newCircle', {x: circle.x, y: circle.y, rad: circle.rad, col: circle.col});
+    rooms[myRoom].sendAll('newCircle', {x: circle.x, y: circle.y, rad: circle.rad, col: circle.col});
   });
 
 });
