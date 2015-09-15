@@ -20,19 +20,23 @@ app.use(express.static(__dirname + '/public'));
 
 var currentUserId = 0;
 var lobbyCount = 0;
-var possibleColors = ['orange', 'green', 'blue', 'red'];
+//var possibleColors = ['orange', 'green', 'blue', 'red', 'yellow', 'purple', 'tomato', 'tan', 'silver', 'salmon', 'slateblue', 'saddlebrown', 'plum', 'PaleVioletRed', 'Navy', 'OliveDrab'];
+var possibleColors = ['orange', 'green', 'blue', 'red', 'yellow', 'purple'];
 var roomSettings = {
   'beginner': {
     maxClickerSize: 180,
-    clickerSpeed: 12
+    clickerSpeed: 12,
+    maxPeople: 4
   },
   'intermediate': {
     maxClickerSize: 110,
-    clickerSpeed: 5
+    clickerSpeed: 5,
+    maxPeople: 4
   },
   'advanced': {
     maxClickerSize: 60,
-    clickerSpeed: 3
+    clickerSpeed: 3,
+    maxPeople: 4
   }
 };
 
@@ -51,6 +55,13 @@ var newRoom = function(roomName) {
   rooms[roomName].waitingForSpaceQueue = [];    // queue of userId's of people waiting for space in the room ('watch mode')
   rooms[roomName].RGBCounts = {};               // object to hold rgb data for each user
   rooms[roomName].timerToStart = null;          // timer before new game (adds 5sec for each join)
+  rooms[roomName].maxPeople = (function() {
+    if (roomSettings.hasOwnProperty(roomName)) {
+      return roomSettings[roomName].maxPeople
+    } else {
+      return 4; // custom rooms default
+    }
+  })();
 
   // color -> userId
   rooms[roomName].colorBank = {};
@@ -130,7 +141,7 @@ var newRoom = function(roomName) {
 
     rooms[roomName].sendAll('playerCount', {
       count: rooms[roomName].numPlayers,
-      max: possibleColors.length
+      max: rooms[roomName].maxPeople
     });
     updateLobbyTotals();
 
@@ -149,7 +160,7 @@ var newRoom = function(roomName) {
 
     rooms[roomName].sendAll('playerCount', {
       count: rooms[roomName].numPlayers,
-      max: possibleColors.length
+      max: rooms[roomName].maxPeople
     });
     updateLobbyTotals();
 
@@ -167,21 +178,30 @@ var newRoom = function(roomName) {
 
   rooms[roomName].getUnusedColorName = function() {
 
-    var allColors = possibleColors.slice(0);
-    console.log('allcols' + allColors + ' and ' + possibleColors);
-    var takenColors = new Array;
-    for (var col in rooms[roomName].colorBank) {
-      takenColors.push(rooms[roomName].colorBank[col]);
+    if (rooms[roomName].numPlayers < rooms[roomName].maxPeople) {
+
+        var allColors = possibleColors.slice(0);
+        console.log('allcols' + allColors + ' and ' + possibleColors);
+        var takenColors = new Array;
+        for (var col in rooms[roomName].colorBank) {
+          takenColors.push(rooms[roomName].colorBank[col]);
+        }
+        console.log('takencols' + JSON.stringify(takenColors));
+        var remainingColors = allColors.filter(function(i) {
+          return takenColors.indexOf(i) < 0;
+        });
+        console.log('remainingColors ' + remainingColors);
+        if (remainingColors.length) {
+          return remainingColors[ Math.floor( Math.random() * remainingColors.length ) ];
+        }
+        return null;    // only would occur if maxPeople > possibleColors / unlikely
+
+    } else {
+
+        // reached room size limit
+        return null;
+
     }
-    console.log('takencols' + JSON.stringify(takenColors));
-    var remainingColors = allColors.filter(function(i) {
-      return takenColors.indexOf(i) < 0;
-    });
-    console.log('remainingColors ' + remainingColors);
-    if (remainingColors.length) {
-      return remainingColors[ Math.floor( Math.random() * remainingColors.length ) ];
-    }
-    return null;
 
   };
 

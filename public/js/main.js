@@ -4,11 +4,33 @@ var socket = io.connect(window.location.hostname + ":" + window.location.port);
 var maxClickerSize = 170; // bigger = easier, smaller = harder
 var clickerSpeed = 9; // higher = longer, lower = faster
 
+// for going from color to rgb
+var getRGBfromColor = function( value ) {
+    for( var prop in colorRGBtoName ) {
+        if( colorRGBtoName.hasOwnProperty( prop ) ) {
+             if( colorRGBtoName[ prop ] === value )
+                 return prop;
+        }
+    }
+}
+
 var colorRGBtoName = {
   '0,0,255': 'blue',
   '0,128,0': 'green',
   '255,165,0': 'orange',
-  '255,0,0': 'red'
+  '255,0,0': 'red',
+  '255,255,0': 'yellow',
+  '128,0,128': 'purple',
+  '255,99,71': 'tomato',
+  '210,180,140': 'tan',
+  '230,232,250': 'silver',
+  '250,128,114': 'salmon',
+  '106,90,205': 'slateblue',
+  '139,69,19': 'saddlebrown',
+  '221,160,221': 'plum',
+  '219,112,147': 'palevioletred',
+  '0,0,128': 'navy',
+  '107,142,35': 'olivedrab'
 };
 
 var ticker;   // time left on ticker
@@ -335,6 +357,18 @@ socket.on('setColor', function(data) {
     $('.circle').css('background-color', myColor);
     $('#colorBox').text(myColor);
     $('#colorBox').css('background-color', myColor);
+
+    /*
+    // dynamically decide whether white or black text color is better
+    var rgb = getRGBfromColor(myColor).split(',');
+    console.log(rgb + ' ' + myColor);
+    if ( (rgb[0]*0.299 + rgb[1]*0.587 + rgb[2]*0.114) > 186) {
+      $('#colorBox').css('color', '#000000');
+    } else {
+      $('#colorBox').css('color', '#ffffff');
+    }
+    */
+
     $('#colorBox').removeClass('watch-mode');
     $('#colorBox').removeClass('hider');
     console.log('my color...' + myColor);

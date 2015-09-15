@@ -116,10 +116,10 @@ button:focus, input[type='button']:focus {outline:0;}
   border: 1px solid navy;
   border-left: 0;
   border-radius: 0 10px 10px 0;
-  background-color: grey;
+  background-color: #D3D3D3;
 }
 #roomChooser input[type='button']:hover {
-  background-color: #D3D3D3;
+  background-color: yellow;
 }
 #roomChooser span {
   font-size: 20px;
@@ -232,7 +232,7 @@ button:focus, input[type='button']:focus {outline:0;}
   border: 1px solid black;
   margin: 4px auto;
   padding: 4px auto;
-  width: 90px;
+  width: 130px;
 }
 
 
