@@ -389,9 +389,9 @@ $(function() {
 
   setTimeout(function() {
 
-    socket.emit('joinRoom', {room: 'lobby'});
     showTitleScreen(function() {
 
+      socket.emit('joinRoom', {room: 'lobby'});
       setStatus('Choose a room');
       $('#roomChooser').show();
       $('#bottomStatus').show();
