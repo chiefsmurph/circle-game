@@ -14,13 +14,12 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 // parse application/json
 app.use(bodyParser.json())
-
-
 app.use(express.static(__dirname + '/public'));
 
 // CONFIG
 
 var currentUserId = 0;
+var lobbyCount = 0;
 var possibleColors = ['orange', 'green', 'blue', 'red'];
 var roomSettings = {
   'beginner': {
@@ -36,7 +35,6 @@ var roomSettings = {
     clickerSpeed: 3
   }
 };
-
 
 // WHATS A ROOM?
 
@@ -129,7 +127,9 @@ var newRoom = function(roomName) {
       console.log('adding ' + id + ' to queue');
       rooms[roomName].waitingForSpaceQueue.push(id);
     }
+
     rooms[roomName].sendAll('playerCount', {count: rooms[roomName].numPlayers});
+    updateLobbyTotals();
 
   };
 
@@ -145,6 +145,7 @@ var newRoom = function(roomName) {
     delete rooms[roomName].colorBank[id];
 
     rooms[roomName].sendAll('playerCount', {count: rooms[roomName].numPlayers});
+    updateLobbyTotals();
 
     if (rooms[roomName].numPlayers < 2) {
       // stop game if only one person in room
@@ -180,6 +181,26 @@ var newRoom = function(roomName) {
 
 }
 
+// ONE global HELPER function
+var updateLobbyTotals = function() {
+
+  var getRoomCount = function(rname) {
+      return (rooms[rname]) ? rooms[rname].numPlayers : 0;
+  };
+
+  io.sockets.in('lobby').emit('roomTotals', {
+
+    beginnerCount: [ getRoomCount('beginner'), possibleColors.length],
+    intermediateCount: [ getRoomCount('intermediate'), possibleColors.length],
+    advancedCount: [ getRoomCount('advanced'), possibleColors.length],
+    totalBattlers: ['beginner', 'intermediate', 'advanced'].reduce(function(total, rname) {
+      return total + getRoomCount(rname);
+    }, 0) + lobbyCount
+
+  });
+
+};
+
 
 // SOCKET STUFF
 
@@ -187,7 +208,7 @@ var newRoom = function(roomName) {
 io.sockets.on('connection', function (socket) {
 
   var myUserId = currentUserId;
-  var myRoom = 'public';
+  var myRoom = null;
 
   currentUserId++;
 
@@ -207,7 +228,10 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('disconnect', function() {
     console.log(myUserId + ' ' + myRoom + ' disconnected');
-    if (rooms[myRoom]) {
+    if (myRoom === 'lobby') {
+      lobbyCount--;
+      updateLobbyTotals();
+    } else if (rooms[myRoom]) {
       passColorOff();
       rooms[myRoom].userLeaving(myUserId);
     }
@@ -224,13 +248,20 @@ io.sockets.on('connection', function (socket) {
 
       console.log('user' + myUserId + ' leaving ' + myRoom);
       socket.leave(myRoom);
-      passColorOff();
-      rooms[myRoom].userLeaving(myUserId);
 
+      if (myRoom !== 'lobby') {
 
-      rooms[myRoom].colorBank[myUserId] = null;
-      delete rooms[myRoom].colorBank[myUserId];
-      myRoom = null;
+        passColorOff();
+        rooms[myRoom].userLeaving(myUserId);
+        rooms[myRoom].colorBank[myUserId] = null;
+        delete rooms[myRoom].colorBank[myUserId];
+        myRoom = null;
+
+      } else {
+
+        lobbyCount--;
+
+      }
 
   });
 
@@ -242,40 +273,39 @@ io.sockets.on('connection', function (socket) {
       myRoom = data.room;
       socket.join(myRoom);
 
-      console.log('user number ' + myUserId + ' joining room "' + myRoom + '"');
+      if (myRoom !== 'lobby') {
 
-      if (!rooms[myRoom]) {
-        newRoom(myRoom);
-      }
+          console.log('user number ' + myUserId + ' joining room "' + myRoom + '"');
 
-      rooms[myRoom].setupNewUser(myUserId, socket);
+          if (!rooms[myRoom]) {
+            newRoom(myRoom);
+          }
 
-      if (roomSettings.hasOwnProperty(myRoom)) {
-        console.log('setSettings: ' + JSON.stringify(roomSettings[myRoom]) + ' in ' + myRoom);
-        rooms[myRoom].sendAll('setSettings', roomSettings[myRoom]);
-      }
+          rooms[myRoom].setupNewUser(myUserId, socket);
 
-      if (rooms[myRoom].inGame) {
-        // of already in game then
-        rooms[myRoom].numWaitingForNewGame++;
+          if (roomSettings.hasOwnProperty(myRoom)) {
+            console.log('setSettings: ' + JSON.stringify(roomSettings[myRoom]) + ' in ' + myRoom);
+            rooms[myRoom].sendAll('setSettings', roomSettings[myRoom]);
+          }
+
+          if (rooms[myRoom].inGame) {
+            // of already in game then
+            rooms[myRoom].numWaitingForNewGame++;
+          } else {
+            // CHECK AND IF MORE THAN ONE PERSON HERE START A GAME
+            rooms[myRoom].waitFiveThenCheckAndStart();
+          }
+
       } else {
-        // CHECK AND IF MORE THAN ONE PERSON HERE START A GAME
-        rooms[myRoom].waitFiveThenCheckAndStart();
+
+        lobbyCount++;
+        updateLobbyTotals();
+
       }
 
     }
 
 
-  });
-
-  socket.on('requestRoomTotals', function() {
-    socket.emit('roomTotals', {
-
-      beginnerCount: [ (rooms['beginner']) ? rooms['beginner'].numPlayers : 0, possibleColors.length],
-      intermediateCount: [ (rooms['intermediate']) ? rooms['intermediate'].numPlayers : 0, possibleColors.length],
-      advancedCount: [ (rooms['advanced']) ? rooms['advanced'].numPlayers : 0, possibleColors.length]
-
-    });
   });
 
   socket.on('finishedCalc', function(data) {
@@ -348,7 +378,7 @@ io.sockets.on('connection', function (socket) {
       rooms[myRoom].timerToStart = null;
       rooms[myRoom].curPlayingQueue = [];
       rooms[myRoom].socketBank = {};
-      rooms[myRoom].waitFiveThenCheckAndStart(10000); // wait 10 then start
+      rooms[myRoom].waitFiveThenCheckAndStart(12000); // wait 12 then start
 
     };
 

@@ -29,12 +29,13 @@ var chooseRoom = function(roomToGo) {
   $('#statusPanel').fadeOut(1000);
   $('#roomChooser').fadeOut(1000, function() {
 
+    $('#bottomStatus').html("room: <span id='curRoom'></span> || # of players: <span id='numPlayers'></span>");
+    socket.emit('leaveRoom');
     socket.emit('joinRoom', {room: roomToGo});
     $('#curRoom').text(roomToGo);
 
     setStatus('Waiting for other players');
     $('#rulesPanel').removeClass('hider');
-    $('#bottomStatus').show();
     $('#backRoomButton').prop('disabled', false);
   });
 
@@ -83,7 +84,7 @@ var showTitleScreen = function(cb) {
 var backToRoomChooser = function() {
 
   socket.emit('leaveRoom');
-  socket.emit('requestRoomTotals');
+  socket.emit('joinRoom', {room: 'lobby'});
 
   ticker = 0;   // time left on ticker
   window.clearInterval(timer);
@@ -99,8 +100,8 @@ var backToRoomChooser = function() {
 
   $('#rulesPanel').addClass('hider');
   $('#ticker').hide();
-  $('#bottomStatus').hide();
-
+  $('#bottomStatus').html("total # of battlers: <span id='numPlayers'></span>");
+  $('#bottomStatus').show()
   $('#roomChooser').show();
   setStatus('Choose a room');
 
@@ -198,6 +199,7 @@ socket.on('roomTotals', function(data) {
   $('#beginner-count').text("(" + data.beginnerCount[0] + "/" + data.beginnerCount[1] + ")");
   $('#intermediate-count').text("(" + data.intermediateCount[0] + "/" + data.intermediateCount[1] + ")");
   $('#advanced-count').text("(" + data.advancedCount[0] + "/" + data.advancedCount[1] + ")");
+  $('#numPlayers').text( data.totalBattlers );
 
 });
 
@@ -387,11 +389,12 @@ $(function() {
 
   setTimeout(function() {
 
-    socket.emit('requestRoomTotals');
+    socket.emit('joinRoom', {room: 'lobby'});
     showTitleScreen(function() {
 
       setStatus('Choose a room');
       $('#roomChooser').show();
+      $('#bottomStatus').show();
 
     });
 
