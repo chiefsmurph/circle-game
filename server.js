@@ -193,7 +193,7 @@ io.sockets.on('connection', function (socket) {
 
   var passColorOff = function() {   // void
 
-    if (rooms[myRoom].colorBank[myUserId] && rooms[myRoom].waitingForSpaceQueue.length > 0) {
+    if (rooms[myRoom] && rooms[myRoom].colorBank[myUserId] && rooms[myRoom].waitingForSpaceQueue.length > 0) {
       // person in front of the queue gets the person leaving's old color
       var firstInLine = rooms[myRoom].waitingForSpaceQueue.shift(); // id of first in line
       console.log('giving color ' + rooms[myRoom].colorBank[myUserId] + ' to user ' + firstInLine);
