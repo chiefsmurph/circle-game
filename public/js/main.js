@@ -40,6 +40,17 @@ var myColor;
 var numPlayers = 1;
 var lastClickCoords = {};
 
+var myHighs = {
+  curStreak: {
+    games: 0,
+    points: 0
+  },
+  topStreak: {
+    games: 0,
+    points: 0
+  }
+};
+
 // console.log('sending join room public');
 // socket.emit('joinRoom', {room: 'public'});
 // $('#curRoom').text('public');
@@ -163,7 +174,7 @@ socket.on('startGame', function(data) {
                           activeGame = true;
 
                           // setup ticker
-                          ticker = 30;
+                          ticker = 5;
                           $('#ticker').text(ticker);
                           $('#ticker').show();
                           $('#backRoomButton').prop('disabled', false);
@@ -315,22 +326,28 @@ socket.on('winner', function(data) {
         // update high score table if user is winner
         if (colorRGBtoName[topColor] === myColor) {
 
-          $('#streakGames').text( parseInt($('#streakGames').text()) + 1 );
-          $('#streakPoints').text( parseInt($('#streakPoints').text()) + data.winBy );
+          myHighs.curStreak.games++;
+          myHighs.curStreak.points += data.winBy;
+          $('#streakGames span').text( myHighs.curStreak.games );
+          $('#streakPoints span').text( myHighs.curStreak.points );
 
           // and then compare the currentstreak's gamecount with the topstreak gamecount
-          if ($('#streakGames').text() > $('#topGames').text() ) {
+          if (myHighs.curStreak.games > myHighs.topStreak.games ) {
 
-            $('#topGames').text( $('#streakGames').text() );
-            $('#topPoints').text( $('#streakPoints').text() );
+            myHighs.topStreak.games = myHighs.curStreak.games;
+            myHighs.topStreak.points = myHighs.curStreak.points;
+            $('#topGames span').text( myHighs.topStreak.games );
+            $('#topPoints span').text( myHighs.topStreak.points );
 
           }
 
         } else {
 
           // if not winner then reset current streak
-          $('#streakGames').text('00');
-          $('#streakPoints').text('00000');
+          $('#streakGames span').text('00');
+          $('#streakPoints span').text('00000');
+          myHighs.curStreak.games = 0;
+          myHighs.curStreak.points = 0;
 
         }
 
@@ -435,6 +452,22 @@ $(function() {
     });
 
   }, 200);
+
+
+  // setup odomoters
+  ['#streakGames span', '#streakPoints span', '#topGames span', '#topPoints span'].forEach(function(element) {
+
+    var el = document.querySelector(element);
+
+    var od = new Odometer({
+      el: el,
+      format: '',
+      // Any option (other than auto and selector) can be passed in here
+      theme: 'minimal'
+    });
+
+  });
+
 
   var xPos,   // coordinates of current click
       yPos;
