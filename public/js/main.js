@@ -41,8 +41,10 @@ var chooseRoom = function(roomToGo) {
 
 };
 
-var showCustomText = function() {
-  $('#customText').fadeIn();
+var toggleCustomText = function() {
+  $('#customText').fadeToggle(500, function() {
+    $('#customRoomName').focus();
+  });
 };
 
 var setStatus = function(text, length, cb) {
@@ -496,6 +498,14 @@ $(function() {
     // if (activeGame) {
     //   backToRoomChooser();
     // }
+  });
+
+  // enter submit
+  $("#customRoomName").keypress(function(event) {
+      if (event.which == 13) {
+          event.preventDefault();
+          chooseRoom();
+      }
   });
 
 
