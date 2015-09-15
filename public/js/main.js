@@ -186,7 +186,7 @@ socket.on('startGame', function(data) {
 socket.on('playerCount', function(data) {
 
     numPlayers = data.count;
-    $('#numPlayers').text(numPlayers);
+    $('#numPlayers').text(numPlayers + '/' + data.max);
     if (numPlayers === 1) {
       activeGame = false;
       backToWaiting();
@@ -196,9 +196,9 @@ socket.on('playerCount', function(data) {
 
 socket.on('roomTotals', function(data) {
 
-  $('#beginner-count').text("(" + data.beginnerCount[0] + "/" + data.beginnerCount[1] + ")");
-  $('#intermediate-count').text("(" + data.intermediateCount[0] + "/" + data.intermediateCount[1] + ")");
-  $('#advanced-count').text("(" + data.advancedCount[0] + "/" + data.advancedCount[1] + ")");
+  $('#beginner-count').text("(" + data.beginnerCount + ")");
+  $('#intermediate-count').text("(" + data.intermediateCount + ")");
+  $('#advanced-count').text("(" + data.advancedCount + ")");
   $('#numPlayers').text( data.totalBattlers );
 
 });
@@ -493,7 +493,9 @@ $(function() {
 
   $(window).blur(function() {
     console.log('blur');
-    //backToRoomChooser();
+    // if (activeGame) {
+    //   backToRoomChooser();
+    // }
   });
 
 

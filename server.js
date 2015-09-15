@@ -128,7 +128,10 @@ var newRoom = function(roomName) {
       rooms[roomName].waitingForSpaceQueue.push(id);
     }
 
-    rooms[roomName].sendAll('playerCount', {count: rooms[roomName].numPlayers});
+    rooms[roomName].sendAll('playerCount', {
+      count: rooms[roomName].numPlayers,
+      max: possibleColors.length
+    });
     updateLobbyTotals();
 
   };
@@ -144,7 +147,10 @@ var newRoom = function(roomName) {
     rooms[roomName].colorBank[id] = null;
     delete rooms[roomName].colorBank[id];
 
-    rooms[roomName].sendAll('playerCount', {count: rooms[roomName].numPlayers});
+    rooms[roomName].sendAll('playerCount', {
+      count: rooms[roomName].numPlayers,
+      max: possibleColors.length
+    });
     updateLobbyTotals();
 
     if (rooms[roomName].numPlayers < 2) {
@@ -190,9 +196,9 @@ var updateLobbyTotals = function() {
 
   io.sockets.in('lobby').emit('roomTotals', {
 
-    beginnerCount: [ getRoomCount('beginner'), possibleColors.length],
-    intermediateCount: [ getRoomCount('intermediate'), possibleColors.length],
-    advancedCount: [ getRoomCount('advanced'), possibleColors.length],
+    beginnerCount: getRoomCount('beginner'),
+    intermediateCount: getRoomCount('intermediate'),
+    advancedCount: getRoomCount('advanced'),
     totalBattlers: ['beginner', 'intermediate', 'advanced'].reduce(function(total, rname) {
       return total + getRoomCount(rname);
     }, 0) + lobbyCount
@@ -246,6 +252,8 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('leaveRoom', function() {
 
+    if (myRoom) {
+
       console.log('user' + myUserId + ' leaving ' + myRoom);
       socket.leave(myRoom);
 
@@ -262,6 +270,8 @@ io.sockets.on('connection', function (socket) {
         lobbyCount--;
 
       }
+
+    }
 
   });
 
