@@ -118,6 +118,10 @@ button:focus, input[type='button']:focus {outline:0;}
   border-radius: 0 10px 10px 0;
   background-color: grey;
 }
+#roomChooser span {
+  font-size: 20px;
+  margin-left: 5px;
+}
 #bottomStatus {
   position: absolute;
   bottom: 4px;

@@ -83,6 +83,7 @@ var showTitleScreen = function(cb) {
 var backToRoomChooser = function() {
 
   socket.emit('leaveRoom');
+  socket.emit('requestRoomTotals');
 
   ticker = 0;   // time left on ticker
   window.clearInterval(timer);
@@ -99,7 +100,6 @@ var backToRoomChooser = function() {
   $('#rulesPanel').addClass('hider');
   $('#ticker').hide();
   $('#bottomStatus').hide();
-
 
   $('#roomChooser').show();
   setStatus('Choose a room');
@@ -190,6 +190,14 @@ socket.on('playerCount', function(data) {
       activeGame = false;
       backToWaiting();
     }
+
+});
+
+socket.on('roomTotals', function(data) {
+
+  $('#beginner-count').text("(" + data.beginnerCount[0] + "/" + data.beginnerCount[1] + ")");
+  $('#intermediate-count').text("(" + data.intermediateCount[0] + "/" + data.intermediateCount[1] + ")");
+  $('#advanced-count').text("(" + data.advancedCount[0] + "/" + data.advancedCount[1] + ")");
 
 });
 
@@ -379,6 +387,7 @@ $(function() {
 
   setTimeout(function() {
 
+    socket.emit('requestRoomTotals');
     showTitleScreen(function() {
 
       setStatus('Choose a room');

@@ -220,7 +220,6 @@ io.sockets.on('connection', function (socket) {
 
   });
 
-
   socket.on('leaveRoom', function() {
 
       console.log('user' + myUserId + ' leaving ' + myRoom);
@@ -267,6 +266,16 @@ io.sockets.on('connection', function (socket) {
     }
 
 
+  });
+
+  socket.on('requestRoomTotals', function() {
+    socket.emit('roomTotals', {
+
+      beginnerCount: [ (rooms['beginner']) ? rooms['beginner'].numPlayers : 0, possibleColors.length],
+      intermediateCount: [ (rooms['intermediate']) ? rooms['intermediate'].numPlayers : 0, possibleColors.length],
+      advancedCount: [ (rooms['advanced']) ? rooms['advanced'].numPlayers : 0, possibleColors.length]
+
+    });
   });
 
   socket.on('finishedCalc', function(data) {
