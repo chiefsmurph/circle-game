@@ -519,7 +519,7 @@ $(function() {
         borderTopRightRadius: maxClickerSize,
         borderBottomLeftRadius: maxClickerSize,
         borderBottomRightRadius: maxClickerSize
-      }, maxClickerSize * clickerSpeed, 'easeOutSine', function() {
+      }, maxClickerSize * clickerSpeed, 'easeOutCirc', function() {
 
         if (lastClickCoords.xPos !== xPos || lastClickCoords.yPos !== yPos) {
 
