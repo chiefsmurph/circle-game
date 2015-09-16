@@ -42,7 +42,7 @@ var lastClickCoords = {};
 var activeClick;
 var curRoom;
 var highPanelShowing = false;
-var highScoreData;
+var highScoreData = [];
 
 var myHighs = {
   curStreak: {
@@ -400,6 +400,8 @@ socket.on('winner', function(data) {
                 games: myHighs.topStreak.games,
                 pts: myHighs.topStreak.points
               });
+            } else {
+              console.log('not a highscore ' + highScoreData.length);
             }
 
           }
