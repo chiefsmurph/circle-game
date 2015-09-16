@@ -405,8 +405,8 @@ io.sockets.on('connection', function (socket) {
       //   }
       // }
 
-      for (var i=0; i < curPlayingQueue.length; i++) {
-        var curPlayer = curPlayingQueue[i];
+      for (var i=0; i < rooms[myRoom].curPlayingQueue.length; i++) {
+        var curPlayer = rooms[myRoom].curPlayingQueue[i];
         if (rooms[myRoom].socketBank[curPlayer]) {
           rooms[myRoom].socketBank[curPlayer].emit('winner', {
             topColor: (winBy !== 0) ? sortableScores[0][0] : '0,0,0', // tie if tie or nothing on the board
