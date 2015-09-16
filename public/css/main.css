@@ -33,7 +33,6 @@ html, body {
 }
 #gamearea .circle {
   background-image: url('/img/dark-stripes-light.png');
-  opacity: 0.8;
 }
 #yourClicker {
   background-color: white;
