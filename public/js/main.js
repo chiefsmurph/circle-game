@@ -392,7 +392,7 @@ socket.on('winner', function(data) {
             $('#topPoints span').text( myHighs.topStreak.points );
 
             //check against high score table
-            if (highScoreData[highScoreData.length-1] && myHighs.topStreak.games > highScoreData[highScoreData.length-1].games) {
+            if (highScoreData.length < 10 || (highScoreData[highScoreData.length-1] && myHighs.topStreak.games > highScoreData[highScoreData.length-1].games)) {
               socket.emit('submitHS', {
                 username: username,
                 games: myHighs.topStreak.games,

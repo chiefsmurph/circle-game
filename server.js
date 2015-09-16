@@ -65,6 +65,7 @@ var updateHighScores = function(cb) {       // void
       if (result) {
 
         highScoreData = result.rows;
+        console.log(highScoreData);
         if (cb) cb();
 
       }
