@@ -33,7 +33,7 @@ pg.connect(process.env.DATABASE_URL, function(err, client) {
 
 var currentUserId = 0;
 var lobbyCount = 0;
-var possibleColors = ['orange', 'green', 'blue', 'red', 'yellow', 'purple', 'tomato', 'tan', 'silver', 'salmon', 'slateblue', 'saddlebrown', 'plum', 'PaleVioletRed', 'Navy', 'OliveDrab'];
+var possibleColors = ['orange', 'green', 'blue', 'red', 'yellow', 'purple', 'tomato', 'tan', 'salmon', 'slateblue', 'saddlebrown', 'plum', 'PaleVioletRed', 'Navy', 'OliveDrab'];
 //var possibleColors = ['orange', 'green', 'blue', 'red', 'yellow', 'purple'];
 var roomSettings = {
   'slower': {
@@ -478,9 +478,9 @@ io.sockets.on('connection', function (socket) {
         var queryText = 'INSERT INTO highscores (username, dateset, games, points) VALUES($1, $2, $3, $4)';
         var dateNow = new Date().toISOString().slice(0, 10);
         client.query(queryText, [data.username, dateNow, data.games, data.points], function(err, result) {
-          console.log('here');
+          console.log('here' + result + ' ' + err);
           if (!err) {
-            updateHighScores(function() {
+            updateHighScores(client, function() {
               console.log('updated high scores');
               io.sockets.emit('highScores', {scoreArr: highScoreData});
             });

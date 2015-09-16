@@ -23,7 +23,6 @@ var colorRGBtoName = {
   '128,0,128': 'purple',
   '255,99,71': 'tomato',
   '210,180,140': 'tan',
-  '230,232,250': 'silver',
   '250,128,114': 'salmon',
   '106,90,205': 'slateblue',
   '139,69,19': 'saddlebrown',
