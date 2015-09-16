@@ -141,6 +141,7 @@ var showTitleScreen = function(cb) {
       $('#titleScreen').fadeOut('slow', function() {
 
         username = $('#username').val();
+        console.log('setting username to ' + username )
         cb();
 
       });
