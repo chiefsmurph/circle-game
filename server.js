@@ -284,7 +284,6 @@ io.sockets.on('connection', function (socket) {
 
       console.log('user' + myUserId + ' leaving ' + myRoom);
       socket.leave(myRoom);
-      myRoom = null;
 
       if (myRoom !== 'lobby') {
 
@@ -298,6 +297,8 @@ io.sockets.on('connection', function (socket) {
         lobbyCount--;
 
       }
+
+      myRoom = null;
 
     }
 
