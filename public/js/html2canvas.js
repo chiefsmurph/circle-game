@@ -591,7 +591,7 @@
       });
       ```
 
-      Advanced Usage:
+      fast Usage:
       ---------------
 
       Promises shine when abstracting away asynchronous interactions such as
@@ -794,7 +794,7 @@
       });
       ```
 
-      Advanced Example
+      fast Example
       --------------
 
       Synchronous Example

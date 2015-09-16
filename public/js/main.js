@@ -232,9 +232,9 @@ socket.on('playerCount', function(data) {
 
 socket.on('roomTotals', function(data) {
 
-  $('#beginner-count').text("(" + data.beginnerCount + ")");
-  $('#intermediate-count').text("(" + data.intermediateCount + ")");
-  $('#advanced-count').text("(" + data.advancedCount + ")");
+  $('#slower-count').text("(" + data.slowerCount + ")");
+  $('#medium-count').text("(" + data.mediumCount + ")");
+  $('#fast-count').text("(" + data.fastCount + ")");
   $('#numPlayers').text( data.totalBattlers );
 
 });

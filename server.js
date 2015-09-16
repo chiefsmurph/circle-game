@@ -23,17 +23,17 @@ var lobbyCount = 0;
 //var possibleColors = ['orange', 'green', 'blue', 'red', 'yellow', 'purple', 'tomato', 'tan', 'silver', 'salmon', 'slateblue', 'saddlebrown', 'plum', 'PaleVioletRed', 'Navy', 'OliveDrab'];
 var possibleColors = ['orange', 'green', 'blue', 'red', 'yellow', 'purple'];
 var roomSettings = {
-  'beginner': {
+  'slower': {
     maxClickerSize: 180,
     clickerSpeed: 12,
     maxPeople: 4
   },
-  'intermediate': {
+  'medium': {
     maxClickerSize: 110,
     clickerSpeed: 5,
     maxPeople: 4
   },
-  'advanced': {
+  'fast': {
     maxClickerSize: 60,
     clickerSpeed: 3,
     maxPeople: 4
@@ -216,10 +216,10 @@ var updateLobbyTotals = function() {
 
   io.sockets.in('lobby').emit('roomTotals', {
 
-    beginnerCount: getRoomCount('beginner'),
-    intermediateCount: getRoomCount('intermediate'),
-    advancedCount: getRoomCount('advanced'),
-    totalBattlers: ['beginner', 'intermediate', 'advanced'].reduce(function(total, rname) {
+    slowerCount: getRoomCount('slower'),
+    mediumCount: getRoomCount('medium'),
+    fastCount: getRoomCount('fast'),
+    totalBattlers: ['slower', 'medium', 'fast'].reduce(function(total, rname) {
       return total + getRoomCount(rname);
     }, 0) + lobbyCount
 
