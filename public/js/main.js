@@ -548,6 +548,8 @@ $(function() {
         $('#yourClicker').hide();
         console.log('there');
         socket.emit('addCircle', {x: xPos, y: yPos, rad: $('#yourClicker').width(), col: myColor});
+        $('#yourClicker').css('width', 0);
+        $('#yourClicker').css('height', 0);
         lastClickCoords.xPos = xPos;
         lastClickCoords.yPos = yPos;
 
