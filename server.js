@@ -475,8 +475,8 @@ io.sockets.on('connection', function (socket) {
 
       pg.connect(process.env.DATABASE_URL, function(err, client) {
         console.log('about to insert');
-        var queryText = 'INSERT INTO highscores (username, dataset, games, points) VALUES($1, $2, $3, $4)'
-        client.query(queryText, [data.username, data, data.games, data.points], function(err, result) {
+        var queryText = 'INSERT INTO highscores (username, dateset, games, points) VALUES($1, $2, $3, $4)'
+        client.query(queryText, [data.username, new Date().toISOString().slice(0, 10), data.games, data.points], function(err, result) {
           if (!err) {
             updateHighScores(function() {
               console.log('updated high scores');

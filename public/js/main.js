@@ -64,6 +64,8 @@ var showUserScreen = function(cb) {
   $('#loginScreen').show();
   $('#username').focus();
   $('#setUserBtn').on('click', function() {
+    username = $('#username').val();
+    console.log('setting username to ' + username )
     $('#loginScreen').hide();
     cb();
   });
@@ -140,8 +142,6 @@ var showTitleScreen = function(cb) {
     setTimeout(function() {
       $('#titleScreen').fadeOut('slow', function() {
 
-        username = $('#username').val();
-        console.log('setting username to ' + username )
         cb();
 
       });
