@@ -33,7 +33,7 @@ var roomSettings = {
     clickerSpeed: 5,
     maxPeople: 4
   },
-  'fast': {
+  'faster': {
     maxClickerSize: 60,
     clickerSpeed: 3,
     maxPeople: 4
@@ -218,8 +218,8 @@ var updateLobbyTotals = function() {
 
     slowerCount: getRoomCount('slower'),
     mediumCount: getRoomCount('medium'),
-    fastCount: getRoomCount('fast'),
-    totalBattlers: ['slower', 'medium', 'fast'].reduce(function(total, rname) {
+    fasterCount: getRoomCount('faster'),
+    totalBattlers: ['slower', 'medium', 'faster'].reduce(function(total, rname) {
       return total + getRoomCount(rname);
     }, 0) + lobbyCount
 

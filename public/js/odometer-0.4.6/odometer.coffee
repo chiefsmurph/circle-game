@@ -24,7 +24,7 @@ FRAMERATE = 30
 # How long will the animation last?
 DURATION = 2000
 
-# What is the fastest we should update values when we are
+# What is the fasterest we should update values when we are
 # counting up (not using the wheel animation).
 COUNT_FRAMERATE = 20
 
@@ -34,7 +34,7 @@ FRAMES_PER_VALUE = 2
 
 # If more than one digit is hitting the frame limit, they would all get
 # capped at that limit and appear to be moving at the same rate.  This
-# factor adds a boost to subsequent digits to make them appear faster.
+# factor adds a boost to subsequent digits to make them appear fasterer.
 DIGIT_SPEEDBOOST = .5
 
 MS_PER_FRAME = 1000 / FRAMERATE
@@ -441,7 +441,7 @@ class Odometer
         # We need to subsample
         frames = []
 
-        # Subsequent digits need to be faster than previous ones
+        # Subsequent digits need to be fasterer than previous ones
         incr = dist / (@MAX_VALUES + @MAX_VALUES * boosted * DIGIT_SPEEDBOOST)
         cur = start
 

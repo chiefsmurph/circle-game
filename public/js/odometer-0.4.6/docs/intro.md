@@ -110,7 +110,7 @@ Example
 
 Play with this simple example on [jsFiddle](http://jsfiddle.net/adamschwartz/rx6BQ/).
 
-fast
+faster
 --------
 
 You can set options by creating a `odometerOptions` object:

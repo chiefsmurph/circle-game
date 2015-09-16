@@ -2,7 +2,7 @@
 var socket = io.connect(window.location.hostname + ":" + window.location.port);
 
 var maxClickerSize = 170; // bigger = easier, smaller = harder
-var clickerSpeed = 9; // higher = longer, lower = faster
+var clickerSpeed = 9; // higher = longer, lower = fasterer
 
 // for going from color to rgb
 var getRGBfromColor = function( value ) {
@@ -234,7 +234,7 @@ socket.on('roomTotals', function(data) {
 
   $('#slower-count').text("(" + data.slowerCount + ")");
   $('#medium-count').text("(" + data.mediumCount + ")");
-  $('#fast-count').text("(" + data.fastCount + ")");
+  $('#faster-count').text("(" + data.fasterCount + ")");
   $('#numPlayers').text( data.totalBattlers );
 
 });
