@@ -471,13 +471,16 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('submitHS', function(data) {
 
+    console.log('inserting score...' + JSON.stringify(data));
+
       pg.connect(process.env.DATABASE_URL, function(err, client) {
         console.log('about to insert');
         var queryText = 'INSERT INTO highscores (username, dataset, games, points) VALUES($1, $2, $3, $4)'
         client.query(queryText, [data.username, data, data.games, data.points], function(err, result) {
 
-          updateHighScores();
-          io.sockets.emit('highScores', {scoreArr: highScoreData});
+          updateHighScores(function() {
+            io.sockets.emit('highScores', {scoreArr: highScoreData});
+          });
 
         });
       });
