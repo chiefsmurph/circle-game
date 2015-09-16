@@ -187,7 +187,7 @@ var backToRoomChooser = function() {
 
 socket.on('highScores', function(data) {
 
-  console.log('received high scores');
+  console.log('received high scores' + data);
   $('#highScorePanel tbody').empty();
   highScoreData = data.scoreArr;
   for (var i = 0; i < highScoreData.length; i++) {
