@@ -40,6 +40,7 @@ var myColor;
 var numPlayers = 1;
 var lastClickCoords = {};
 var activeClick;
+var curRoom;
 
 var myHighs = {
   curStreak: {
@@ -60,18 +61,22 @@ var chooseRoom = function(roomToGo) {
 
   roomToGo = roomToGo || $('#customRoomName').val();
 
-  $('#statusPanel').fadeOut(1000);
-  $('#roomChooser').fadeOut(1000, function() {
+  $('#statusPanel').fadeOut(950);
+  $('#roomChooser').fadeOut(950);
+
+  setTimeout(function() {
 
     $('#bottomStatus').html("room: <span id='curRoom'></span> || # of players: <span id='numPlayers'></span>");
     socket.emit('leaveRoom');
     socket.emit('joinRoom', {room: roomToGo});
     $('#curRoom').text(roomToGo);
+    curRoom = roomToGo;
 
     setStatus('Waiting for other players');
     $('#rulesPanel').removeClass('hider');
     $('#backRoomButton').prop('disabled', false);
-  });
+
+  }, 1000);
 
 };
 
@@ -99,9 +104,12 @@ var showTitleScreen = function(cb) {
     $('#circle-battle-icon').fadeIn(3000);
   }, 500);
 
+  setTimeout(function() {
+    $('#beta').fadeIn(900);
+  }, 2500);
+
   $('#circle-text').animate({top: '130px'}, 3500, 'easeOutQuart');
   $('#battle-text').animate({bottom: '240px'}, 3500, 'easeOutQuart', function() {
-
 
 
     setTimeout(function() {
@@ -145,6 +153,7 @@ var backToRoomChooser = function() {
 
   console.log('leaving room');
   $('#curRoom').text('');
+  curRoom = 'lobby';
 
   $('#backRoomButton').prop('disabled', true);
 
@@ -570,9 +579,9 @@ $(function() {
 
   $(window).blur(function() {
     console.log('blur');
-    // if (activeGame) {
-    //   backToRoomChooser();
-    // }
+    if (curRoom && curRoom !== 'lobby') {
+      backToRoomChooser();
+    }
   });
 
   // enter submit

@@ -20,23 +20,23 @@ app.use(express.static(__dirname + '/public'));
 
 var currentUserId = 0;
 var lobbyCount = 0;
-//var possibleColors = ['orange', 'green', 'blue', 'red', 'yellow', 'purple', 'tomato', 'tan', 'silver', 'salmon', 'slateblue', 'saddlebrown', 'plum', 'PaleVioletRed', 'Navy', 'OliveDrab'];
-var possibleColors = ['orange', 'green', 'blue', 'red', 'yellow', 'purple'];
+var possibleColors = ['orange', 'green', 'blue', 'red', 'yellow', 'purple', 'tomato', 'tan', 'silver', 'salmon', 'slateblue', 'saddlebrown', 'plum', 'PaleVioletRed', 'Navy', 'OliveDrab'];
+//var possibleColors = ['orange', 'green', 'blue', 'red', 'yellow', 'purple'];
 var roomSettings = {
   'slower': {
     maxClickerSize: 180,
     clickerSpeed: 12,
-    maxPeople: 4
+    maxPeople: 6
   },
   'medium': {
     maxClickerSize: 110,
     clickerSpeed: 5,
-    maxPeople: 4
+    maxPeople: 6
   },
   'faster': {
     maxClickerSize: 60,
     clickerSpeed: 3,
-    maxPeople: 4
+    maxPeople: 6
   }
 };
 
@@ -405,10 +405,15 @@ io.sockets.on('connection', function (socket) {
       //   }
       // }
 
-      rooms[myRoom].sendAll('winner', {
-        topColor: (winBy !== 0) ? sortableScores[0][0] : '0,0,0', // tie if tie or nothing on the board
-        winBy: winBy
-      });
+      for (var i=0; i < curPlayingQueue.length; i++) {
+        var curPlayer = curPlayingQueue[i];
+        if (rooms[myRoom].socketBank[curPlayer]) {
+          rooms[myRoom].socketBank[curPlayer].emit('winner', {
+            topColor: (winBy !== 0) ? sortableScores[0][0] : '0,0,0', // tie if tie or nothing on the board
+            winBy: winBy
+          });
+        }
+      }
 
       console.log('game over and all users finishedcalc');
       rooms[myRoom].finishedCalc = 0;

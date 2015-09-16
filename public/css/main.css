@@ -181,7 +181,18 @@ button:focus, input[type='button']:focus {outline:0;}
   top: 80px;
   z-index: 10000;
 }
-
+#titleScreen #beta {
+  display: none;
+  top: 270px;
+  left: 80px;
+  z-index: 1000000;
+  font-size: 35px;
+  color: yellow;
+  border: 1px solid black;
+  border-right-width: 0;
+  border-radius: 10px 0 0 10px;
+  background-color: rgba(255,255,0,0.4);
+}
 #infoPanel {
   font-family: monospace;
   margin: 0 auto 20px;
