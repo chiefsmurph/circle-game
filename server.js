@@ -242,10 +242,17 @@ io.sockets.on('connection', function (socket) {
 
     if (rooms[myRoom] && rooms[myRoom].colorBank[myUserId] && rooms[myRoom].waitingForSpaceQueue.length > 0) {
       // person in front of the queue gets the person leaving's old color
-      var firstInLine = rooms[myRoom].waitingForSpaceQueue.shift(); // id of first in line
-      console.log('giving color ' + rooms[myRoom].colorBank[myUserId] + ' to user ' + firstInLine);
-      rooms[myRoom].socketBank[ firstInLine ].emit('setColor', {color: rooms[myRoom].colorBank[myUserId] });
-      rooms[myRoom].colorBank[ firstInLine ] = rooms[myRoom].colorBank[myUserId];
+      var passed = false;
+      while (!passed) {
+        var firstInLine = rooms[myRoom].waitingForSpaceQueue.shift(); // id of first in line
+        console.log('giving color ' + rooms[myRoom].colorBank[myUserId] + ' to user ' + firstInLine);
+        if (rooms[myRoom].socketBank[ firstInLine ]) {
+          rooms[myRoom].socketBank[ firstInLine ].emit('setColor', {color: rooms[myRoom].colorBank[myUserId] });
+          rooms[myRoom].colorBank[ firstInLine ] = rooms[myRoom].colorBank[myUserId];
+          passed = true
+        }
+        if (rooms[myRoom].waitingForSpaceQueue.length > 0) passed = true;
+      }
     } else {
       console.log('couldnt pass color off ' + myUserId + ' ' + myRoom + ' ' + rooms[myRoom].colorBank[myUserId] + ' and ' + rooms[myRoom].waitingForSpaceQueue);
     }
