@@ -42,7 +42,57 @@ html, body {
   /*display: none;*/
   z-index: 10000000;
 }
-
+#highScorePanel {
+  position: absolute;
+  top: 500px;
+  left: 50px;
+  width: 400px;
+  height: 450px;
+  z-index: 10000000;
+  text-align: center;
+  padding: 40px 10px 0px;
+  font-size: 18px;
+  color: black;
+  border-radius: 10px 10px 0 0;
+  background-color: rgba(255,255,255,0.9);
+}
+#highScorePanel table {
+  width: 100%;
+}
+#highScorePanel th, td {
+  border: 1px solid black
+}
+#loginScreen {
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  width: 400px;
+  height: 350px;
+  z-index: 10000000;
+  text-align: center;
+  padding: 0px;
+  font-size: 33px;
+  display: none;
+  color: white;
+}
+#loginScreen #setUserBtn {
+  position: relative;
+  bottom: 1px;
+}
+#loginScreen #userfield {
+  height: 45px;
+  color: black;
+}
+#loginScreen #username {
+  height: 45px;
+  width: 150px;
+  border: 1px solid navy;
+  text-align: center;
+}
+#loginScreen div {
+  font-size: 18px;
+  margin-top: 15px;
+}
 #statusPanel {
   position: absolute;
   top: 0;
@@ -76,7 +126,7 @@ html, body {
   top: 100px;
   left: 50px;
   width: 400px;
-  z-index: 100000000;
+  z-index: 1000000;
   text-align: center;
   padding: 0px;
   font-size: 33px;
@@ -110,14 +160,14 @@ button:focus, input[type='button']:focus {outline:0;}
   border: 1px solid navy;
   text-align: center;
 }
-#roomChooser input[type='button'] {
+#roomChooser input[type='button'], #loginScreen #setUserBtn {
   height: 45px;
   border: 1px solid navy;
   border-left: 0;
   border-radius: 0 10px 10px 0;
   background-color: #D3D3D3;
 }
-#roomChooser input[type='button']:hover {
+#roomChooser input[type='button']:hover, #loginScreen #setUserBtn:hover {
   background-color: yellow;
 }
 #roomChooser span {

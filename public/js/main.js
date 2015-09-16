@@ -41,6 +41,8 @@ var numPlayers = 1;
 var lastClickCoords = {};
 var activeClick;
 var curRoom;
+var highPanelShowing = false;
+var highScoreData;
 
 var myHighs = {
   curStreak: {
@@ -56,6 +58,17 @@ var myHighs = {
 // console.log('sending join room public');
 // socket.emit('joinRoom', {room: 'public'});
 // $('#curRoom').text('public');
+
+var showUserScreen = function(cb) {
+
+  $('#loginScreen').show();
+  $('#username').focus();
+  $('#setUserBtn').on('click', function() {
+    $('#loginScreen').hide();
+    cb();
+  });
+
+};
 
 var chooseRoom = function(roomToGo) {
 
@@ -79,6 +92,18 @@ var chooseRoom = function(roomToGo) {
   }, 1000);
 
 };
+
+var toggleHighs = function() {
+
+  if (!highPanelShowing) {
+    $('#highScorePanel').animate({'top': '50px'});
+  } else {
+    $('#highScorePanel').animate({'top': '500px'});
+  }
+
+  highPanelShowing = !highPanelShowing;
+
+}
 
 var toggleCustomText = function() {
   $('#customText').fadeToggle(500, function() {
@@ -115,6 +140,7 @@ var showTitleScreen = function(cb) {
     setTimeout(function() {
       $('#titleScreen').fadeOut('slow', function() {
 
+        username = $('#username').val();
         cb();
 
       });
@@ -159,6 +185,21 @@ var backToRoomChooser = function() {
 
 };
 
+socket.on('highScores', function(data) {
+
+  $('#highScorePanel tbody').empty();
+  highScoreData = data.scoreArr;
+  for (var i = 0; i < highScoreData.length; i++) {
+    var newRow = $('<tr><td>' + i + '</td></tr>');
+    for (var field in highScoreData[newRow]) {
+      var newTD = $('<td>' + highScoreData[newRow].field + '</td>');
+      newRow.append(newTd);
+    }
+    $('#highScorePanel tbody').append(newRow);
+  }
+
+});
+
 socket.on('startGame', function(data) {
 
   if (!activeGame) {
@@ -195,11 +236,12 @@ socket.on('startGame', function(data) {
                             if (ticker === 0) {
                               // GAME FINISHED.......
                               $('#gamearea').find('.circle').stop();
+                              $('#yourClicker').stop();
+                              $('#yourClicker').hide();
                               window.clearInterval(timer);
                               timer = null;
                               activeGame = false;
                               $('#ticker').hide();
-                              $('#bottomStatus').hide();
                               calculateWinner();
                             }
                           }, 1000);
@@ -349,6 +391,15 @@ socket.on('winner', function(data) {
             $('#topGames span').text( myHighs.topStreak.games );
             $('#topPoints span').text( myHighs.topStreak.points );
 
+            //check against high score table
+            if (highScoreData[highScoreData.length-1] && myHighs.topStreak.games > highScoreData[highScoreData.length-1].games) {
+              socket.emit('submitHS', {
+                username: username,
+                games: myHighs.topStreak.games,
+                pts: myHighs.topStreak.points
+              });
+            }
+
           }
 
         } else {
@@ -454,10 +505,14 @@ $(function() {
 
     showTitleScreen(function() {
 
-      socket.emit('joinRoom', {room: 'lobby'});
-      setStatus('Choose a room');
-      $('#roomChooser').show();
-      $('#bottomStatus').show();
+      showUserScreen(function() {
+
+        socket.emit('joinRoom', {room: 'lobby'});
+        setStatus('Choose a room');
+        $('#roomChooser').show();
+        $('#bottomStatus').show();
+
+      });
 
     });
 
@@ -557,10 +612,10 @@ $(function() {
 
       if (lastClickCoords.xPos !== xPos || lastClickCoords.yPos !== yPos) {
 
-        $('#yourClicker').stop();
-        $('#yourClicker').hide();
         console.log('there');
         socket.emit('addCircle', {x: xPos, y: yPos, rad: $('#yourClicker').width(), col: myColor});
+        $('#yourClicker').stop();
+        $('#yourClicker').hide();
         $('#yourClicker').css('width', 0);
         $('#yourClicker').css('height', 0);
         lastClickCoords.xPos = xPos;

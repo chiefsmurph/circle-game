@@ -1,3 +1,4 @@
+var pg = require('pg');
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
@@ -15,6 +16,15 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 app.use(express.static(__dirname + '/public'));
+
+// INIT HIGH SCORE TABLE
+pg.connect(process.env.DATABASE_URL, function(err, client) {
+  var query = client.query('CREATE TABLE highscores (scoreId serial primary key, username VARCHAR(20) not null, dateset DATE, games INT, points INT)');
+  console.log('adding pledge col');
+  query.on('row', function(row) {
+    console.log('row: ' + JSON.stringify(row));
+  });
+});
 
 // CONFIG
 
@@ -39,6 +49,25 @@ var roomSettings = {
     maxPeople: 6
   }
 };
+
+// high score setup
+
+var highScoreData = [];
+
+var updateHighScores = function(cb) {       // void
+
+  pg.connect(process.env.DATABASE_URL, function(err, client) {
+    var query = client.query('SELECT username, dataset, games, points FROM highscores ORDER BY games DESC LIMIT 10', function(err, result) {
+
+      highScoreData = result.rows;
+      if (cb) cb();
+
+    });
+
+  });
+
+}
+updateHighScores();
 
 // WHATS A ROOM?
 
@@ -232,6 +261,9 @@ var updateLobbyTotals = function() {
 
 
 io.sockets.on('connection', function (socket) {
+
+  // first send high score data
+  socket.emit('highScores', {scoreArr: highScoreData});
 
   var myUserId = currentUserId;
   var myRoom = null;
@@ -429,6 +461,20 @@ io.sockets.on('connection', function (socket) {
 
   });
 
+  socket.on('submitHS', function(data) {
+
+      pg.connect(process.env.DATABASE_URL, function(err, client) {
+        console.log('about to insert');
+        var queryText = 'INSERT INTO highscores (username, dataset, games, points) VALUES($1, $2, $3, $4)'
+        client.query(queryText, [data.username, data, data.games, data.points], function(err, result) {
+
+          updateHighScores();
+          io.sockets.emit('highScores', {scoreArr: highScoreData});
+
+        });
+      });
+
+  });
 
   socket.on('addCircle', function(circle) {
     console.log('circle: ' +  JSON.stringify(circle) + ' goes to ' + myRoom);

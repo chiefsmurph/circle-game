@@ -48,6 +48,11 @@
         <div id='beta'>beta</div>
         <div id='circle-battle-icon'><img src='/img/circle-battle-icon-sml.png'></div>
       </div>
+      <div id='loginScreen'>
+        <h2>Choose your<br>username</h2>
+        <div id='userfield'><input type='text' id='username'><input type='button' id='setUserBtn' value='GO!'></div>
+        <div>must be alphanumberic<br> and between 3-6 characters</div>
+      </div>
       <div id='statusPanel'></div>
       <div id='roomChooser'>
         <ul>
@@ -70,6 +75,19 @@
 
       <div id='yourClicker'></div>
       <div id='bottomStatus'>total # of battlers: <span id='numPlayers'></span></div>
+      <div id='highScorePanel'>
+        <table>
+          <thead>
+            <th>num</th>
+            <th>name</th>
+            <th>date</th>
+            <th>games</th>
+            <th>pts</th>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
 
     </div>
     <div id='infoPanel'>
@@ -78,7 +96,7 @@
         <tr>
           <td>
             <button disabled="true" onclick='backToRoomChooser()' id='backRoomButton'>back to roomchooser</button>
-            <button disabled="true">submit topStreak</button>
+            <button  onclick='toggleHighs()'>view high scores</button>
           </td>
           <td>
             <table>
