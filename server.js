@@ -477,10 +477,14 @@ io.sockets.on('connection', function (socket) {
         console.log('about to insert');
         var queryText = 'INSERT INTO highscores (username, dataset, games, points) VALUES($1, $2, $3, $4)'
         client.query(queryText, [data.username, data, data.games, data.points], function(err, result) {
-
-          updateHighScores(function() {
-            io.sockets.emit('highScores', {scoreArr: highScoreData});
-          });
+          if (!err) {
+            updateHighScores(function() {
+              console.log('updated high scores');
+              io.sockets.emit('highScores', {scoreArr: highScoreData});
+            });
+          } else {
+            console.log('err ' + err);
+          }
 
         });
       });
