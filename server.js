@@ -30,7 +30,7 @@ pg.connect(process.env.DATABASE_URL, function(err, client) {
 */
 
 pg.connect(process.env.DATABASE_URL, function(err, client) {
-  var query = client.query('ALTER TABLE highscores ALTER COLUMN dateset TYPE timestamp default current_timestamp');
+  var query = client.query('ALTER TABLE highscores ALTER COLUMN dateset TYPE timestamp set default current_timestamp');
   console.log('adding pledge col');
   query.on('row', function(row) {
     console.log('row: ' + JSON.stringify(row));
