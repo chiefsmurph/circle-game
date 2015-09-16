@@ -245,6 +245,7 @@ io.sockets.on('connection', function (socket) {
       var passed = false;
       while (!passed) {
         var firstInLine = rooms[myRoom].waitingForSpaceQueue.shift(); // id of first in line
+        if (firstInLine===undefined) {passed = true;}
         console.log('giving color ' + rooms[myRoom].colorBank[myUserId] + ' to user ' + firstInLine);
         if (rooms[myRoom].socketBank[ firstInLine ]) {
           rooms[myRoom].socketBank[ firstInLine ].emit('setColor', {color: rooms[myRoom].colorBank[myUserId] });
