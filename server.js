@@ -18,6 +18,8 @@ app.use(bodyParser.json())
 app.use(express.static(__dirname + '/public'));
 
 // INIT HIGH SCORE TABLE
+
+/*
 pg.connect(process.env.DATABASE_URL, function(err, client) {
   var query = client.query('CREATE TABLE highscores (scoreId serial primary key, username VARCHAR(20) not null, dateset DATE, games INT, points INT)');
   console.log('adding pledge col');
@@ -25,6 +27,7 @@ pg.connect(process.env.DATABASE_URL, function(err, client) {
     console.log('row: ' + JSON.stringify(row));
   });
 });
+*/
 
 // CONFIG
 
@@ -59,8 +62,12 @@ var updateHighScores = function(cb) {       // void
   pg.connect(process.env.DATABASE_URL, function(err, client) {
     var query = client.query('SELECT username, dataset, games, points FROM highscores ORDER BY games DESC LIMIT 10', function(err, result) {
 
-      highScoreData = result.rows;
-      if (cb) cb();
+      if (result) {
+
+        highScoreData = result.rows;
+        if (cb) cb();
+
+      }
 
     });
 
