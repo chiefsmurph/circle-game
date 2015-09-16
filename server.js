@@ -57,22 +57,38 @@ var roomSettings = {
 
 var highScoreData = [];
 
-var updateHighScores = function(cb) {       // void
+var updateHighScores = function(client, cb) {       // void
 
-  pg.connect(process.env.DATABASE_URL, function(err, client) {
+  var handleResult = function(result) {
+
+    if (result) {
+
+      highScoreData = result.rows;
+      console.log(highScoreData);
+      if (cb) cb();
+
+    }
+
+  }
+
+  if (!client) {
+      pg.connect(process.env.DATABASE_URL, function(err, client) {
+        var query = client.query('SELECT username, dataset, games, points FROM highscores ORDER BY games DESC LIMIT 10', function(err, result) {
+
+          handleResult(result);
+
+        });
+
+      });
+  } else {
+
     var query = client.query('SELECT username, dataset, games, points FROM highscores ORDER BY games DESC LIMIT 10', function(err, result) {
 
-      if (result) {
-
-        highScoreData = result.rows;
-        console.log(highScoreData);
-        if (cb) cb();
-
-      }
+      handleResult(result);
 
     });
 
-  });
+  }
 
 }
 updateHighScores();
@@ -478,7 +494,7 @@ io.sockets.on('connection', function (socket) {
         var queryText = 'INSERT INTO highscores (username, dateset, games, points) VALUES($1, $2, $3, $4)';
         var dateNow = new Date().toISOString().slice(0, 10);
         client.query(queryText, [data.username, dateNow, data.games, data.points], function(err, result) {
-          console.log('here' + result + ' ' + err);
+          console.log('here' + JSON.stringify(result) + ' ' + err);
           if (!err) {
             updateHighScores(client, function() {
               console.log('updated high scores');
