@@ -39,6 +39,7 @@ var activeGame = false;
 var myColor;
 var numPlayers = 1;
 var lastClickCoords = {};
+var activeClick;
 
 var myHighs = {
   curStreak: {
@@ -483,7 +484,9 @@ $(function() {
 
   $('#gamearea').on('mousedown touchstart', function (e) {
 
-    if (activeGame && myColor !== null) {
+    if (activeGame && myColor !== null && !activeClick) {
+
+      activeClick = true;
 
       var elm = $(this);
       xPos = (e.type.toLowerCase() === 'mousedown')
@@ -526,6 +529,7 @@ $(function() {
           socket.emit('addCircle', {x: xPos, y: yPos, rad: maxClickerSize, col: myColor});
           lastClickCoords.xPos = xPos;
           lastClickCoords.yPos = yPos;
+          activeClick = false;
         }
 
       });
@@ -552,6 +556,7 @@ $(function() {
         $('#yourClicker').css('height', 0);
         lastClickCoords.xPos = xPos;
         lastClickCoords.yPos = yPos;
+        activeClick = false;
 
         e.preventDefault();
 

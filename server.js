@@ -284,6 +284,7 @@ io.sockets.on('connection', function (socket) {
 
       console.log('user' + myUserId + ' leaving ' + myRoom);
       socket.leave(myRoom);
+      myRoom = null;
 
       if (myRoom !== 'lobby') {
 
@@ -291,7 +292,6 @@ io.sockets.on('connection', function (socket) {
         rooms[myRoom].userLeaving(myUserId);
         rooms[myRoom].colorBank[myUserId] = null;
         delete rooms[myRoom].colorBank[myUserId];
-        myRoom = null;
 
       } else {
 
