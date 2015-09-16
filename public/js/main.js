@@ -556,11 +556,12 @@ $(function() {
         $('#yourClicker').css('height', 0);
         lastClickCoords.xPos = xPos;
         lastClickCoords.yPos = yPos;
-        activeClick = false;
 
         e.preventDefault();
 
       }
+
+      activeClick = false;
 
     }
 
