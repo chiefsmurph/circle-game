@@ -251,7 +251,7 @@ io.sockets.on('connection', function (socket) {
           rooms[myRoom].colorBank[ firstInLine ] = rooms[myRoom].colorBank[myUserId];
           passed = true
         }
-        if (rooms[myRoom].waitingForSpaceQueue.length > 0) passed = true;
+        if (rooms[myRoom].waitingForSpaceQueue.length > 0 && rooms[myRoom].waitingForSpaceQueue[0]) passed = true;
       }
     } else {
       console.log('couldnt pass color off ' + myUserId + ' ' + myRoom + ' ' + rooms[myRoom].colorBank[myUserId] + ' and ' + rooms[myRoom].waitingForSpaceQueue);
