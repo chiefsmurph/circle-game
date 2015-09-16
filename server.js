@@ -255,7 +255,7 @@ io.sockets.on('connection', function (socket) {
         }
       }
     } else {
-      console.log('couldnt pass color off ' + myUserId + ' ' + myRoom + ' ' + rooms[myRoom].colorBank[myUserId] + ' and ' + rooms[myRoom].waitingForSpaceQueue);
+      console.log('couldnt pass color off ' + myUserId + ' ' + myRoom + ' ' + ' and ' + rooms[myRoom].waitingForSpaceQueue + ' and numplayers ' + rooms[myRoom].numPlayers);
     }
 
   };
