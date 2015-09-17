@@ -529,24 +529,37 @@ io.sockets.on('connection', function (socket) {
 
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         console.log('about to insert');
-        var queryText = 'INSERT INTO "highscores" ("username", "dateset", "games", "points") VALUES ($1, $2, $3, $4)';
         var dateNow = new Date().toISOString().slice(0, 10);
         dateNow = dateNow.substr(5) + '-' + dateNow.substr(0, 4);
-        client.query(queryText, [data.username, dateNow, data.games, data.pts], function(err, result) {
-          console.log('here' + JSON.stringify(result) + ' ' + err);
-          if (!err) {
-            console.log('no error');
-            done();
-            updateHighScores(client, function() {
-              console.log('updated high scores');
-              io.sockets.emit('highScores', {scoreArr: highScoreData});
-              done();
-            });
-          } else {
-            console.log('err ' + err);
-          }
-          console.log('now here');
-        });
+        var queryText = 'UPDATE TABLE highscores SET games=' + data.games + ', points=' + data.pts + ' WHERE username="' + data.username + '" AND dateset="' + dateNow + '"';
+
+        console.log(queryText);
+
+        client.query(queryText, function(err, result) {
+
+          console.log( err, result);
+
+          var queryText = 'INSERT INTO "highscores" ("username", "dateset", "games", "points") SELECT "' + data.username + '", "' + dateNow + '", ' + date.games + ', ' + data.pts + ' WHERE NOT EXISTS (SELECT 1 FROM highscores WHERE username="' + data.username + '" AND dateset="' + dateNow + '"';
+
+            console.log(queryText);
+
+              client.query(queryText, function(err, result) {
+                console.log('here' + JSON.stringify(result) + ' ' + err);
+                if (!err) {
+                  console.log('no error');
+                  done();
+                  updateHighScores(client, function() {
+                    console.log('updated high scores');
+                    io.sockets.emit('highScores', {scoreArr: highScoreData});
+                    done();
+                  });
+                } else {
+                  console.log('err ' + err);
+                }
+                console.log('now here');
+              });
+
+
       });
 
   });
