@@ -125,9 +125,9 @@ var chooseRoom = function(roomToGo) {
 var toggleHighs = function() {
 
   if (!highPanelShowing) {
-    $('#highScorePanel').animate({'top': '50px'}, 'easeOutCubic');
+    $('#highScorePanel').animate({'top': '50px'}, 700, 'easeOutCubic');
   } else {
-    $('#highScorePanel').animate({'top': '500px'}, 'easeOutCubic');
+    $('#highScorePanel').animate({'top': '500px'}, 700, 'easeOutCubic');
   }
 
   highPanelShowing = !highPanelShowing;
