@@ -290,7 +290,7 @@ button:focus, input[type='button']:focus {outline:0;}
   /*box-shadow: 4px 4px 20px rgba(255,255,255,0.3);*/
   cursor: default;
   border: 1px solid black;
-  display: none;
+  /*display: none;*/
 }
 #usersAndColors table {
   width: 100%;
