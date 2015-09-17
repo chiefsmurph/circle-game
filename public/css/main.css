@@ -26,6 +26,9 @@ html, body {
   position: absolute;
   top: 800px;
   margin: 0 auto 20px;
+  border: 1px solid black
+  padding: 8px 12px;
+  background-color: LightGrey;
 }
 #gamearea {
   background-image: url('/img/asfalt-light.png');
