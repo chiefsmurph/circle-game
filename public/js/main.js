@@ -236,7 +236,7 @@ var backToRoomChooser = function() {
 
 };
 
-socket.on('usersColors' function(data) {
+socket.on('usersColors', function(data) {
   console.log('usercolors ' + JSON.stringify(data.userColors));
 });
 
