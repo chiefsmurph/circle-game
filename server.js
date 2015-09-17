@@ -86,13 +86,10 @@ var updateHighScores = function(client, cb) {       // void
 
   var handleResult = function(result) {
 
-    if (result) {
-
+      console.log('high score rows' + JSON.stringify(result));
       highScoreData = result.rows;
       console.log(highScoreData);
       if (cb) cb();
-
-    }
 
   }
 
@@ -519,7 +516,7 @@ io.sockets.on('connection', function (socket) {
         console.log('about to insert');
         var queryText = 'INSERT INTO "highscores" ("username", "dateset", "games", "points") VALUES ($1, $2, $3, $4)';
         var dateNow = new Date().toISOString().slice(0, 10);
-        client.query(queryText, [data.username, dateNow, data.games, data.points], function(err, result) {
+        client.query(queryText, [data.username, dateNow, data.games, data.pts], function(err, result) {
           console.log('here' + JSON.stringify(result) + ' ' + err);
           if (!err) {
             console.log('no error');
