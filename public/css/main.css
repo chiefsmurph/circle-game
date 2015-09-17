@@ -72,8 +72,9 @@ html, body {
   top: 20px;
   border: 1px solid black;
   color: black;
-  padding: 10px;
+  padding: 0px 5px;
   font-size: 20px;
+  background-color: white;
 }
 #highScorePanel #closeHS:hover {
   color: red;
