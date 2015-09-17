@@ -59,7 +59,7 @@ html, body {
 }
 #highScorePanel table {
   width: 100%;
-  height: 100%;
+  height: 78%;
   background-color: rgba(255,255,255,0.6);
 }
 #highScorePanel th, #highScorePanel td {
