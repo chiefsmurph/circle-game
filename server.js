@@ -550,7 +550,17 @@ io.sockets.on('connection', function (socket) {
           console.log( err, result);
           done();
 
-          if (err) {
+          if (err || result.rowCount === 0) {
+
+            // okay so we couldnt update when username sent in a record today...
+            // but dont go ahead and insert if they already sent in a better record today
+            client.query('SELECT * FROM "highscores" WHERE "username"=\'' + data.username + '\' AND "dateset"=\'' + dateNow + '\'', function(err, result) {
+
+              console.log('select from highscores where username and dateset');
+              console.log('err for this ' + err);
+              console.log('result here ' + JSON.stringify(result))
+
+            });
 
               var queryText = 'INSERT INTO "highscores" ("username", "dateset", "games", "points") VALUES ($1, $2, $3, $4)';
 
