@@ -267,7 +267,6 @@ button:focus, input[type='button']:focus {outline:0;}
 #usersAndColors {
   font-family: monospace;
   margin: 0 auto 20px;
-  float: right;
   position: relative;
   top: -1021px;
   left: 309px;
@@ -354,8 +353,8 @@ button:focus, input[type='button']:focus {outline:0;}
   padding: 8px 12px;
 }
 #below img {
-  margin-top: 10px;
-  width: 50%;
+  margin-top: 5px;
+  width: 50;
 }
 
 
