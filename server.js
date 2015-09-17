@@ -525,6 +525,16 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('submitHS', function(data) {
 
+    var updateScoresAndEmit = function(client) {
+
+      updateHighScores(client, function() {
+        console.log('updated high scores');
+        io.sockets.emit('highScores', {scoreArr: highScoreData});
+        done();
+      });
+
+    };
+
     console.log('inserting score...' + JSON.stringify(data));
 
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
@@ -538,27 +548,38 @@ io.sockets.on('connection', function (socket) {
         client.query(queryText, function(err, result) {
 
           console.log( err, result);
+          done();
 
-          var queryText = 'INSERT INTO "highscores" ("username", "dateset", "games", "points") SELECT "' + data.username + '", "' + dateNow + '", ' + data.games + ', ' + data.pts + ' WHERE NOT EXISTS (SELECT 1 FROM highscores WHERE username="' + data.username + '" AND dateset="' + dateNow + '")';
+          if (err) {
 
-            console.log(queryText);
+              var queryText = 'INSERT INTO "highscores" ("username", "dateset", "games", "points") VALUES ($1, $2, $3, $4)';
 
-              client.query(queryText, function(err, result) {
+              console.log(queryText);
+
+              client.query(queryText, [data.username, dateNow, data.games, data.pts], function(err, result) {
                 console.log('here' + JSON.stringify(result) + ' ' + err);
                 if (!err) {
                   console.log('no error');
                   done();
-                  updateHighScores(client, function() {
-                    console.log('updated high scores');
-                    io.sockets.emit('highScores', {scoreArr: highScoreData});
-                    done();
-                  });
+
+                  updateScoresAndEmit(client);
+
+
                 } else {
                   console.log('err ' + err);
                 }
                 console.log('now here');
+
               });
-          });
+
+          } else {
+
+            // update worked
+            updateScoresAndEmit(client);
+
+          }
+
+        });
 
       });
 
