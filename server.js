@@ -292,8 +292,8 @@ var newRoom = function(roomName) {
       socket: sock
     };
 
-        console.log('userbank and here ' + JSON.stringify(rooms[roomName].userBank[id]));
-    console.log('userbank and here ' + JSON.stringify(rooms[roomName].userBank));
+        console.log('userbank and here ' + util.inspect(rooms[roomName].userBank[id], {depth: null}) );
+    console.log('userbank and here ' + util.inspect(rooms[roomName].userBank), {depth: null});
 
     sock.emit('setColor', {color: col});
 
