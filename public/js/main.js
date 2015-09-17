@@ -160,7 +160,7 @@ var showTitleScreen = function(cb) {
 
   setTimeout(function() {
     $('#beta').fadeIn(900);
-  }, 2500);
+  }, 2000);
 
   $('#circle-text').animate({top: '130px'}, 3500, 'easeOutQuart');
   $('#battle-text').animate({bottom: '240px'}, 3500, 'easeOutQuart', function() {
