@@ -284,6 +284,7 @@ var newRoom = function(roomName) {
     var col = rooms[roomName].getUnusedColorName();
     console.log('col ' + col);
     rooms[roomName].numPlayers++;
+    console.log('userbank here ' + JSON.stringify(rooms[roomName].userBank));
 
     rooms[roomName].userBank[id] = {
       username: username,
@@ -291,7 +292,8 @@ var newRoom = function(roomName) {
       socket: sock
     };
 
-    console.log('userbank here ' + JSON.stringify(rooms[roomName].userBank));
+        console.log('userbank and here ' + JSON.stringify(rooms[roomName].userBank[id]));
+    console.log('userbank and here ' + JSON.stringify(rooms[roomName].userBank));
 
     sock.emit('setColor', {color: col});
 
@@ -492,7 +494,7 @@ io.sockets.on('connection', function (socket) {
 
       if (myRoom !== 'lobby') {
 
-          console.log('user number ' + myUserId + ' joining room "' + myRoom + '"');
+          console.log('user number ' + myUserId + ' joining room "' + myRoom + '" with ' + myUsername);
 
           if (!rooms[myRoom]) {
             newRoom(myRoom);
