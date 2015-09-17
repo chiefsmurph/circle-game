@@ -130,7 +130,7 @@ var chooseRoom = function(roomToGo) {
 
     $('#bottomStatus').html("room: <span id='curRoom'></span> || # of players: <span id='numPlayers'></span>");
     socket.emit('leaveRoom');
-    socket.emit('joinRoom', {room: roomToGo});
+    socket.emit('joinRoom', {room: roomToGo, uid: username});
     $('#curRoom').text(roomToGo);
     curRoom = roomToGo;
 
@@ -235,6 +235,10 @@ var backToRoomChooser = function() {
   $('#backRoomButton').prop('disabled', true);
 
 };
+
+socket.on('usersColors' function(data) {
+  console.log('usercolors ' + JSON.stringify(data.userColors));
+});
 
 socket.on('highScores', function(data) {
 
