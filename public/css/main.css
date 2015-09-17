@@ -268,8 +268,9 @@ button:focus, input[type='button']:focus {outline:0;}
   font-family: monospace;
   margin: 0 auto 20px;
   position: relative;
-  top: -200px;
-  width: 500px;
+  top: -1021px;
+  left: 350px;
+  width: 200px;
   background-color: grey;
   overflow: hidden;
   /*box-shadow: 4px 4px 20px rgba(255,255,255,0.3);*/
