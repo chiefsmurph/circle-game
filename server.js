@@ -30,14 +30,6 @@ var updateScoresAndEmit = function(client, done) {
 
 };
 
-// for rgbcounts count
-Object.prototype.size = function() {
-    var size = 0, key;
-    for (key in this) {
-        if (this.hasOwnProperty(key)) size++;
-    }
-    return size;
-};
 
 app.get('/removeScore', function(req, res, next) {
 
@@ -186,6 +178,17 @@ var newRoom = function(roomName) {
   rooms[roomName].numWaitingForNewGame = 0;     // number of people waiting for new game to start
   rooms[roomName].waitingForSpaceQueue = [];    // queue of userId's of people waiting for space in the room ('watch mode')
   rooms[roomName].RGBCounts = {};               // object to hold rgb data for each user
+
+  rooms[roomName].getRGBCountsSize = function() {
+    // for rgbcounts count
+    var size = 0, key;
+    for (key in rooms[roomName].RGBCounts) {
+        if (rooms[roomName].RGBCounts.hasOwnProperty(key)) size++;
+    }
+    return size;
+
+  }
+
   rooms[roomName].timerToStart = null;          // timer before new game (adds 5sec for each join)
   rooms[roomName].maxPeople = (function() {
     if (roomSettings.hasOwnProperty(roomName)) {
@@ -250,7 +253,7 @@ var newRoom = function(roomName) {
     }
 
     // just in case something weird happens
-    if (rooms[roomName].RGBCounts.size() === rooms[roomName].numPlayers) {
+    if (rooms[roomName].getRGBCountsSize() === rooms[roomName].numPlayers) {
       hasAllOfThem = true;
     }
 
