@@ -31,8 +31,10 @@ app.get('/removeScore', function(req, res, next) {
 
   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
     console.log('deleting username ' + req.query.user + ' in table');
+
     client.query('DELETE * from highscores WHERE username=\'' + req.query.user + '\'', function(err, result) {
 
+      console.log('err ' + err + ' and result ' + result);
       done();
       updateScoresAndEmit(client, done);
       res.send(JSON.stringify(result));
@@ -48,7 +50,7 @@ app.get('/showdb', function(req, res, next) {
 
   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
     client.query('SELECT * from highscores', function(err, result) {
-      console.log('err ' + err + ' and result ' + result);
+
       updateScoresAndEmit(client, done);
       res.send(JSON.stringify(result.rows));
 
