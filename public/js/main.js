@@ -74,7 +74,7 @@ var validateText = function(min, max, el) {
   }
   // test for bad words
   for (var i = 0; i < badWords.length; i++) {
-    if (textVal.indexOf(badWords[i]) !== -1) {
+    if (textVal.toLowerCase().indexOf(badWords[i]) !== -1) {
       isValid = false;
     }
   }
