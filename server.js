@@ -111,7 +111,7 @@ var updateHighScores = function(client, cb) {       // void
 
           console.log(' err ' + err);
           handleResult(result);
-          client.end();
+          done()
 
         });
 
@@ -536,11 +536,11 @@ io.sockets.on('connection', function (socket) {
           console.log('here' + JSON.stringify(result) + ' ' + err);
           if (!err) {
             console.log('no error');
-            client.end();
+            done();
             updateHighScores(client, function() {
               console.log('updated high scores');
               io.sockets.emit('highScores', {scoreArr: highScoreData});
-              client.end();
+              done();
             });
           } else {
             console.log('err ' + err);
