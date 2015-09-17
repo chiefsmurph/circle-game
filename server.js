@@ -4,6 +4,8 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
+var connectionString = "postgres://mbxlvabrzzicaj:*PASSWORD*@*HOST*:*PORT:/*DATABASE*"
+
 var port = process.env.PORT || 5000; // Use the port that Heroku
 server.listen(port);
 
@@ -25,6 +27,15 @@ var updateScoresAndEmit = function(client, done) {
     done();
   });
 
+};
+
+// for rgbcounts count
+Object.prototype.size = function() {
+    var size = 0, key;
+    for (key in this) {
+        if (this.hasOwnProperty(key)) size++;
+    }
+    return size;
 };
 
 app.get('/removeScore', function(req, res, next) {
@@ -237,6 +248,12 @@ var newRoom = function(roomName) {
         hasAllOfThem = false;
       }
     }
+
+    // just in case something weird happens
+    if (rooms[roomName].RGBCounts.size() === rooms[roomName].numPlayers) {
+      hasAllOfThem = true;
+    }
+
     return hasAllOfThem;
 
   };

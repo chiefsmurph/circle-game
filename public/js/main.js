@@ -84,25 +84,29 @@ var validateText = function(min, max, el) {
 
 };
 
+var handleUsernameSubmit() {
+  if (validateText(3,8,'#username')) {
+      // set username
+      username = $('#username').val();
+      docCookies.setItem('pastusername', username);
+      console.log('setting username to ' + username )
+      $('#loginScreen').hide();
+      cb();
+  } else {
+    // invalid username
+    $('#username').val('');
+    $('#username').focus();
+
+  }
+}
+
 var showUserScreen = function(cb) {
 
   $('#loginScreen').show();
   $('#username').focus();
   $('#setUserBtn').on('click', function() {
 
-    if (validateText(3,8,'#username')) {
-        // set username
-        username = $('#username').val();
-        docCookies.setItem('pastusername', username);
-        console.log('setting username to ' + username )
-        $('#loginScreen').hide();
-        cb();
-    } else {
-      // invalid username
-      $('#username').val('');
-      $('#username').focus();
-
-    }
+    handleUsernameSubmit();
 
   });
 
@@ -709,6 +713,12 @@ $(function() {
       }
   });
 
+  $("#username").keypress(function(event) {
+      if (event.which == 13) {
+          event.preventDefault();
+          handleUsernameSubmit();
+      }
+  });
 
   //END INITS
 
