@@ -243,7 +243,7 @@ socket.on('usersColors', function(data) {
 
   for (var user in data.usersColors) {
     var newTR = $('<tr></tr>');
-    newTR.append('<td style="background-color: ' + data.usersColors[user].color + '"><span></span></td>');  // for the circle
+    newTR.append('<td><div style="background-color: ' + data.usersColors[user].color + '"></div></td>');  // for the circle
     newTR.append('<td>' + data.usersColors[user].username + '</td>');  // for the username
     usersColsTable.append(newTR);
   }

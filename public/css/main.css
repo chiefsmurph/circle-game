@@ -281,10 +281,13 @@ button:focus, input[type='button']:focus {outline:0;}
 #usersAndColors table {
   width: 100%;
 }
-#usersAndColors table span {
+#usersAndColors table div {
   width: 20px;
   height: 20px;
   border-radius: 10px;
+}
+#usersAndColors table tr td:first-child {
+  width: 30px;
 }
 #infoPanel {
   font-family: monospace;
