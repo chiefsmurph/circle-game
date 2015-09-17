@@ -509,6 +509,7 @@ io.sockets.on('connection', function (socket) {
           console.log('here' + JSON.stringify(result) + ' ' + err);
           if (!err) {
             console.log('no error');
+            client.end();
             updateHighScores(client, function() {
               console.log('updated high scores');
               io.sockets.emit('highScores', {scoreArr: highScoreData});
