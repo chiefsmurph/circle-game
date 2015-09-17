@@ -238,6 +238,14 @@ var backToRoomChooser = function() {
 
 socket.on('usersColors', function(data) {
   console.log('usercolors ' + JSON.stringify(data.usersColors));
+
+  var usersColsTable = $('#usersAndColors table');
+
+  for (var user in data.usersColors) {
+    var newTR = $('<tr></tr>');
+    newTR.append('<td style="background-color: ' + data.usersColors[user].color + '"><span></span></td>');  // for the circle
+    newTR.append('<td>' + data.usersColors[user].username + '</td>');  // for the username
+  }
 });
 
 socket.on('highScores', function(data) {

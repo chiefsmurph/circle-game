@@ -264,6 +264,27 @@ button:focus, input[type='button']:focus {outline:0;}
   border-radius: 10px 0 0 10px;
   background-color: rgba(255,255,0,0.4);
 }
+#usersAndColors {
+  font-family: monospace;
+  margin: 0 auto 20px;
+  position: relative;
+  top: -200px;
+  width: 500px;
+  background-color: grey;
+  overflow: hidden;
+  /*box-shadow: 4px 4px 20px rgba(255,255,255,0.3);*/
+  cursor: default;
+  border-radius: 0 0 10px 10px;
+  border: 1px solid black;
+}
+#usersAndColors table {
+  width: 100%;
+}
+#usersAndColors table span {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+}
 #infoPanel {
   font-family: monospace;
   margin: 0 auto 20px;
