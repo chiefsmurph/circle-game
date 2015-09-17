@@ -336,7 +336,7 @@ var newRoom = function(roomName) {
         var takenColors = new Array;
         for (var user in rooms[roomName].userBank) {
           if (rooms[roomName].userBank.hasOwnProperty(user)) {
-            takenColors.push(rooms[roomName].userBank[color]);
+            takenColors.push(rooms[roomName].userBank[user].color);
           }
         }
         console.log('takencols' + JSON.stringify(takenColors));
