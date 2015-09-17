@@ -265,10 +265,11 @@ var newRoom = function(roomName) {
     for (var key in rooms[roomName].userBank) {
       if (rooms[roomName].userBank.hasOwnProperty(key)) {
         var curUser = rooms[roomName].userBank[key];
+        console.log('curuser ' + JSON.stringify(curUser));
         result[key] = {
           username: curUser[username],
           color: curUser[color]
-        }      
+        };
       }
     }
 
@@ -439,8 +440,8 @@ io.sockets.on('connection', function (socket) {
       passColorOff();
       rooms[myRoom].userLeaving(myUserId);
       // update room userandcolors
-      rooms[roomName].sendAll('usersColors', {
-        usersColors: rooms[roomName].getUsersAndColors()
+      rooms[myRoom].sendAll('usersColors', {
+        usersColors: rooms[myRoom].getUsersAndColors()
       });
     }
 
