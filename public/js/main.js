@@ -607,7 +607,7 @@ $(function() {
 
   $('#gamearea').on('mousedown touchstart', function (e) {
 
-    if (activeGame && myColor !== null && !activeClick && clickEquality === 0) {
+    if (activeGame && myColor !== null && !activeClick && clickEquality < 5) {
 
       activeClick = true;
       clickEquality++;
@@ -671,7 +671,7 @@ $(function() {
 
     if (activeGame && myColor !== null) {
 
-      if (lastClickCoords.xPos !== xPos || lastClickCoords.yPos !== yPos) {
+      if ((lastClickCoords.xPos !== xPos || lastClickCoords.yPos !== yPos) || clickEquality !== 0) {
 
         console.log('there');
         socket.emit('addCircle', {x: xPos, y: yPos, rad: $('#yourClicker').width(), col: myColor});
