@@ -243,7 +243,8 @@ socket.on('usersColors', function(data) {
   console.log('usercolors ' + JSON.stringify(data.usersColors));
 
   var usersColsTable = $('#usersAndColors table');
-
+  usersColsTable.empty();
+  
   for (var user in data.usersColors) {
     var newTR = $('<tr></tr>');
     newTR.append('<td><div style="background-color: ' + data.usersColors[user].color + '"></div></td>');  // for the circle

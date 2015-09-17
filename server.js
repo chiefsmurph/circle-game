@@ -565,6 +565,8 @@ io.sockets.on('connection', function (socket) {
       //   }
       // }
 
+      //
+      /*
       console.log('sending winner to the curplayingqueue ' + JSON.stringify(rooms[myRoom].curPlayingQueue));
       for (var i=0; i < rooms[myRoom].curPlayingQueue.length; i++) {
         var curPlayer = rooms[myRoom].curPlayingQueue[i];
@@ -576,6 +578,12 @@ io.sockets.on('connection', function (socket) {
           });
         }
       }
+      */
+
+      rooms[myRoom].sendAll('winner', {
+        topColor: (winBy !== 0) ? sortableScores[0][0] : '0,0,0', // tie if tie or nothing on the board
+        winBy: winBy
+      });
 
       console.log('game over and all users finishedcalc');
       rooms[myRoom].finishedCalc = 0;
