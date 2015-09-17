@@ -291,6 +291,8 @@ var newRoom = function(roomName) {
       socket: sock
     };
 
+    console.log('userbank here ' + JSON.stringify(rooms[roomName].userBank));
+
     sock.emit('setColor', {color: col});
 
     if (!col) {
