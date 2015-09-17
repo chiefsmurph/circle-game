@@ -23,12 +23,16 @@ html, body {
 }
 #below {
   font-family: monospace;
-  position: absolute;
-  top: 800px;
+  position: relative;
+  bottom: 400px;
   margin: 0 auto 20px;
-  border: 1px solid black
-  padding: 8px 12px;
+  border: 1px solid black;
   background-color: LightGrey;
+  width: 500px;
+  padding: 8px 12px;
+}
+#below img {
+  margin-top: 5px;
 }
 #gamearea {
   background-image: url('/img/asfalt-light.png');
@@ -276,6 +280,7 @@ button:focus, input[type='button']:focus {outline:0;}
 #usersAndColors {
   font-family: monospace;
   margin: 0 auto 20px;
+  float: right;
   position: relative;
   top: -1021px;
   left: 309px;
