@@ -345,7 +345,7 @@ var newRoom = function(roomName) {
         console.log('allcols' + allColors + ' and ' + possibleColors);
         var takenColors = new Array;
         for (var user in rooms[roomName].userBank) {
-          takenColors.push(rooms[roomName].user[color]);
+          takenColors.push(rooms[roomName].userBank[color]);
         }
         console.log('takencols' + JSON.stringify(takenColors));
         var remainingColors = allColors.filter(function(i) {
