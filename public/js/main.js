@@ -60,7 +60,7 @@ var myHighs = {
 
 var validateText = function(min, max, el) {
 
-  var badWords = ['fuck', 'cock', 'pus', 'dick', 'bastard', 'cunt'];
+  var badWords = ['fuck', 'cock', 'pus', 'dick', 'bastard', 'cunt', 'ass'];
 
   var textVal = $(el).val();
   var isValid = true;
