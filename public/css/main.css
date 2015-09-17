@@ -62,6 +62,10 @@ html, body {
 #highScorePanel th, #highScorePanel td {
   border: 1px solid black
 }
+#highScorePanel tbody td:nth-child(5) {
+  color: grey;
+  font-style: italic;
+}
 #loginScreen {
   position: absolute;
   top: 50px;
