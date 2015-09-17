@@ -87,8 +87,8 @@ var updateHighScores = function(client, cb) {       // void
   var handleResult = function(result) {
 
       console.log('high score rows' + JSON.stringify(result));
-      highScoreData = result.rows;
-      console.log(highScoreData);
+      if (result) highScoreData = result.rows;
+      console.log('hs data ' + highScoreData);
       if (cb) cb();
 
   }
