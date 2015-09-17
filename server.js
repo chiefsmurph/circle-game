@@ -497,6 +497,7 @@ io.sockets.on('connection', function (socket) {
       //   }
       // }
 
+      console.log('sending winner to the curplayingqueue ' + JSON.stringify(rooms[myRoom].curPlayingQueue));
       for (var i=0; i < rooms[myRoom].curPlayingQueue.length; i++) {
         var curPlayer = rooms[myRoom].curPlayingQueue[i];
         if (rooms[myRoom].socketBank[curPlayer]) {
