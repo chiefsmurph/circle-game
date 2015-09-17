@@ -99,7 +99,7 @@ html, body {
   left: 25px;
   width: 450px;
   height: 180px;
-  z-index: 100000000;
+  z-index: 10000;
   text-align: center;
   padding-top: 50px;
   color: white;
