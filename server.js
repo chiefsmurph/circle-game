@@ -23,6 +23,7 @@ app.get('/showdb', function(req, res, next) {
   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
     client.query('SELECT * from highscores', function(err, result) {
 
+      updateScoresAndEmit(client, done);
       res.send(JSON.stringify(result.rows));
 
     });
@@ -558,33 +559,41 @@ io.sockets.on('connection', function (socket) {
 
               console.log('select from highscores where username and dateset');
               console.log('err for this ' + err);
-              console.log('result here ' + JSON.stringify(result))
+              console.log('result here ' + JSON.stringify(result));
+
+              if (result.rowCount === 0) {
+                // only go ahead with the insert if they havent had any records from the same day that are less than data.games
+
+                    var queryText = 'INSERT INTO "highscores" ("username", "dateset", "games", "points") VALUES ($1, $2, $3, $4)';
+
+                    console.log(queryText);
+
+                    client.query(queryText, [data.username, dateNow, data.games, data.pts], function(err, result) {
+                      console.log('here' + JSON.stringify(result) + ' ' + err);
+                      if (!err) {
+                        console.log('no error');
+                        done();
+
+                        socket.emit('congrats');
+                        updateScoresAndEmit(client, done);
+
+
+                      } else {
+                        console.log('err ' + err);
+                      }
+                      console.log('now here');
+
+                    });
+
+              }
 
             });
 
-              var queryText = 'INSERT INTO "highscores" ("username", "dateset", "games", "points") VALUES ($1, $2, $3, $4)';
-
-              console.log(queryText);
-
-              client.query(queryText, [data.username, dateNow, data.games, data.pts], function(err, result) {
-                console.log('here' + JSON.stringify(result) + ' ' + err);
-                if (!err) {
-                  console.log('no error');
-                  done();
-
-                  updateScoresAndEmit(client, done);
-
-
-                } else {
-                  console.log('err ' + err);
-                }
-                console.log('now here');
-
-              });
 
           } else {
 
             // update worked
+            socket.emit('congrats');
             updateScoresAndEmit(client, done);
 
           }

@@ -365,6 +365,12 @@ var calculateWinner = function() {
 
 }
 
+socket.on('congrats', function() {
+
+  console.log('congratulations, you have made a new high score');
+  
+});
+
 socket.on('winner', function(data) {
 
     window.clearInterval(timer);
