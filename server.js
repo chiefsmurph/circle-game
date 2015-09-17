@@ -17,15 +17,6 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(express.static(__dirname + '/public'));
 
-var updateScoresAndEmit = function(client, done) {
-
-  updateHighScores(client, function() {
-    console.log('updated high scores');
-    io.sockets.emit('highScores', {scoreArr: highScoreData});
-    done();
-  });
-
-};
 
 app.get('/showdb', function(req, res, next) {
 
@@ -512,6 +503,7 @@ io.sockets.on('connection', function (socket) {
       for (var i=0; i < rooms[myRoom].curPlayingQueue.length; i++) {
         var curPlayer = rooms[myRoom].curPlayingQueue[i];
         if (rooms[myRoom].socketBank[curPlayer]) {
+          console.log('sending to ' + curPlayer );
           rooms[myRoom].socketBank[curPlayer].emit('winner', {
             topColor: (winBy !== 0) ? sortableScores[0][0] : '0,0,0', // tie if tie or nothing on the board
             winBy: winBy
