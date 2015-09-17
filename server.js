@@ -261,6 +261,7 @@ var newRoom = function(roomName) {
 
   rooms[roomName].getUsersAndColors = function() {  // returns an object
 
+    console.log(JSON.stringify(rooms[roomName].userBank));
     var result = {};
     for (var key in rooms[roomName].userBank) {
       console.log('key' + key);
