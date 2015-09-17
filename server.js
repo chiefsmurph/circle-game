@@ -530,7 +530,7 @@ io.sockets.on('connection', function (socket) {
         console.log('about to insert');
         var queryText = 'INSERT INTO "highscores" ("username", "dateset", "games", "points") VALUES ($1, $2, $3, $4)';
         var dateNow = new Date().toISOString().slice(0, 10);
-        dateNow = dateNow.substr(5) + dateNow.substr(0, 5);
+        dateNow = dateNow.substr(5) + '-' + dateNow.substr(0, 4);
         client.query(queryText, [data.username, dateNow, data.games, data.pts], function(err, result) {
           console.log('here' + JSON.stringify(result) + ' ' + err);
           if (!err) {

@@ -59,7 +59,7 @@ html, body {
 #highScorePanel table {
   width: 100%;
 }
-#highScorePanel th, td {
+#highScorePanel th, #highScorePanel td {
   border: 1px solid black
 }
 #loginScreen {
