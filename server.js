@@ -518,7 +518,6 @@ io.sockets.on('connection', function (socket) {
       rooms[myRoom].RGBCounts = {};
       rooms[myRoom].timerToStart = null;
       rooms[myRoom].curPlayingQueue = [];
-      rooms[myRoom].socketBank = {};
       rooms[myRoom].waitFiveThenCheckAndStart(12000); // wait 12 then start
 
     };
