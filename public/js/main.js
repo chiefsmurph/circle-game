@@ -379,7 +379,7 @@ socket.on('winner', function(data) {
     setStatus('winner: ' + ((colorRGBtoName[topColor]) ? colorRGBtoName[topColor] + '<br><br>and won by...<br><i>' + data.winBy + ' points</i>'  : 'tie'), 4000, function() {
 
         // update high score table if user is winner
-        if (colorRGBtoName[topColor] === myColor) {
+        if (colorRGBtoName[topColor].toLowerCase() === myColor.toLowerCase()) {
 
           myHighs.curStreak.games++;
           myHighs.curStreak.points += data.winBy;
