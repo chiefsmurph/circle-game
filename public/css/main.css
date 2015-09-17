@@ -323,3 +323,6 @@ button:focus, input[type='button']:focus {outline:0;}
   background-color: white;
   color: black;
 }
+.blue-button {
+  background-color: cyan;
+}

@@ -141,7 +141,7 @@ var toggleHighs = function() {
   }
 
   highPanelShowing = !highPanelShowing;
-  $('#togHSbtn').css('background-color', 'white');
+  $('#togHSbtn').removeClass('blue-button');
 
 }
 
@@ -406,7 +406,7 @@ var calculateWinner = function() {
 
 socket.on('congrats', function() {
 
-  $('#togHSbtn').css('background-color', 'blue');
+  $('#togHSbtn').addClass('blue-button');
   console.log('congratulations, you have made a new high score');
 
 });
