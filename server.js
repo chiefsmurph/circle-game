@@ -539,7 +539,7 @@ io.sockets.on('connection', function (socket) {
 
           console.log( err, result);
 
-          var queryText = 'INSERT INTO "highscores" ("username", "dateset", "games", "points") SELECT "' + data.username + '", "' + dateNow + '", ' + date.games + ', ' + data.pts + ' WHERE NOT EXISTS (SELECT 1 FROM highscores WHERE username="' + data.username + '" AND dateset="' + dateNow + '"';
+          var queryText = 'INSERT INTO "highscores" ("username", "dateset", "games", "points") SELECT "' + data.username + '", "' + dateNow + '", ' + data.games + ', ' + data.pts + ' WHERE NOT EXISTS (SELECT 1 FROM highscores WHERE username="' + data.username + '" AND dateset="' + dateNow + '"';
 
             console.log(queryText);
 
