@@ -80,10 +80,11 @@ var updateHighScores = function(client, cb) {       // void
   }
 
   if (!client) {
-      pg.connect(process.env.DATABASE_URL, function(err, client) {
+      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         var query = client.query('SELECT username, dataset, games, points FROM highscores ORDER BY games DESC LIMIT 10', function(err, result) {
 
           handleResult(result);
+          done();
 
         });
 
@@ -497,7 +498,7 @@ io.sockets.on('connection', function (socket) {
 
     console.log('inserting score...' + JSON.stringify(data));
 
-      pg.connect(process.env.DATABASE_URL, function(err, client) {
+      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         console.log('about to insert');
         var queryText = 'INSERT INTO "highscores" ("username", "games", "points") VALUES ($1, $2, $3)';
         //var dateNow = new Date().toISOString().slice(0, 10);
@@ -507,11 +508,12 @@ io.sockets.on('connection', function (socket) {
             updateHighScores(client, function() {
               console.log('updated high scores');
               io.sockets.emit('highScores', {scoreArr: highScoreData});
+              done();
             });
           } else {
             console.log('err ' + err);
           }
-
+          console.log('now here');
         });
       });
 
