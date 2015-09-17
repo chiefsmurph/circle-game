@@ -630,7 +630,7 @@ $(function() {
         borderTopRightRadius: maxClickerSize,
         borderBottomLeftRadius: maxClickerSize,
         borderBottomRightRadius: maxClickerSize
-      }, maxClickerSize * clickerSpeed, 'easeOutCirc', function() {
+      }, maxClickerSize * clickerSpeed, 'linear', function() {
 
         if (lastClickCoords.xPos !== xPos || lastClickCoords.yPos !== yPos) {
 
