@@ -60,6 +60,8 @@ var myHighs = {
 
 var validateText = function(min, max, el) {
 
+  var badWords = ['fuck', 'cock', 'pus', 'dick', 'bastard', 'cunt'];
+
   var textVal = $(el).val();
   var isValid = true;
   // test min max
@@ -69,6 +71,12 @@ var validateText = function(min, max, el) {
   // test for alphanumeric
   if (!textVal.match(/^\w+$/)) {
     isValid = false;
+  }
+  // test for bad words
+  for (var i = 0; i < badWords.length; i++) {
+    if (textVal.indexOf(badWords[i]) !== -1) {
+      isValid = false;
+    }
   }
 
   return isValid;
