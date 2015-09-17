@@ -67,7 +67,7 @@ var validateText = function(min, max, el) {
     isValid = false;
   }
   // test for alphanumeric
-  if (!textVal.test(/^\w+$/)) {
+  if (!textVal.match(/^\w+$/)) {
     isValid = false;
   }
 
