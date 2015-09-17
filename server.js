@@ -29,7 +29,7 @@ pg.connect(process.env.DATABASE_URL, function(err, client) {
 });
 */
 
-
+/*
 pg.connect(process.env.DATABASE_URL, function(err, client) {
   var query = client.query('ALTER TABLE highscores ALTER COLUMN dateset type varchar(40)');
   console.log('adding pledge col');
@@ -37,7 +37,7 @@ pg.connect(process.env.DATABASE_URL, function(err, client) {
     console.log('row: ' + JSON.stringify(row));
   });
 });
-
+*/
 
 // CONFIG
 
@@ -83,19 +83,20 @@ var updateHighScores = function(client, cb) {       // void
 
   if (!client) {
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        var query = client.query('SELECT username, dataset, games, points FROM highscores ORDER BY games DESC LIMIT 10', function(err, result) {
+        client.query('SELECT username, dataset, games, points FROM highscores ORDER BY games DESC LIMIT 10', function(err, result) {
 
           handleResult(result);
-          done();
+          client.end();
 
         });
 
       });
   } else {
 
-    var query = client.query('SELECT username, dataset, games, points FROM highscores ORDER BY games DESC LIMIT 10', function(err, result) {
+    client.query('SELECT username, dataset, games, points FROM highscores ORDER BY games DESC LIMIT 10', function(err, result) {
 
       handleResult(result);
+      client.end();
 
     });
 
@@ -504,13 +505,14 @@ io.sockets.on('connection', function (socket) {
         console.log('about to insert');
         var queryText = 'INSERT INTO "highscores" ("username", "dateset", "games", "points") VALUES ($1, $2, $3, $4)';
         var dateNow = new Date().toISOString().slice(0, 10);
-        client.query(queryText, [data.username, dateNow, data.games, data.points], function(err, result) {
+        client.query(queryText, [data.username, dateNow, parseInt(data.games), parseInt(data.points)], function(err, result) {
           console.log('here' + JSON.stringify(result) + ' ' + err);
           if (!err) {
+            console.log('no error');
             updateHighScores(client, function() {
               console.log('updated high scores');
               io.sockets.emit('highScores', {scoreArr: highScoreData});
-              done();
+              client.end();
             });
           } else {
             console.log('err ' + err);
