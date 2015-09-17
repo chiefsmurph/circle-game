@@ -107,7 +107,7 @@ var updateHighScores = function(client, cb) {       // void
 
   if (!client) {
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-        client.query('SELECT username, dateset, games, points FROM highscores ORDER BY games DESC LIMIT 10', function(err, result) {
+        client.query('SELECT username, dateset, games, points FROM highscores ORDER BY games, points DESC LIMIT 10', function(err, result) {
 
           console.log(' err ' + err);
           handleResult(result);
@@ -118,7 +118,7 @@ var updateHighScores = function(client, cb) {       // void
       });
   } else {
 
-    client.query('SELECT username, dateset, games, points FROM highscores ORDER BY games DESC LIMIT 10', function(err, result) {
+    client.query('SELECT username, dateset, games, points FROM highscores ORDER BY games, points DESC LIMIT 10', function(err, result) {
 
       console.log(' err ' + err);
       handleResult(result);
