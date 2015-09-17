@@ -196,8 +196,8 @@ var newRoom = function(roomName) {
   })();
 
   // the gold
-  rooms[roomName].userBank = {};  // { uid: {username: 'xxxx', color: 'red', socket: Socket} }
-
+  rooms[roomName].userBank = {};  // { uid: {username: 'xxxx', color: 'red'} }
+  rooms[roomName].socketBank = {};  // {uid: socket, ...}
   // HELPER FUNCTIONS
 
   rooms[roomName].sendAll = function(event, obj) {   // void
@@ -259,42 +259,18 @@ var newRoom = function(roomName) {
   };
 
   // more important room methods
-
-  rooms[roomName].getUsersAndColors = function() {  // returns an object
-
-    console.log(JSON.stringify(rooms[roomName].userBank));
-    var result = {};
-    for (var key in rooms[roomName].userBank) {
-      console.log('key' + key);
-      if (rooms[roomName].userBank.hasOwnProperty(key)) {
-        var curUser = rooms[roomName].userBank[key];
-        console.log('curuser ' + JSON.stringify(curUser));
-        result[key] = {
-          username: curUser[username],
-          color: curUser[color]
-        };
-      }
-    }
-
-    return result;
-
-  };
-
   rooms[roomName].setupNewUser = function(id, sock, username) {
 
     var col = rooms[roomName].getUnusedColorName();
     console.log('col ' + col);
     rooms[roomName].numPlayers++;
-    console.log('userbank here ' + JSON.stringify(rooms[roomName].userBank));
 
     rooms[roomName].userBank[id] = {
       username: username,
-      color: col,
-      socket: sock
+      color: col
     };
 
-        console.log('userbank and here ' + util.inspect(rooms[roomName].userBank[id], {depth: null}) );
-    console.log('userbank and here ' + util.inspect(rooms[roomName].userBank), {depth: null});
+    rooms[roomName].socketBank[id] = sock;
 
     sock.emit('setColor', {color: col});
 
@@ -309,7 +285,7 @@ var newRoom = function(roomName) {
     });
 
     rooms[roomName].sendAll('usersColors', {
-      usersColors: rooms[roomName].getUsersAndColors()
+      usersColors: rooms[roomName].userBank
     });
 
     updateLobbyTotals();
@@ -324,13 +300,17 @@ var newRoom = function(roomName) {
     rooms[roomName].userBank[id] = null;
     delete rooms[roomName].userBank[id];
 
+    // remove from socketBank
+    rooms[roomName].socketBank[id] = null;
+    delete rooms[roomName].socketBank[id];
+
     rooms[roomName].sendAll('playerCount', {
       count: rooms[roomName].numPlayers,
       max: rooms[roomName].maxPeople
     });
 
     rooms[roomName].sendAll('usersColors', {
-      usersColors: rooms[roomName].getUsersAndColors()
+      usersColors: rooms[roomName].userBank
     });
 
     updateLobbyTotals();
@@ -424,8 +404,8 @@ io.sockets.on('connection', function (socket) {
         var firstInLine = rooms[myRoom].waitingForSpaceQueue.shift(); // id of first in line
         if (firstInLine===undefined) {passed = true;}
         console.log('giving color ' + rooms[myRoom].userBank[myUserId].color + ' to user ' + firstInLine);
-        if (rooms[myRoom].userBank[myUserId].socket[ firstInLine ]) {
-          rooms[myRoom].userBank[firstInLine].socket.emit('setColor', {color: rooms[myRoom].userBank[myUserId].color });
+        if (rooms[myRoom].socketBank[myUserId][ firstInLine ]) {
+          rooms[myRoom].socketBank[firstInLine].emit('setColor', {color: rooms[myRoom].userBank[myUserId].color });
           rooms[myRoom].userBank[firstInLine].color = rooms[myRoom].userBank[myUserId].color;
           passed = true;
         } else if (rooms[myRoom].waitingForSpaceQueue.length > 0) {
@@ -448,7 +428,7 @@ io.sockets.on('connection', function (socket) {
       rooms[myRoom].userLeaving(myUserId);
       // update room userandcolors
       rooms[myRoom].sendAll('usersColors', {
-        usersColors: rooms[myRoom].getUsersAndColors()
+        usersColors: rooms[myRoom].userBank
       });
     }
 
@@ -588,9 +568,9 @@ io.sockets.on('connection', function (socket) {
       console.log('sending winner to the curplayingqueue ' + JSON.stringify(rooms[myRoom].curPlayingQueue));
       for (var i=0; i < rooms[myRoom].curPlayingQueue.length; i++) {
         var curPlayer = rooms[myRoom].curPlayingQueue[i];
-        if (rooms[myRoom].userBank[curPlayer].socket) {
+        if (rooms[myRoom].socketBank[curPlayer]) {
           console.log('sending to ' + curPlayer );
-          rooms[myRoom].userBank[curPlayer].socket.emit('winner', {
+          rooms[myRoom].socketBank[curPlayer].emit('winner', {
             topColor: (winBy !== 0) ? sortableScores[0][0] : '0,0,0', // tie if tie or nothing on the board
             winBy: winBy
           });
