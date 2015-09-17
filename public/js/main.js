@@ -84,7 +84,7 @@ var validateText = function(min, max, el) {
 
 };
 
-var handleUsernameSubmit() {
+var handleUsernameSubmit = function() {   //void
   if (validateText(3,8,'#username')) {
       // set username
       username = $('#username').val();
