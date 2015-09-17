@@ -263,10 +263,12 @@ var newRoom = function(roomName) {
 
     var result = {};
     for (var key in rooms[roomName].userBank) {
-      var curUser = rooms[roomName].userBank[key];
-      result[key] = {
-        username: curUser[username],
-        color: curUser[color]
+      if (rooms[roomName].userBank.hasOwnProperty(key)) {
+        var curUser = rooms[roomName].userBank[key];
+        result[key] = {
+          username: curUser[username],
+          color: curUser[color]
+        }      
       }
     }
 
