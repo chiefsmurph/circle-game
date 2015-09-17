@@ -226,6 +226,9 @@ var backToRoomChooser = function() {
   $('#roomChooser').show();
   setStatus('Choose a room');
 
+  $('#usersAndColors table').empty();
+  $('#usersAndColors').hide();
+
   $('#colorBox').addClass('hider');
 
   console.log('leaving room');
@@ -247,6 +250,7 @@ socket.on('usersColors', function(data) {
     newTR.append('<td>' + data.usersColors[user].username + '</td>');  // for the username
     usersColsTable.append(newTR);
   }
+  $('#usersAndColors').show();
 
 });
 

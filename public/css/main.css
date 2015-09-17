@@ -269,13 +269,12 @@ button:focus, input[type='button']:focus {outline:0;}
   margin: 0 auto 20px;
   position: relative;
   top: -1021px;
-  left: 350px;
-  width: 200px;
+  left: 309px;
+  width: 120px;
   background-color: grey;
   overflow: hidden;
   /*box-shadow: 4px 4px 20px rgba(255,255,255,0.3);*/
   cursor: default;
-  border-radius: 0 0 10px 10px;
   border: 1px solid black;
 }
 #usersAndColors table {
@@ -287,7 +286,9 @@ button:focus, input[type='button']:focus {outline:0;}
   border-radius: 10px;
 }
 #usersAndColors table tr td:first-child {
-  width: 30px;
+  width: 50px;
+  text-align: center;
+  padding: 5px 0 5px 15px
 }
 #infoPanel {
   font-family: monospace;
