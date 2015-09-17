@@ -120,6 +120,7 @@ var updateHighScores = function(client, cb) {       // void
 
     client.query('SELECT username, dateset, games, points FROM highscores ORDER BY games DESC LIMIT 10', function(err, result) {
 
+      console.log(' err ' + err);
       handleResult(result);
 
     });
