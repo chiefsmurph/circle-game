@@ -525,7 +525,7 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('submitHS', function(data) {
 
-    var updateScoresAndEmit = function(client) {
+    var updateScoresAndEmit = function(client, done) {
 
       updateHighScores(client, function() {
         console.log('updated high scores');
@@ -562,7 +562,7 @@ io.sockets.on('connection', function (socket) {
                   console.log('no error');
                   done();
 
-                  updateScoresAndEmit(client);
+                  updateScoresAndEmit(client, done);
 
 
                 } else {
@@ -575,7 +575,7 @@ io.sockets.on('connection', function (socket) {
           } else {
 
             // update worked
-            updateScoresAndEmit(client);
+            updateScoresAndEmit(client, done);
 
           }
 
