@@ -263,6 +263,7 @@ var newRoom = function(roomName) {
 
     var result = {};
     for (var key in rooms[roomName].userBank) {
+      console.log('key' + key);
       if (rooms[roomName].userBank.hasOwnProperty(key)) {
         var curUser = rooms[roomName].userBank[key];
         console.log('curuser ' + JSON.stringify(curUser));
