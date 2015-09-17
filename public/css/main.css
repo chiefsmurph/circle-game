@@ -21,19 +21,6 @@ html, body {
   /*box-shadow: 4px 4px 20px rgba(255,255,255,0.3);*/
   cursor: default;
 }
-#below {
-  font-family: monospace;
-  position: relative;
-  bottom: 400px;
-  margin: 0 auto 20px;
-  border: 1px solid black;
-  background-color: LightGrey;
-  width: 500px;
-  padding: 8px 12px;
-}
-#below img {
-  margin-top: 5px;
-}
 #gamearea {
   background-image: url('/img/asfalt-light.png');
   top: -400px;
@@ -355,6 +342,20 @@ button:focus, input[type='button']:focus {outline:0;}
   margin: 4px auto;
   padding: 4px auto;
   width: 130px;
+}
+#below {
+  font-family: monospace;
+  position: relative;
+  bottom: 400px;
+  margin: 0 auto 20px;
+  border: 1px solid black;
+  background-color: LightGrey;
+  width: 500px;
+  padding: 8px 12px;
+}
+#below img {
+  margin-top: 10px;
+  width: 50%;
 }
 
 
