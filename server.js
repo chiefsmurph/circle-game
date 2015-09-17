@@ -1,5 +1,6 @@
 var pg = require('pg');
 var express = require('express');
+var util = require('util');
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
