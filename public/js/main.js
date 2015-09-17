@@ -271,7 +271,7 @@ socket.on('startGame', function(data) {
                 if (numPlayers > 1) {
                   setStatus('GO!', 1000, function() {
 
-                    if (numPlayers > 1) {
+                    if (numPlayers > 1 && !activeGame) {
 
                           socket.emit('addToRound');    // for keeping track of the users playing the current round
 
