@@ -58,15 +58,42 @@ var myHighs = {
 // socket.emit('joinRoom', {room: 'public'});
 // $('#curRoom').text('public');
 
+var validateText(min, max, el) {
+
+  var textVal = $(el).val();
+  var isValid = true;
+  // test min max
+  if (textVal.length < min || textVal.length > max) {
+    isValid = false;
+  }
+  // test for alphanumeric
+  if (!textVal.test(/^\w+$/)) {
+    isValid = false;
+  }
+
+  return isValid;
+
+};
+
 var showUserScreen = function(cb) {
 
   $('#loginScreen').show();
   $('#username').focus();
   $('#setUserBtn').on('click', function() {
-    username = $('#username').val();
-    console.log('setting username to ' + username )
-    $('#loginScreen').hide();
-    cb();
+
+    if (validateText(3,8,'#username')) {
+        // set username
+
+        username = $('#username').val();
+        console.log('setting username to ' + username )
+        $('#loginScreen').hide();
+        cb();
+    } else {
+      // invalid username
+      $('#username').val('');
+
+    }
+
   });
 
 };
@@ -368,7 +395,7 @@ var calculateWinner = function() {
 socket.on('congrats', function() {
 
   console.log('congratulations, you have made a new high score');
-  
+
 });
 
 socket.on('winner', function(data) {
@@ -530,6 +557,9 @@ $(function() {
 
   }, 200);
 
+  $('#closeHS').click(function() {
+    toggleHighs();
+  });
 
   // setup odomoters
   ['#streakGames span', '#streakPoints span', '#topGames span', '#topPoints span'].forEach(function(element) {
