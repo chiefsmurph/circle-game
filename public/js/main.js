@@ -413,48 +413,48 @@ socket.on('winner', function(data) {
     var topColor = data.topColor;
     console.log('topColor: ' + topColor);
 
+    // update high score table if user is winner
+    if (colorRGBtoName[topColor].toLowerCase() === myColor.toLowerCase()) {
+
+      myHighs.curStreak.games++;
+      myHighs.curStreak.points += data.winBy;
+      $('#streakGames span').text( myHighs.curStreak.games );
+      $('#streakPoints span').text( myHighs.curStreak.points );
+
+      // and then compare the currentstreak's gamecount with the topstreak gamecount
+      if (myHighs.curStreak.games > myHighs.topStreak.games ) {
+
+        myHighs.topStreak.games = myHighs.curStreak.games;
+        myHighs.topStreak.points = myHighs.curStreak.points;
+        $('#topGames span').text( myHighs.topStreak.games );
+        $('#topPoints span').text( myHighs.topStreak.points );
+
+        //check against high score table
+        if (highScoreData.length < 10 || (highScoreData[highScoreData.length-1] && myHighs.topStreak.games > highScoreData[highScoreData.length-1].games)) {
+          console.log('new hs sending');
+          socket.emit('submitHS', {
+            username: username,
+            games: myHighs.topStreak.games,
+            pts: myHighs.topStreak.points
+          });
+        } else {
+          console.log('not a highscore ' + highScoreData.length);
+        }
+
+      }
+
+    } else {
+
+      // if not winner then reset current streak
+      $('#streakGames span').text('00');
+      $('#streakPoints span').text('00000');
+      myHighs.curStreak.games = 0;
+      myHighs.curStreak.points = 0;
+
+    }
+
     // display winner and winBy
     setStatus('winner: ' + ((colorRGBtoName[topColor]) ? colorRGBtoName[topColor] + '<br><br>and won by...<br><i>' + data.winBy + ' points</i>'  : 'tie'), 4000, function() {
-
-        // update high score table if user is winner
-        if (colorRGBtoName[topColor].toLowerCase() === myColor.toLowerCase()) {
-
-          myHighs.curStreak.games++;
-          myHighs.curStreak.points += data.winBy;
-          $('#streakGames span').text( myHighs.curStreak.games );
-          $('#streakPoints span').text( myHighs.curStreak.points );
-
-          // and then compare the currentstreak's gamecount with the topstreak gamecount
-          if (myHighs.curStreak.games > myHighs.topStreak.games ) {
-
-            myHighs.topStreak.games = myHighs.curStreak.games;
-            myHighs.topStreak.points = myHighs.curStreak.points;
-            $('#topGames span').text( myHighs.topStreak.games );
-            $('#topPoints span').text( myHighs.topStreak.points );
-
-            //check against high score table
-            if (highScoreData.length < 10 || (highScoreData[highScoreData.length-1] && myHighs.topStreak.games > highScoreData[highScoreData.length-1].games)) {
-              console.log('new hs sending');
-              socket.emit('submitHS', {
-                username: username,
-                games: myHighs.topStreak.games,
-                pts: myHighs.topStreak.points
-              });
-            } else {
-              console.log('not a highscore ' + highScoreData.length);
-            }
-
-          }
-
-        } else {
-
-          // if not winner then reset current streak
-          $('#streakGames span').text('00');
-          $('#streakPoints span').text('00000');
-          myHighs.curStreak.games = 0;
-          myHighs.curStreak.points = 0;
-
-        }
 
         // back to the waiting for new game
         setStatus('Waiting for new<br>game to start');
