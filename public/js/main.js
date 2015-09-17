@@ -126,8 +126,10 @@ var toggleHighs = function() {
 
   if (!highPanelShowing) {
     $('#highScorePanel').animate({'top': '50px'}, 700, 'easeOutCubic');
+    $('#togHSbtn').text('hide high scores');
   } else {
     $('#highScorePanel').animate({'top': '500px'}, 700, 'easeOutCubic');
+    $('#togHSbtn').text('view high scores');
   }
 
   highPanelShowing = !highPanelShowing;
