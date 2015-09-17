@@ -18,7 +18,7 @@ app.use(bodyParser.json())
 app.use(express.static(__dirname + '/public'));
 
 
-app.get('/showdb' function(req, res, next) {
+app.get('/showdb', function(req, res, next) {
 
   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
     client.query('SELECT * from highscores', function(err, result) {
