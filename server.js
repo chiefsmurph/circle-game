@@ -31,6 +31,18 @@ app.get('/showdb', function(req, res, next) {
 
 });
 
+app.get('/clearScores', function(req, res, next) {
+
+  pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+    client.query('DELETE FROM highscores', function(err, result) {
+
+      res.send(JSON.stringify(result.rows));
+
+    });
+
+  });
+
+});
 
 // INIT HIGH SCORE TABLE
 
@@ -517,6 +529,7 @@ io.sockets.on('connection', function (socket) {
         console.log('about to insert');
         var queryText = 'INSERT INTO "highscores" ("username", "dateset", "games", "points") VALUES ($1, $2, $3, $4)';
         var dateNow = new Date().toISOString().slice(0, 10);
+        dateNow = dateNow.substr(5) + dateNow.substr(0, 5);
         client.query(queryText, [data.username, dateNow, data.games, data.pts], function(err, result) {
           console.log('here' + JSON.stringify(result) + ' ' + err);
           if (!err) {
