@@ -30,7 +30,7 @@ var updateScoresAndEmit = function(client, done) {
 app.get('/removeScore', function(req, res, next) {
 
   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-    console.log('')
+    console.log('deleting username ' + req.query.user + ' in table');
     client.query('DELETE * from highscores WHERE username=\'' + req.query.user + '\'', function(err, result) {
 
       done();
