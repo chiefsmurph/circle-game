@@ -58,7 +58,7 @@ var myHighs = {
 // socket.emit('joinRoom', {room: 'public'});
 // $('#curRoom').text('public');
 
-var validateText(min, max, el) {
+var validateText = function(min, max, el) {
 
   var textVal = $(el).val();
   var isValid = true;
