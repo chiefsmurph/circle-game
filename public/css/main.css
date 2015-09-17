@@ -55,9 +55,11 @@ html, body {
   color: black;
   border-radius: 10px 10px 0 0;
   background-color: rgba(255,255,255,0.9);
+  background-image: url('/img/binding-light.png');
 }
 #highScorePanel table {
   width: 100%;
+  background-color: rgba(255,255,255,0.6);
 }
 #highScorePanel th, #highScorePanel td {
   border: 1px solid black
