@@ -195,7 +195,7 @@ socket.on('highScores', function(data) {
     newRow.append('<td>' + i + '</td>');
     for (var field in highScoreData[i]) {
       var newTD = $('<td>' + highScoreData[i].field + '</td>');
-      newRow.append(newTd);
+      newRow.append(newTD);
     }
     $('#highScorePanel tbody').append(newRow);
   }
