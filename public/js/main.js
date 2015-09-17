@@ -100,7 +100,7 @@ var handleUsernameSubmit = function(cb) {   //void
   }
 }
 
-function moveToLobby = function() {
+var moveToLobby = function() {
   socket.emit('joinRoom', {room: 'lobby'});
   setStatus('Choose a room');
   $('#roomChooser').show();
