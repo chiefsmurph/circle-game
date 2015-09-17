@@ -42,6 +42,7 @@ var activeClick;
 var curRoom;
 var highPanelShowing = false;
 var highScoreData = [];
+var clickEquality = 0;
 
 var myHighs = {
   curStreak: {
@@ -271,6 +272,7 @@ socket.on('startGame', function(data) {
                           $('#ticker').text(ticker);
                           $('#ticker').show();
                           $('#backRoomButton').prop('disabled', false);
+                          clickEquality = 0;
 
                           timer = setInterval(function() {
                             ticker--;
@@ -605,9 +607,10 @@ $(function() {
 
   $('#gamearea').on('mousedown touchstart', function (e) {
 
-    if (activeGame && myColor !== null && !activeClick) {
+    if (activeGame && myColor !== null && !activeClick && clickEquality === 0) {
 
       activeClick = true;
+      clickEquality++;
 
       var elm = $(this);
       xPos = (e.type.toLowerCase() === 'mousedown')
@@ -651,6 +654,7 @@ $(function() {
           lastClickCoords.xPos = xPos;
           lastClickCoords.yPos = yPos;
           activeClick = false;
+          clickEquality--;
         }
 
       });
@@ -677,6 +681,7 @@ $(function() {
         $('#yourClicker').css('height', 0);
         lastClickCoords.xPos = xPos;
         lastClickCoords.yPos = yPos;
+        clickEquality--;
 
         e.preventDefault();
 
