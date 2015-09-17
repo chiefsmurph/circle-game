@@ -299,7 +299,7 @@ var newRoom = function(roomName) {
     });
 
     rooms[roomName].sendAll('usersColors', {
-      usersColors: rooms[roomName].getUsersAndColors();
+      usersColors: rooms[roomName].getUsersAndColors()
     });
 
     updateLobbyTotals();
@@ -320,7 +320,7 @@ var newRoom = function(roomName) {
     });
 
     rooms[roomName].sendAll('usersColors', {
-      usersColors: rooms[roomName].getUsersAndColors();
+      usersColors: rooms[roomName].getUsersAndColors()
     });
 
     updateLobbyTotals();
@@ -436,7 +436,7 @@ io.sockets.on('connection', function (socket) {
       rooms[myRoom].userLeaving(myUserId);
       // update room userandcolors
       rooms[roomName].sendAll('usersColors', {
-        usersColors: rooms[roomName].getUsersAndColors();
+        usersColors: rooms[roomName].getUsersAndColors()
       });
     }
 
