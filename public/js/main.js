@@ -133,6 +133,7 @@ var toggleHighs = function() {
   }
 
   highPanelShowing = !highPanelShowing;
+  $('#togHSbtn').css('background-color', 'white');
 
 }
 
@@ -162,7 +163,7 @@ var showTitleScreen = function(cb) {
 
   setTimeout(function() {
     $('#beta').fadeIn(900);
-  }, 2000);
+  }, 2250);
 
   $('#circle-text').animate({top: '130px'}, 3500, 'easeOutQuart');
   $('#battle-text').animate({bottom: '240px'}, 3500, 'easeOutQuart', function() {
@@ -397,6 +398,7 @@ var calculateWinner = function() {
 
 socket.on('congrats', function() {
 
+  $('#togHSbtn').css('background-color', 'blue');
   console.log('congratulations, you have made a new high score');
 
 });
