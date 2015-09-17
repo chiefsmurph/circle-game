@@ -17,6 +17,15 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(express.static(__dirname + '/public'));
 
+var updateScoresAndEmit = function(client, done) {
+
+  updateHighScores(client, function() {
+    console.log('updated high scores');
+    io.sockets.emit('highScores', {scoreArr: highScoreData});
+    done();
+  });
+
+};
 
 app.get('/showdb', function(req, res, next) {
 
