@@ -351,6 +351,7 @@ button:focus, input[type='button']:focus {outline:0;}
   background-color: LightGrey;
   width: 500px;
   padding: 8px 12px;
+  display: none;
 }
 #below img {
   margin-top: 5px;
