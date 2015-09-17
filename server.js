@@ -541,7 +541,7 @@ io.sockets.on('connection', function (socket) {
         console.log('about to insert');
         var dateNow = new Date().toISOString().slice(0, 10);
         dateNow = dateNow.substr(5) + '-' + dateNow.substr(0, 4);
-        var queryText = 'UPDATE "highscores" SET "games"=' + data.games + ', "points"=' + data.pts + ' WHERE "username"=\' + data.username + '\' AND "games">' + data.games + ' AND "dateset"=\'' + dateNow + '\'';
+        var queryText = 'UPDATE "highscores" SET "games"=' + data.games + ', "points"=' + data.pts + ' WHERE "username"=\'' + data.username + '\' AND "games">' + data.games + ' AND "dateset"=\'' + dateNow + '\'';
 
         console.log(queryText);
 
