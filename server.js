@@ -29,15 +29,15 @@ pg.connect(process.env.DATABASE_URL, function(err, client) {
 });
 */
 
-/*
+
 pg.connect(process.env.DATABASE_URL, function(err, client) {
-  var query = client.query('ALTER TABLE highscores ALTER COLUMN dateset set default current_timestamp');
+  var query = client.query('ALTER TABLE highscores ALTER COLUMN dateset type varchar(10)');
   console.log('adding pledge col');
   query.on('row', function(row) {
     console.log('row: ' + JSON.stringify(row));
   });
 });
-*/
+
 
 // CONFIG
 
@@ -502,9 +502,9 @@ io.sockets.on('connection', function (socket) {
 
       pg.connect(process.env.DATABASE_URL, function(err, client, done) {
         console.log('about to insert');
-        var queryText = 'INSERT INTO "highscores" ("username", "games", "points") VALUES ($1, $2, $3)';
-        //var dateNow = new Date().toISOString().slice(0, 10);
-        client.query(queryText, [data.username, data.games, data.points], function(err, result) {
+        var queryText = 'INSERT INTO "highscores" ("username", "dateset", "games", "points") VALUES ($1, $2, $3, $4)';
+        var dateNow = new Date().toISOString().slice(0, 10);
+        client.query(queryText, [data.username, dateNow, data.games, data.points], function(err, result) {
           console.log('here' + JSON.stringify(result) + ' ' + err);
           if (!err) {
             updateHighScores(client, function() {
