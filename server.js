@@ -253,7 +253,8 @@ var newRoom = function(roomName) {
     }
 
     // just in case something weird happens
-    if (rooms[roomName].getRGBCountsSize() === rooms[roomName].numPlayers) {
+    if (/*!hasAllOfThem === false && */rooms[roomName].getRGBCountsSize() === rooms[roomName].numPlayers) {
+      console.log('sending off because rgbcounts size ' + rooms[roomName].getRGBCountsSize() + ' equals numplayers ' + rooms[roomName].numPlayers);
       hasAllOfThem = true;
     }
 
@@ -517,7 +518,7 @@ io.sockets.on('connection', function (socket) {
     rooms[myRoom].finishedCalc++;
     rooms[myRoom].RGBCounts[myUserId] = data.pixelData;
 
-    if (rooms[myRoom].hasAllRGBCounts()) {
+    if (rooms[myRoom].hasAllRGBCounts() && !rooms[myRoom].inGame) {
 
       console.log('rooms my room rgbcounts: ' + JSON.stringify(rooms[myRoom].RGBCounts));
 
