@@ -677,4 +677,15 @@ io.sockets.on('connection', function (socket) {
     rooms[myRoom].sendAll('newCircle', {x: circle.x, y: circle.y, rad: circle.rad, col: circle.col});
   });
 
+  socket.on('chat', function(data) {
+
+    console.log('CHAT::' + myUsername + ' says ' + data.msg);
+
+    rooms[myRoom].sendAll('chatMsg', {
+      username: myUsername,
+      msg: data.msg
+    });
+
+  });
+
 });

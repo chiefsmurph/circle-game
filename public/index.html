@@ -77,7 +77,7 @@
       <div id='bottomStatus'>total # of battlers: <span id='numPlayers'></span></div>
       <div id='highScorePanel'>
         <div id='closeHS'>x</div>
-        <h2>All-Time Top Streaks</h2>
+        <h2>Top Streaks This Week</h2>
         <table>
           <thead>
             <th>num</th>
@@ -132,15 +132,20 @@
     </div>
     <div id='usersAndColors'>
       <div>
+        <div id='chatArea'></div>
+        <input type='text' id='msgText' placeholder='chat message'>
+        <input type='submit' value='send' onclick='sendChat()'>
         <table>
         </table>
       </div>
     </div>
 
     <div id='below'>
-    thank you for your patience as we work out the bugs...<br>
-    comments and suggestions are more than welcome here<br>
-    <img src='/img/contac.png'>
+      <div>
+        thank you for your patience as we work out the bugs...<br>
+        comments and suggestions are more than welcome here<br>
+        <img src='/img/contac.png'>
+      </div>
     </div>
 
     <!-- javascript includes -->

@@ -155,7 +155,17 @@ var toggleHighs = function() {
   highPanelShowing = !highPanelShowing;
   $('#togHSbtn').removeClass('blue-button');
 
-}
+};
+
+var sendChat = function() {
+
+  var chatTxt = $('#msgText').val();
+  if (chatTxt) {
+    socket.emit('chat', { msg: chatTxt });
+    $('#msgText').val('');
+  }
+
+};
 
 var toggleCustomText = function() {
   $('#customText').fadeToggle(500, function() {
@@ -229,6 +239,7 @@ var backToRoomChooser = function() {
   $('#usersAndColors div').slideUp(500, function() {
     $('#usersAndColors table').empty();
     $('#usersAndColors').hide();
+    $('#chatArea').empty();
   });
 
   $('#colorBox').addClass('hider');
@@ -358,6 +369,13 @@ socket.on('playerCount', function(data) {
 
 });
 
+socket.on('chatMsg', function(data) {
+
+  $('#chatArea').append('<b>' + data.username + ':</b> ' + data.msg + '<br>');
+  $('#chatArea').scrollTop($('#chatArea')[0].scrollHeight);
+
+});
+
 socket.on('roomTotals', function(data) {
 
   $('#slower-count').text("(" + data.slowerCount + ")");
@@ -437,7 +455,7 @@ var calculateWinner = function() {
 
   });
 
-}
+};
 
 socket.on('congrats', function() {
 
@@ -495,6 +513,8 @@ socket.on('winner', function(data) {
       myHighs.curStreak.points = 0;
 
     }
+
+    $('#rulesPanel').hide();      // just in case
 
     // display winner and winBy
     setStatus('winner: ' + ((colorRGBtoName[topColor]) ? colorRGBtoName[topColor] + '<br><br>and won by...<br><i>' + data.winBy + ' points</i>'  : 'tie'), 4000, function() {
