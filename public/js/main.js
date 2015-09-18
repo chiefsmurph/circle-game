@@ -226,8 +226,10 @@ var backToRoomChooser = function() {
   $('#roomChooser').show();
   setStatus('Choose a room');
 
-  $('#usersAndColors table').empty();
-  $('#usersAndColors').hide();
+  $('#usersAndColors div').slideUp(500, function() {
+    $('#usersAndColors table').empty();
+    $('#usersAndColors').hide();
+  });
 
   $('#colorBox').addClass('hider');
 
@@ -244,7 +246,7 @@ socket.on('usersColors', function(data) {
 
   var usersColsTable = $('#usersAndColors table');
   usersColsTable.empty();
-  
+
   for (var user in data.usersColors) {
     var newTR = $('<tr></tr>');
     newTR.append('<td><div style="background-color: ' + data.usersColors[user].color + '"></div></td>');  // for the circle
@@ -252,6 +254,7 @@ socket.on('usersColors', function(data) {
     usersColsTable.append(newTR);
   }
   $('#usersAndColors').show();
+  $('#usersAndColors div').slideDown(500);
 
 });
 

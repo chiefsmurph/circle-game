@@ -33,7 +33,7 @@ var updateScoresAndEmit = function(client, done) {
 
 app.get('/removeScore', function(req, res, next) {
 
-  pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+  pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
     console.log('deleting username ' + req.query.user + ' in table');
 
     client.query('DELETE from highscores WHERE username=\'' + req.query.user + '\'', function(err, result) {
@@ -52,7 +52,7 @@ app.get('/removeScore', function(req, res, next) {
 
 app.get('/showdb', function(req, res, next) {
 
-  pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+  pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
     client.query('SELECT * from highscores', function(err, result) {
 
       updateScoresAndEmit(client, done);
@@ -66,7 +66,7 @@ app.get('/showdb', function(req, res, next) {
 
 app.get('/clearScores', function(req, res, next) {
 
-  pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+  pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
     client.query('DELETE FROM highscores', function(err, result) {
 
       res.send(JSON.stringify(result.rows));
@@ -139,7 +139,7 @@ var updateHighScores = function(client, cb) {       // void
   }
 
   if (!client) {
-      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+      pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
         console.log(err);
         client.query('SELECT username, dateset, games, points FROM highscores ORDER BY games DESC LIMIT 10', function(err, result) {
 
@@ -605,7 +605,7 @@ io.sockets.on('connection', function (socket) {
 
     console.log('inserting score...' + JSON.stringify(data));
 
-      pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+      pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
         console.log('about to insert');
         var dateNow = new Date().toISOString().slice(0, 10);
         dateNow = dateNow.substr(5) + '-' + dateNow.substr(0, 4);
