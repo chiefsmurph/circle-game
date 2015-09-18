@@ -268,7 +268,7 @@ button:focus, input[type='button']:focus {outline:0;}
   font-family: monospace;
   margin: 0 auto 20px;
   position: relative;
-  top: -1011px;
+  top: -1010px;
   left: 309px;
   width: 120px;
   background-color: grey;
@@ -288,6 +288,7 @@ button:focus, input[type='button']:focus {outline:0;}
   width: 20px;
   height: 20px;
   border-radius: 10px;
+  border: 1px solid black;
 }
 #usersAndColors table tr td:first-child {
   width: 50px;
