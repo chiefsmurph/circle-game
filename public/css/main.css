@@ -300,6 +300,7 @@ button:focus, input[type='button']:focus {outline:0;}
   -webkit-border-radius: 0 !important;
   -moz-border-radius: 0 !important;
   border-radius: 0 !important;
+  background-color: white;
 }
 #usersAndColors {
   font-family: monospace;
