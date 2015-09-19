@@ -253,7 +253,7 @@ var newRoom = function(roomName) {
     }
 
     // just in case something weird happens
-    if (/*!hasAllOfThem === false && */rooms[roomName].getRGBCountsSize() === rooms[roomName].numPlayers) {
+    if (/*!hasAllOfThem === false && */rooms[roomName].getRGBCountsSize() === rooms[roomName].curPlayingQueue.length) {
       //console.log('sending off because rgbcounts size ' + rooms[roomName].getRGBCountsSize() + ' equals numplayers ' + rooms[roomName].numPlayers);
       hasAllOfThem = true;
     }
@@ -411,6 +411,7 @@ io.sockets.on('connection', function (socket) {
         if (rooms[myRoom].socketBank[myUserId][ firstInLine ]) {
           rooms[myRoom].socketBank[firstInLine].emit('setColor', {color: rooms[myRoom].userBank[myUserId].color });
           rooms[myRoom].userBank[firstInLine].color = rooms[myRoom].userBank[myUserId].color;
+          rooms[myRoom].curPlayingQueue.push(firstInLine);
           passed = true;
         } else if (rooms[myRoom].waitingForSpaceQueue.length > 0) {
           passed = true;
