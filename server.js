@@ -319,6 +319,10 @@ var newRoom = function(roomName) {
 
     updateLobbyTotals();
 
+    if (Object.keys(rooms[roomName].RGBCounts).length > 0) {
+      checkAndHandleWinners();
+    }
+
     if (rooms[roomName].numPlayers < 2) {
       // stop game if only one person in room
       rooms[roomName].inGame = false;
@@ -383,6 +387,92 @@ var updateLobbyTotals = function() {
   });
 
 };
+
+var checkAndHandleWinners = function() {      // void
+
+      if (rooms[myRoom].hasAllRGBCounts() && rooms[myRoom].inGame) {
+
+        console.log('rooms my room rgbcounts: ' + JSON.stringify(rooms[myRoom].RGBCounts));
+
+        // compute the winning rgb
+        var avgRGBCounts = {};
+        for (var userId in rooms[myRoom].RGBCounts) {
+
+          for (var rgb in rooms[myRoom].RGBCounts[userId]) {
+            console.log('rgb ' + rgb);
+            // first sum them all up for each of the colors
+            var curRGB = rooms[myRoom].RGBCounts[userId].rgb;
+            console.log('user id ' + userId + ' rgb ' + rgb + ' val ' + rooms[myRoom].RGBCounts[userId][rgb]);
+            avgRGBCounts[rgb] = (avgRGBCounts[rgb]) ? avgRGBCounts[rgb] + rooms[myRoom].RGBCounts[userId][rgb] : rooms[myRoom].RGBCounts[userId][rgb];
+          }
+        }
+
+        console.log('sum-avgRGBcounts1: ' + JSON.stringify(avgRGBCounts));
+
+        for (var rgb in avgRGBCounts) {
+
+          // and here we divide by the number of players in the current game
+          avgRGBCounts[rgb] = avgRGBCounts[rgb] / Object.keys(rooms[myRoom].RGBCounts).length;
+
+        }
+
+        console.log('avgRGBcounts2: ' + JSON.stringify(avgRGBCounts));
+
+        // now that we have the average rgb data
+        // figure out the top score
+
+        // new way of determining top score
+        var sortableScores = [];
+        for (var color in avgRGBCounts) {
+              sortableScores.push([color, avgRGBCounts[color]]);
+        }
+        sortableScores.sort(function(a, b) {return b[1] - a[1]});
+        console.log('sortablescores ' + JSON.stringify(sortableScores));
+        var winBy = Math.round((sortableScores[0][1] - sortableScores[1][1]) / 10);
+
+        // old way of determining top score
+
+        // var topScore = 0;
+        // var topColor;
+        // for (var color in avgRGBCounts) {
+        //   if (avgRGBCounts[color] > topScore) {
+        //     topScore = avgRGBCounts[color];
+        //     topColor = color;
+        //   }
+        // }
+
+        //
+        /*
+        console.log('sending winner to the curplayingqueue ' + JSON.stringify(rooms[myRoom].curPlayingQueue));
+        for (var i=0; i < rooms[myRoom].curPlayingQueue.length; i++) {
+          var curPlayer = rooms[myRoom].curPlayingQueue[i];
+          if (rooms[myRoom].socketBank[curPlayer]) {
+            console.log('sending to ' + curPlayer );
+            rooms[myRoom].socketBank[curPlayer].emit('winner', {
+              topColor: (winBy !== 0) ? sortableScores[0][0] : '0,0,0', // tie if tie or nothing on the board
+              winBy: winBy
+            });
+          }
+        }
+        */
+
+        rooms[myRoom].sendAll('winner', {
+          topColor: (winBy !== 0) ? sortableScores[0][0] : '0,0,0', // tie if tie or nothing on the board
+          winBy: winBy
+        });
+
+        console.log('game over and all users finishedcalc');
+        rooms[myRoom].finishedCalc = 0;
+        rooms[myRoom].inGame = false;
+        rooms[myRoom].numWaitingForNewGame = 0;
+        rooms[myRoom].RGBCounts = {};
+        rooms[myRoom].timerToStart = null;
+        rooms[myRoom].curPlayingQueue = [];
+        rooms[myRoom].waitFiveThenCheckAndStart(12000); // wait 12 then start
+
+      };
+
+}
 
 
 // SOCKET STUFF
@@ -520,87 +610,7 @@ io.sockets.on('connection', function (socket) {
     rooms[myRoom].finishedCalc++;
     rooms[myRoom].RGBCounts[myUserId] = data.pixelData;
 
-    if (rooms[myRoom].hasAllRGBCounts() && rooms[myRoom].inGame) {
-
-      console.log('rooms my room rgbcounts: ' + JSON.stringify(rooms[myRoom].RGBCounts));
-
-      // compute the winning rgb
-      var avgRGBCounts = {};
-      for (var userId in rooms[myRoom].RGBCounts) {
-
-        for (var rgb in rooms[myRoom].RGBCounts[userId]) {
-          console.log('rgb ' + rgb);
-          // first sum them all up for each of the colors
-          var curRGB = rooms[myRoom].RGBCounts[userId].rgb;
-          console.log('user id ' + userId + ' rgb ' + rgb + ' val ' + rooms[myRoom].RGBCounts[userId][rgb]);
-          avgRGBCounts[rgb] = (avgRGBCounts[rgb]) ? avgRGBCounts[rgb] + rooms[myRoom].RGBCounts[userId][rgb] : rooms[myRoom].RGBCounts[userId][rgb];
-        }
-      }
-
-      console.log('sum-avgRGBcounts1: ' + JSON.stringify(avgRGBCounts));
-
-      for (var rgb in avgRGBCounts) {
-
-        // and here we divide by the number of players in the current game
-        avgRGBCounts[rgb] = avgRGBCounts[rgb] / Object.keys(rooms[myRoom].RGBCounts).length;
-
-      }
-
-      console.log('avgRGBcounts2: ' + JSON.stringify(avgRGBCounts));
-
-      // now that we have the average rgb data
-      // figure out the top score
-
-      // new way of determining top score
-      var sortableScores = [];
-      for (var color in avgRGBCounts) {
-            sortableScores.push([color, avgRGBCounts[color]]);
-      }
-      sortableScores.sort(function(a, b) {return b[1] - a[1]});
-      console.log('sortablescores ' + JSON.stringify(sortableScores));
-      var winBy = Math.round((sortableScores[0][1] - sortableScores[1][1]) / 10);
-
-      // old way of determining top score
-
-      // var topScore = 0;
-      // var topColor;
-      // for (var color in avgRGBCounts) {
-      //   if (avgRGBCounts[color] > topScore) {
-      //     topScore = avgRGBCounts[color];
-      //     topColor = color;
-      //   }
-      // }
-
-      //
-      /*
-      console.log('sending winner to the curplayingqueue ' + JSON.stringify(rooms[myRoom].curPlayingQueue));
-      for (var i=0; i < rooms[myRoom].curPlayingQueue.length; i++) {
-        var curPlayer = rooms[myRoom].curPlayingQueue[i];
-        if (rooms[myRoom].socketBank[curPlayer]) {
-          console.log('sending to ' + curPlayer );
-          rooms[myRoom].socketBank[curPlayer].emit('winner', {
-            topColor: (winBy !== 0) ? sortableScores[0][0] : '0,0,0', // tie if tie or nothing on the board
-            winBy: winBy
-          });
-        }
-      }
-      */
-
-      rooms[myRoom].sendAll('winner', {
-        topColor: (winBy !== 0) ? sortableScores[0][0] : '0,0,0', // tie if tie or nothing on the board
-        winBy: winBy
-      });
-
-      console.log('game over and all users finishedcalc');
-      rooms[myRoom].finishedCalc = 0;
-      rooms[myRoom].inGame = false;
-      rooms[myRoom].numWaitingForNewGame = 0;
-      rooms[myRoom].RGBCounts = {};
-      rooms[myRoom].timerToStart = null;
-      rooms[myRoom].curPlayingQueue = [];
-      rooms[myRoom].waitFiveThenCheckAndStart(12000); // wait 12 then start
-
-    };
+    checkAndHandleWinners();
 
   });
 
