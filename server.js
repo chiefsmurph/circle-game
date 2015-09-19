@@ -320,7 +320,7 @@ var newRoom = function(roomName) {
     updateLobbyTotals();
 
     if (Object.keys(rooms[roomName].RGBCounts).length > 0) {
-      checkAndHandleWinners();
+      checkAndHandleWinners(roomName);
     }
 
     if (rooms[roomName].numPlayers < 2) {
@@ -388,7 +388,7 @@ var updateLobbyTotals = function() {
 
 };
 
-var checkAndHandleWinners = function() {      // void
+var checkAndHandleWinners = function(myRoom) {      // void
 
       if (rooms[myRoom].hasAllRGBCounts() && rooms[myRoom].inGame) {
 
@@ -610,7 +610,7 @@ io.sockets.on('connection', function (socket) {
     rooms[myRoom].finishedCalc++;
     rooms[myRoom].RGBCounts[myUserId] = data.pixelData;
 
-    checkAndHandleWinners();
+    checkAndHandleWinners(myRoom);
 
   });
 
