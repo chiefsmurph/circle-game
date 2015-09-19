@@ -514,7 +514,7 @@ socket.on('winner', function(data) {
 
     }
 
-    $('#rulesPanel').hide();      // just in case
+    $('#rulesPanel').addClass('hider');      // just in case
 
     // display winner and winBy
     setStatus('winner: ' + ((colorRGBtoName[topColor]) ? colorRGBtoName[topColor] + '<br><br>and won by...<br><i>' + data.winBy + ' points</i>'  : 'tie'), 4000, function() {
@@ -751,7 +751,7 @@ $(function() {
     }
   });
 
-  // enter submit
+  // enter submits
   $("#customRoomName").keypress(function(event) {
       if (event.which == 13) {
           event.preventDefault();
@@ -765,6 +765,13 @@ $(function() {
           handleUsernameSubmit(function() {
             moveToLobby();
           });
+      }
+  });
+
+  $("#msgText").keypress(function(event) {
+      if (event.which == 13) {
+          event.preventDefault();
+          sendChat();
       }
   });
 
