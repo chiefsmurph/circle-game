@@ -276,7 +276,7 @@ socket.on('usersColors', function(data) {
       $('#usersAndColors div').slideDown();
 
     }
-    
+
   });
 
 });
@@ -756,12 +756,12 @@ $(function() {
 
   });
 
-  // $(window).blur(function() {
-  //   console.log('blur');
-  //   if (curRoom && curRoom !== 'lobby') {
-  //     backToRoomChooser();
-  //   }
-  // });
+  $(window).blur(function() {
+    console.log('blur');
+    if (curRoom && curRoom !== 'lobby') {
+      backToRoomChooser();
+    }
+  });
 
   // enter submits
   $("#customRoomName").keypress(function(event) {
