@@ -24,6 +24,7 @@ html, body {
 #gamearea {
   background-image: url('/img/asfalt-light.png');
   top: -400px;
+  z-index: 2;
 }
 .circle {
   background-color: orange;
@@ -265,11 +266,45 @@ button:focus, input[type='button']:focus {outline:0;}
   border-radius: 10px 0 0 10px;
   background-color: rgba(255,255,0,0.4);
 }
-#usersAndColors {
+#chatPanel {
   font-family: monospace;
   margin: 0 auto 20px;
   position: relative;
   top: -1010px;
+  left: 189px;
+  width: 120px;
+  overflow: hidden;
+  /*box-shadow: 4px 4px 20px rgba(255,255,255,0.3);*/
+  cursor: default;
+}
+#chatPanel #chatArea {
+  width: 100%;
+  height: 100px;
+  background-color: white;
+  overflow-y: scroll;
+  margin: 0;
+  text-align: left;
+  font-size: 10px;
+  padding: 4px;
+}
+#chatPanel #msgText {
+  width: 100%;
+  border: 1px solid black;
+  text-align: center;
+  border-width: 1px 0;
+  padding: 2px;
+}
+#chatPanel input[type='submit'] {
+  width: 100%;
+  -webkit-border-radius: 0 !important;
+  -moz-border-radius: 0 !important;
+  border-radius: 0 !important;
+}
+#usersAndColors {
+  font-family: monospace;
+  margin: 0 auto 20px;
+  position: relative;
+  top: -1020px;
   left: 309px;
   width: 120px;
   background-color: grey;
@@ -277,6 +312,7 @@ button:focus, input[type='button']:focus {outline:0;}
   /*box-shadow: 4px 4px 20px rgba(255,255,255,0.3);*/
   cursor: default;
   border: 1px solid black;
+  z-index: 1;
   display: none;
 }
 #usersAndColors > div {
@@ -291,34 +327,13 @@ button:focus, input[type='button']:focus {outline:0;}
   border-radius: 10px;
   border: 1px solid black;
 }
-#usersAndColors #chatArea {
-  width: 100%;
-  height: 100px;
-  background-color: white;
-  overflow: scroll;
-  margin: 0;
-  text-align: left;
-  font-size: 10px;
-  padding: 4px;
-}
+
 #usersAndColors table tr td:first-child {
   width: 50px;
   text-align: center;
   padding: 5px 0 5px 15px
 }
-#usersAndColors #msgText {
-  width: 100%;
-  border: 1px solid black;
-  text-align: center;
-  border-width: 1px 0;
-  padding: 2px;
-}
-#usersAndColors input[type='submit'] {
-  width: 100%;
-  -webkit-border-radius: 0 !important;
-  -moz-border-radius: 0 !important;
-  border-radius: 0 !important;
-}
+
 #infoPanel {
   font-family: monospace;
   margin: 0 auto 20px;

@@ -237,9 +237,12 @@ var backToRoomChooser = function() {
   setStatus('Choose a room');
 
   $('#usersAndColors div').slideUp(500, function() {
+    $('#chatPanel').animate({'left':'189px'}, 700, function() {
+      $('#chatArea').empty();
+    });
     $('#usersAndColors table').empty();
     $('#usersAndColors').hide();
-    $('#chatArea').empty();
+
   });
 
   $('#colorBox').addClass('hider');
@@ -264,8 +267,17 @@ socket.on('usersColors', function(data) {
     newTR.append('<td>' + data.usersColors[user].username + '</td>');  // for the username
     usersColsTable.append(newTR);
   }
-  $('#usersAndColors').show();
-  $('#usersAndColors div').slideDown(500);
+  // slideright usercolors
+  $('#chatPanel').animate({'left':'309px'}, 700, function() {
+
+    if (curRoom !== 'lobby') {    // in case they are clicking real fast
+
+      $('#usersAndColors').show();
+      $('#usersAndColors div').slideDown();
+
+    }
+    
+  });
 
 });
 
@@ -744,12 +756,12 @@ $(function() {
 
   });
 
-  $(window).blur(function() {
-    console.log('blur');
-    if (curRoom && curRoom !== 'lobby') {
-      backToRoomChooser();
-    }
-  });
+  // $(window).blur(function() {
+  //   console.log('blur');
+  //   if (curRoom && curRoom !== 'lobby') {
+  //     backToRoomChooser();
+  //   }
+  // });
 
   // enter submits
   $("#customRoomName").keypress(function(event) {

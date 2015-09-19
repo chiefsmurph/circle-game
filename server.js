@@ -679,11 +679,23 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('chat', function(data) {
 
+    var MAP = { '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'};
+
+    function escapeHTML (s, forAttribute) {
+        return s.replace(forAttribute ? /[&<>'"]/g : /[&<>]/g, function(c) {
+            return MAP[c];
+        });
+    }
+
     console.log('CHAT::' + myUsername + ' says ' + data.msg);
 
     rooms[myRoom].sendAll('chatMsg', {
       username: myUsername,
-      msg: data.msg
+      msg: escapeHTML(data.msg)
     });
 
   });
