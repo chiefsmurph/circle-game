@@ -268,6 +268,7 @@ socket.on('usersColors', function(data) {
     newTR.append('<td>' + data.usersColors[user].username + '</td>');  // for the username
     usersColsTable.append(newTR);
   }
+  usersColsTable.html($('tr',usersColsTable).get().reverse());
   // slideright usercolors
   $('#chatPanel').removeClass('hider');
   $('#chatPanel').animate({'left':'309px'}, 700, function() {
