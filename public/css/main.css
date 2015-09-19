@@ -155,6 +155,7 @@ html, body {
 }
 #roomChooser ul {
   padding: 0;
+  list-style-type: none;
 }
 #roomChooser button {
   border: 1px solid white;
