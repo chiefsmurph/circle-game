@@ -494,6 +494,7 @@ io.sockets.on('connection', function (socket) {
 
           if (rooms[myRoom].inGame) {
             // of already in game then
+            socket.emit('alreadyInGame');
             rooms[myRoom].numWaitingForNewGame++;
           } else {
             // CHECK AND IF MORE THAN ONE PERSON HERE START A GAME

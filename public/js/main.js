@@ -299,6 +299,12 @@ socket.on('highScores', function(data) {
 
 });
 
+socket.on('alreadyInGame', function() {
+
+  setStatus('Waiting for game to finish');
+
+});
+
 socket.on('startGame', function(data) {
 
   if (!activeGame) {
@@ -527,6 +533,8 @@ socket.on('winner', function(data) {
     }
 
     $('#rulesPanel').addClass('hider');      // just in case
+
+    $('#gamearea').find('.circle').fadeTo(200, 0.5);
 
     // display winner and winBy
     setStatus('winner: ' + ((colorRGBtoName[topColor]) ? colorRGBtoName[topColor] + '<br><br>and won by...<br><i>' + data.winBy + ' points</i>'  : 'tie'), 4000, function() {
