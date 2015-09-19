@@ -537,21 +537,25 @@ socket.on('winner', function(data) {
 
     $('#rulesPanel').addClass('hider');      // just in case
 
-    $('#gamearea').find('.circle').fadeTo(200, 0.5);
+    $('#gamearea').find('.circle').fadeTo(400, 0.5, function() {
+      
+      // display winner and winBy
+      setStatus('winner: ' + ((colorRGBtoName[topColor]) ? colorRGBtoName[topColor] + '<br><br>and won by...<br><i>' + data.winBy + ' points</i>'  : 'tie'), 4000, function() {
 
-    // display winner and winBy
-    setStatus('winner: ' + ((colorRGBtoName[topColor]) ? colorRGBtoName[topColor] + '<br><br>and won by...<br><i>' + data.winBy + ' points</i>'  : 'tie'), 4000, function() {
+          // back to the waiting for new game
+          setStatus('Waiting for new<br>game to start');
+          $('#rulesPanel').removeClass('hider');
+          $('#bottomStatus').show();
 
-        // back to the waiting for new game
-        setStatus('Waiting for new<br>game to start');
-        $('#rulesPanel').removeClass('hider');
-        $('#bottomStatus').show();
+      });
+
+      setTimeout(function() {
+        clearCircles();
+      }, 1000);
+
 
     });
 
-    setTimeout(function() {
-      clearCircles();
-    }, 1000);
 
 });
 
