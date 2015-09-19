@@ -238,8 +238,10 @@ var backToRoomChooser = function() {
 
   $('#usersAndColors div').slideUp(500, function() {
     $('#chatPanel').animate({'left':'189px'}, 700, function() {
-      $('#chatArea').empty();
-      $('#chatPanel').addClass('hider');
+      if (curRoom === 'lobby') {    // make sure
+        $('#chatArea').empty();
+        $('#chatPanel').addClass('hider');
+      }
     });
     $('#usersAndColors table').empty();
     $('#usersAndColors').hide();
@@ -538,7 +540,7 @@ socket.on('winner', function(data) {
     $('#rulesPanel').addClass('hider');      // just in case
 
     $('#gamearea').find('.circle').fadeTo(400, 0.5, function() {
-      
+
       // display winner and winBy
       setStatus('winner: ' + ((colorRGBtoName[topColor]) ? colorRGBtoName[topColor] + '<br><br>and won by...<br><i>' + data.winBy + ' points</i>'  : 'tie'), 4000, function() {
 
