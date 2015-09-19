@@ -239,6 +239,7 @@ var backToRoomChooser = function() {
   $('#usersAndColors div').slideUp(500, function() {
     $('#chatPanel').animate({'left':'189px'}, 700, function() {
       $('#chatArea').empty();
+      $('#chatPanel').hide();
     });
     $('#usersAndColors table').empty();
     $('#usersAndColors').hide();
@@ -268,6 +269,7 @@ socket.on('usersColors', function(data) {
     usersColsTable.append(newTR);
   }
   // slideright usercolors
+  $('#chatPanel').show();
   $('#chatPanel').animate({'left':'309px'}, 700, function() {
 
     if (curRoom !== 'lobby') {    // in case they are clicking real fast
