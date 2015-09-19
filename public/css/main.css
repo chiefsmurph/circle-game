@@ -270,12 +270,13 @@ button:focus, input[type='button']:focus {outline:0;}
   font-family: monospace;
   margin: 0 auto 20px;
   position: relative;
-  top: -1010px;
+  top: -990px;
   left: 189px;
   width: 120px;
   overflow: hidden;
   /*box-shadow: 4px 4px 20px rgba(255,255,255,0.3);*/
   cursor: default;
+  z-index: 1;
 }
 #chatPanel #chatArea {
   width: 100%;
@@ -304,7 +305,7 @@ button:focus, input[type='button']:focus {outline:0;}
   font-family: monospace;
   margin: 0 auto 20px;
   position: relative;
-  top: -1020px;
+  top: -1000px;
   left: 309px;
   width: 120px;
   background-color: grey;
