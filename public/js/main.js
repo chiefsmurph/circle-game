@@ -551,10 +551,12 @@ socket.on('winner', function(data) {
     // display winner and winBy
     setStatus('winner: ' + ((colorRGBtoName[topColor]) ? colorRGBtoName[topColor] + '<br><br>and won by...<br><i>' + data.winBy + ' points</i>'  : 'tie'), 4000, function() {
 
-        // back to the waiting for new game
-        setStatus('Waiting for new<br>game to start');
-        $('#rulesPanel').removeClass('hider');
-        $('#bottomStatus').show();
+        if (curRoom !== 'lobby') {
+          // back to the waiting for new game
+          setStatus('Waiting for new<br>game to start');
+          $('#rulesPanel').removeClass('hider');
+          $('#bottomStatus').show();
+        }
 
     });
 
