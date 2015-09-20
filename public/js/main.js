@@ -436,6 +436,8 @@ var clearCircles = function() {
 
 var calculateWinner = function() {
 
+  $('#gamearea').find('.circle').fadeTo(400, 0.5);
+
   console.log('calculating');
   setStatus('Calculating winner...');
 
@@ -474,7 +476,6 @@ var calculateWinner = function() {
         $('#hiddenGameArea').empty();
 
 
-
     }
 
   });
@@ -499,7 +500,7 @@ socket.on('winner', function(data) {
     console.log('topColor: ' + topColor);
 
     // update high score table if user is winner
-    if (colorRGBtoName[topColor].toLowerCase() === myColor.toLowerCase()) {
+    if (colorRGBtoName[topColor] && colorRGBtoName[topColor].toLowerCase() === myColor.toLowerCase()) {
 
       myHighs.curStreak.games++;
       myHighs.curStreak.points += data.winBy;
@@ -540,24 +541,21 @@ socket.on('winner', function(data) {
 
     $('#rulesPanel').addClass('hider');      // just in case
 
-    $('#gamearea').find('.circle').fadeTo(400, 0.5, function() {
 
-      // display winner and winBy
-      setStatus('winner: ' + ((colorRGBtoName[topColor]) ? colorRGBtoName[topColor] + '<br><br>and won by...<br><i>' + data.winBy + ' points</i>'  : 'tie'), 4000, function() {
 
-          // back to the waiting for new game
-          setStatus('Waiting for new<br>game to start');
-          $('#rulesPanel').removeClass('hider');
-          $('#bottomStatus').show();
+    // display winner and winBy
+    setStatus('winner: ' + ((colorRGBtoName[topColor]) ? colorRGBtoName[topColor] + '<br><br>and won by...<br><i>' + data.winBy + ' points</i>'  : 'tie'), 4000, function() {
 
-      });
-
-      setTimeout(function() {
-        clearCircles();
-      }, 1000);
-
+        // back to the waiting for new game
+        setStatus('Waiting for new<br>game to start');
+        $('#rulesPanel').removeClass('hider');
+        $('#bottomStatus').show();
 
     });
+
+    setTimeout(function() {
+      clearCircles();
+    }, 1000);
 
 
 });
