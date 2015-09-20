@@ -103,8 +103,8 @@ pg.connect(process.env.DATABASE_URL, function(err, client) {
 
 var currentUserId = 0;
 var lobbyCount = 0;
-var possibleColors = ['orange', 'green', 'blue', 'red', 'yellow', 'purple', 'tomato', 'tan', 'salmon', 'slateblue', 'saddlebrown', 'plum', 'PaleVioletRed', 'Navy', 'OliveDrab'];
-//var possibleColors = ['orange', 'green', 'blue', 'red', 'yellow', 'purple'];
+//var possibleColors = ['orange', 'green', 'blue', 'red', 'yellow', 'purple', 'tomato', 'tan', 'salmon', 'slateblue', 'saddlebrown', 'plum', 'PaleVioletRed', 'Navy', 'OliveDrab'];
+var possibleColors = ['orange', 'green', 'blue', 'red', 'yellow', 'purple', 'plum', 'OliveDrab', 'PaleVioletRed'];
 var roomSettings = {
   'slower': {
     maxClickerSize: 180,
