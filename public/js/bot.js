@@ -436,7 +436,9 @@ socket.on('playerCount', function(data) {
       backToWaiting();
 
       // BOTLOGIC
-      moveToLobby();
+      setTimeout(function() {
+        moveToLobby();
+      }, 300 + Math.round(Math.random() * 600));
 
     }
 
@@ -458,12 +460,18 @@ socket.on('roomTotals', function(data) {
 
   // BOTLOGIC!
 
+  var followtoroom = function(r) {
+    setTimeout(function() {
+      chooseRoom(r);
+    }, 300 + (Math.random() * 500));
+  };
+
   if (data.slowerCount === 1) {
-    chooseRoom('slower');
+    followtoroom('slower');
   } else if (data.mediumCount === 1) {
-    chooseRoom('medium');
+    followtoroom('medium');
   } else if (data.fasterCount === 1) {
-    chooseRoom('faster');
+    followtoroom('faster');
   }
 
 });
