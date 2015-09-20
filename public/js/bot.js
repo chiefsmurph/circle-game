@@ -366,6 +366,7 @@ socket.on('startGame', function(data) {
 
   if (!activeGame) {
       console.log('new game');
+      console.log('all users: ' + JSON.stringify(playersInTheRoom));
       $('#backRoomButton').prop('disabled', true);  // no back to room during countdown
       $('#rulesPanel').addClass('hider');
       setStatus('3', 1000, function() {
@@ -577,7 +578,6 @@ socket.on('winner', function(data) {
 
     // BOTLOGIC
     console.log('topColor: ' + topColor);
-    console.log('all users: ' + JSON.stringify(playersInTheRoom));
 
     // update high score table if user is winner
     if (colorRGBtoName[topColor] && colorRGBtoName[topColor].toLowerCase() === myColor.toLowerCase()) {
