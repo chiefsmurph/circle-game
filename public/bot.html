@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Circle Battle [beta]</title>
+    <meta name="description" content="A real-time multiplayer game that combines old-school graphics with a refreshingly simple and responsive gameplay all with a modern spin">
+    <meta name="author" content="John Murphy">
+
+
+    <link rel="apple-touch-icon" sizes="57x57" href="/img/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/img/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/img/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/img/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/img/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/img/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/img/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/img/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/img/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/img/favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/img/favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- styles -->
+    <link href="/css/normalize.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+
+    <link href='https://fonts.googleapis.com/css?family=Satisfy' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Press+Start+2P' rel='stylesheet' type='text/css'>
+    <link href="/js/odometer-0.4.6/themes/odometer-theme-minimal.css" rel="stylesheet">
+    <link href="/css/main.css" rel="stylesheet">
+  </head>
+  <body>
+    <div id='top'>update: sunday morning...currently our server is experiencing some connection issues.</div>
+    <div id='hiddenGameArea'></div>
+    <div id='gamearea'>
+      <div id='titleScreen'>
+        <div id='circle-text'>CIRCLE</div>
+        <div id='battle-text'>BATTLE</div>
+        <div id='beta'>beta</div>
+        <div id='circle-battle-icon'><img src='/img/circle-battle-icon-sml.png'></div>
+      </div>
+      <div id='loginScreen'>
+        <h2>Choose your<br>username</h2>
+        <div id='userfield'><input type='text' id='username'><input type='button' id='setUserBtn' value='GO!'></div>
+        <div>must be alphanumberic<br> and between 3-8 characters</div>
+      </div>
+      <div id='statusPanel'></div>
+      <div id='roomChooser'>
+        <ul>
+          <li><button onclick='chooseRoom("slower")'>slower<span id='slower-count'></span></button></li>
+          <li><button onclick='chooseRoom("medium")'>medium<span id='medium-count'></span></button></li>
+          <li><button onclick='chooseRoom("faster")'>faster<span id='faster-count'></span></button></li>
+
+          <li><button onclick='toggleCustomText()'>custom</button></li>
+          <div id='customText'><input type='text' id='customRoomName'><input type='button' onclick='chooseRoom()' value='GO!'></div>
+        </ul>
+      </div>
+      <div id='rulesPanel' class='hider'>
+          <ol>
+            <li>Start clicking.</li>
+            <li>Longer clicks = bigger circles</li>
+            <li>Cover the maximum playing area and dominate the game with your color!!!</li>
+          </ol>
+      </div>
+      <div id='ticker'></div>
+
+      <div id='yourClicker'></div>
+      <div id='bottomStatus'>total # of battlers: <span id='numPlayers'></span></div>
+      <div id='highScorePanel'>
+        <div id='closeHS'>x</div>
+        <h2>Top Streaks This Week</h2>
+        <i>reset every Sunday night</i>
+        <table>
+          <thead>
+            <th>num</th>
+            <th>name</th>
+            <th>date</th>
+            <th>games</th>
+            <th>pts</th>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+    <div id='infoPanel'>
+
+      <table>
+        <tr>
+          <td>
+            <button disabled="true" onclick='backToRoomChooser()' id='backRoomButton'>back to roomchooser</button>
+            <button onclick='toggleHighs()' id='togHSbtn'>view high scores</button>
+          </td>
+          <td>
+            <table>
+              <tr>
+                <td>your color:</td>
+                <td colspan='2'><div id='colorBox' class='hider'>green</div></td>
+              </tr>
+              <tr>
+                <td rowspan='2'>current streak:</td>
+                <td>games</td>
+                <td id='streakGames'><span>00</span></td>
+              </tr>
+              <tr>
+                <td>points</td>
+                <td id='streakPoints'><span>0000</span></td>
+              </tr>
+              <tr>
+                <td rowspan='2'>top streak:</td>
+                <td>games</td>
+                <td id='topGames'><span>00</span></td>
+              </tr>
+              <tr>
+                <td>points</td>
+                <td id='topPoints'><span>0000</span></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+
+    </div>
+
+    <div id='chatPanel'>
+      <div id='chatArea'></div>
+      <input type='text' id='msgText' placeholder='chat message'>
+      <input type='submit' value='send' onclick='sendChat()'>
+    </div>
+
+    <div id='usersAndColors'>
+      <div>
+        <table>
+        </table>
+      </div>
+    </div>
+
+    <div id='below'>
+      <div>
+        thank you for your patience as we work out the bugs...<br>
+        comments and suggestions are more than welcome here<br>
+        <img src='/img/contac.png'>
+      </div>
+    </div>
+
+    <!-- javascript includes -->
+    <script src="https://cdn.socket.io/socket.io-1.3.5.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+    <script src="/js/odometer-0.4.6/odometer.js"></script>
+    <script src="/js/mozilla-cookies.js"></script>
+    <script src="/js/html2canvas.js"></script>
+    <script src="/js/bot.js"></script>
+
+
+  </body>
+</html>
