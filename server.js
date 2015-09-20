@@ -119,7 +119,7 @@ var roomSettings = {
   'faster': {
     maxClickerSize: 60,
     clickerSpeed: 3,
-    maxPeople: 6
+    maxPeople: 1
   }
 };
 
