@@ -475,12 +475,14 @@ socket.on('roomTotals', function(data) {
     }, 300 + (Math.random() * 2000));
   };
 
-  if (data.slowerCount === 1) {
-    followtoroom('slower');
-  } else if (data.mediumCount === 1) {
-    followtoroom('medium');
-  } else if (data.fasterCount === 1) {
-    followtoroom('faster');
+  if (data.totalBattlers < 3) {
+    if (data.slowerCount === 1) {
+      followtoroom('slower');
+    } else if (data.mediumCount === 1) {
+      followtoroom('medium');
+    } else if (data.fasterCount === 1) {
+      followtoroom('faster');
+    }
   }
 
 });
