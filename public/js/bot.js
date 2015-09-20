@@ -210,16 +210,18 @@ var startBot = function() {
 
           // 60% - full maxClickerSize
           // 40% - random between 50% - 100% of maxClickerSize
-        var shootOffsetX = Math.round(Math.random() * 250);
+        var shootOffsetX = Math.round(Math.random() * 150);
         var shootX = (lastReceived.x + shootOffsetX > 500 - (shootRad/2)) ? lastReceived.x - shootOffsetX : lastReceived.x + shootOffsetX;
-        var shootOffsetY = Math.round(Math.random() * 250);
+        var shootOffsetY = Math.round(Math.random() * 150);
         var shootY = (lastReceived.y + shootOffsetY > 500 - (shootRad/2)) ? lastReceived.y - shootOffsetY : lastReceived.y + shootOffsetY;
 
         socket.emit('addCircle', {x: shootX, y: shootY, rad: shootRad, col: myColor});
 
       }
 
-      shootCircle();
+      if (activeGame) {
+        shootCircle();
+      }
 
     }, 500 + (shootRad*3) + Math.floor(Math.random() * clickerSpeed * 600));
 
@@ -435,12 +437,11 @@ socket.on('playerCount', function(data) {
     if (activeGame && numPlayers === 1) {
       activeGame = false;
       backToWaiting();
-
+    } else if(numPlayers===1) {
       // BOTLOGIC
       setTimeout(function() {
         moveToLobby();
       }, 300 + Math.round(Math.random() * 600));
-
     }
 
 });
