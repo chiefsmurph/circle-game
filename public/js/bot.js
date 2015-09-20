@@ -196,9 +196,13 @@ var setStatus = function(text, length, cb) {
 // BOTLOGIC
 var startBot = function() {
 
+  console.log('starting bot');
+
   var shootCircle = function() {
 
     setTimeout(function() {
+
+      console.log('shooting bot circle');
 
       if (lastReceived) {
 
@@ -219,7 +223,7 @@ var startBot = function() {
     }, Math.floor(Math.random() * clickerSpeed * 300));
 
   }
-
+  shootCircle();
 
 };
 
