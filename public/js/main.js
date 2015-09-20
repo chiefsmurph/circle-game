@@ -775,7 +775,7 @@ $(function() {
   $(window).blur(function() {
     console.log('blur');
     if (curRoom && curRoom !== 'lobby') {
-      // backToRoomChooser();
+      backToRoomChooser();
     }
   });
 
