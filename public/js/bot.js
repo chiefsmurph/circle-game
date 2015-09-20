@@ -683,7 +683,9 @@ socket.on('newCircle', function (data) {
 
   if (activeGame) {
 
-      lastReceived = data;
+      if (data.col != myColor) {
+        lastReceived = data;
+      }
 
       //console.log('stat');
 
