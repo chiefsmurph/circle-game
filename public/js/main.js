@@ -125,18 +125,23 @@ var chooseRoom = function(roomToGo) {
 
   $('#statusPanel').fadeOut(950);
   $('#roomChooser').fadeOut(950);
+  curRoom = roomToGo;
 
   setTimeout(function() {
 
-    $('#bottomStatus').html("room: <span id='curRoom'></span> || # of players: <span id='numPlayers'></span>");
-    socket.emit('leaveRoom');
-    socket.emit('joinRoom', {room: roomToGo, uid: username});
-    $('#curRoom').text(roomToGo);
-    curRoom = roomToGo;
+    if (curRoom === roomToGo) {   // make sure nothing has changed since when they clicked
 
-    setStatus('Waiting for other players');
-    $('#rulesPanel').removeClass('hider');
-    $('#backRoomButton').prop('disabled', false);
+      $('#bottomStatus').html("room: <span id='curRoom'></span> || # of players: <span id='numPlayers'></span>");
+      socket.emit('leaveRoom');
+      socket.emit('joinRoom', {room: roomToGo, uid: username});
+      $('#curRoom').text(roomToGo);
+
+
+      setStatus('Waiting for other players');
+      $('#rulesPanel').removeClass('hider');
+      $('#backRoomButton').prop('disabled', false);
+
+    }
 
   }, 1000);
 

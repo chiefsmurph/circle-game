@@ -9,6 +9,9 @@ html, body {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
+#top {
+  text-align: center;
+}
 #gamearea, #hiddenGameArea {
   font-family: monospace;
   margin: 0 auto;
