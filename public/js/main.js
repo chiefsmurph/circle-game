@@ -306,6 +306,7 @@ socket.on('highScores', function(data) {
 
 socket.on('alreadyInGame', function() {
 
+  console.log('alreadyingame');
   setStatus('Waiting for game to finish');
 
 });
