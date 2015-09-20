@@ -46,6 +46,7 @@ var clickEquality = 0;
 
 //BOTLOGIC
 var lastReceived;
+var playersInTheRoom = [];
 
 var myHighs = {
   curStreak: {
@@ -92,7 +93,7 @@ var handleUsernameSubmit = function(cb) {   //void
       // set username
       username = $('#username').val();
       docCookies.setItem('pastusername', username);
-      console.log('setting username to ' + username )
+      //console.log('setting username to ' + username )
       $('#loginScreen').hide();
       if (cb) cb();
   } else {
@@ -196,7 +197,7 @@ var setStatus = function(text, length, cb) {
 // BOTLOGIC
 var startBot = function() {
 
-  console.log('starting bot');
+  //console.log('starting bot');
 
   var shootCircle = function() {
 
@@ -204,7 +205,7 @@ var startBot = function() {
 
     setTimeout(function() {
 
-      console.log('shooting bot circle');
+      //console.log('shooting bot circle');
 
       if (lastReceived) {
 
@@ -298,7 +299,7 @@ var backToRoomChooser = function() {
 
   $('#colorBox').addClass('hider');
 
-  console.log('leaving room');
+  //console.log('leaving room');
   $('#curRoom').text('');
   curRoom = 'lobby';
 
@@ -307,12 +308,14 @@ var backToRoomChooser = function() {
 };
 
 socket.on('usersColors', function(data) {
-  console.log('usercolors ' + JSON.stringify(data.usersColors));
+  //console.log('usercolors ' + JSON.stringify(data.usersColors));
 
   var usersColsTable = $('#usersAndColors table');
   usersColsTable.empty();
+  playersInTheRoom = [];
 
   for (var user in data.usersColors) {
+    playersInTheRoom.push(data.usersColors[user].username);
     var newTR = $('<tr></tr>');
     newTR.append('<td><div style="background-color: ' + data.usersColors[user].color + '"></div></td>');  // for the circle
     newTR.append('<td>' + data.usersColors[user].username + '</td>');  // for the username
@@ -336,14 +339,14 @@ socket.on('usersColors', function(data) {
 
 socket.on('highScores', function(data) {
 
-  console.log('received high scores' + JSON.stringify(data));
+  //console.log('received high scores' + JSON.stringify(data));
   $('#highScorePanel tbody').empty();
   highScoreData = data.scoreArr;
   for (var i = 0; i < highScoreData.length; i++) {
     var newRow = $('<tr></tr>');
     newRow.append('<td>' + (i+1) + '</td>');
     for (var field in highScoreData[i]) {
-      console.log('this field ' + field + ' and ' + highScoreData[i][field]);
+      //console.log('this field ' + field + ' and ' + highScoreData[i][field]);
       var newTD = $('<td>' + highScoreData[i][field] + '</td>');
       newRow.append(newTD);
     }
@@ -354,7 +357,7 @@ socket.on('highScores', function(data) {
 
 socket.on('alreadyInGame', function() {
 
-  console.log('alreadyingame');
+  //console.log('alreadyingame');
   setStatus('Waiting for game to finish');
 
 });
@@ -512,7 +515,7 @@ var calculateWinner = function() {
 
   $('#gamearea').find('.circle').fadeTo(400, 0.5);
 
-  console.log('calculating');
+  //console.log('calculating');
   setStatus('Calculating winner...');
 
   var $copyBoard = $('#gamearea').find('.circle').clone();
@@ -522,8 +525,8 @@ var calculateWinner = function() {
   html2canvas($('#hiddenGameArea'), {
     onrendered: function(canvas) {
 
-        console.log('got the canvas');
-        console.log('canvas' + canvas);
+        //console.log('got the canvas');
+        //console.log('canvas' + canvas);
 
         var c = canvas.getContext('2d');
         var colorScores = {};
@@ -536,14 +539,14 @@ var calculateWinner = function() {
             colorScores[rgb] = (colorScores[rgb]) ? colorScores[rgb] + 1 : 1;
 
         }
-        console.log(colorScores);
+        //console.log(colorScores);
 
         var sendablePixelData = {};
         var importantRGB = Object.keys(colorRGBtoName);
         for (var i = 0; i < importantRGB.length; i++) {
           sendablePixelData[importantRGB[i]] = (colorScores[importantRGB[i]]) ? colorScores[importantRGB[i]] : 0;
         }
-        console.log('sendable'  + JSON.stringify(sendablePixelData));
+        //console.log('sendable'  + JSON.stringify(sendablePixelData));
         socket.emit('finishedCalc', {pixelData: sendablePixelData});
 
         setStatus('Calculating winner-sent...');
@@ -571,7 +574,11 @@ socket.on('winner', function(data) {
     $('#ticker').hide();
 
     var topColor = data.topColor;
+
+    // BOTLOGIC
     console.log('topColor: ' + topColor);
+    console.log('winner: ' + colorRGBtoName[topColor]);
+    console.log('all users: ' + JSON.stringify(playersInTheRoom));
 
     // update high score table if user is winner
     if (colorRGBtoName[topColor] && colorRGBtoName[topColor].toLowerCase() === myColor.toLowerCase()) {
@@ -591,14 +598,14 @@ socket.on('winner', function(data) {
 
         //check against high score table
         if (highScoreData.length < 10 || (highScoreData[highScoreData.length-1] && myHighs.topStreak.games > highScoreData[highScoreData.length-1].games)) {
-          console.log('new hs sending');
+          //console.log('new hs sending');
           socket.emit('submitHS', {
             username: username,
             games: myHighs.topStreak.games,
             pts: myHighs.topStreak.points
           });
         } else {
-          console.log('not a highscore ' + highScoreData.length);
+          //console.log('not a highscore ' + highScoreData.length);
         }
 
       }
@@ -658,12 +665,12 @@ socket.on('setColor', function(data) {
 
     $('#colorBox').removeClass('watch-mode');
     $('#colorBox').removeClass('hider');
-    console.log('my color...' + myColor);
+    //console.log('my color...' + myColor);
 
   } else {
 
     // didnt get a color because room is currently full
-    console.log('waiting for there to be space in the room');
+    //console.log('waiting for there to be space in the room');
     $('#colorBox').text('WATCHING');
     $('#colorBox').attr('class', 'watch-mode');
 
@@ -679,7 +686,7 @@ socket.on('newCircle', function (data) {
 
       lastReceived = data;
 
-      console.log('stat');
+      //console.log('stat');
 
       var newCircle = $('<div class="circle"></div>');
       newCircle.css('top', data.y);
@@ -803,7 +810,7 @@ $(function() {
 
           // if user holds down for full second
           $('#yourClicker').hide();
-          console.log('here');
+          //console.log('here');
           socket.emit('addCircle', {x: xPos, y: yPos, rad: maxClickerSize, col: myColor});
           lastClickCoords.xPos = xPos;
           lastClickCoords.yPos = yPos;
@@ -813,7 +820,7 @@ $(function() {
 
       });
 
-      console.log(xPos, yPos);
+      //console.log(xPos, yPos);
 
 
     }
@@ -829,7 +836,7 @@ $(function() {
 
       if ((lastClickCoords.xPos !== xPos || lastClickCoords.yPos !== yPos) || clickEquality !== 0) {
 
-        console.log('there');
+        //console.log('there');
         socket.emit('addCircle', {x: xPos, y: yPos, rad: $('#yourClicker').width(), col: myColor});
         $('#yourClicker').stop();
         $('#yourClicker').hide();
@@ -851,7 +858,7 @@ $(function() {
   });
 
   $(window).blur(function() {
-    console.log('blur');
+    //console.log('blur');
     if (curRoom && curRoom !== 'lobby') {
       backToRoomChooser();
     }
