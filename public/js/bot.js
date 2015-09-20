@@ -223,7 +223,7 @@ var startBot = function() {
         shootCircle();
       }
 
-    }, 200 + (shootRad*clickerSpeed) + Math.floor(Math.random() * 400));
+    }, 800 + (shootRad*clickerSpeed) + Math.floor(Math.random() * 400));
 
   }
   shootCircle();
@@ -268,6 +268,9 @@ var backToRoomChooser = function() {
   activeGame = false;
   myColor = null;
   numPlayers = 0;
+
+  // BOTLOGIC
+  lastReceived = null;
 
   // if there are circles clear them
   $('#gamearea').find('.circle').fadeOut(200, function() {
@@ -401,6 +404,8 @@ socket.on('startGame', function(data) {
                               window.clearInterval(timer);
                               timer = null;
                               activeGame = false;
+                              // BOTLOGIC
+                              lastReceived = null;
                               $('#ticker').hide();
                               calculateWinner();
                             }
@@ -441,7 +446,7 @@ socket.on('playerCount', function(data) {
       // BOTLOGIC
       setTimeout(function() {
         backToRoomChooser();
-      }, 700 + Math.round(Math.random() * 1000));
+      }, 700 + Math.round(Math.random() * 3000));
     }
 
 });
@@ -465,7 +470,7 @@ socket.on('roomTotals', function(data) {
   var followtoroom = function(r) {
     setTimeout(function() {
       chooseRoom(r);
-    }, 300 + (Math.random() * 500));
+    }, 300 + (Math.random() * 2000));
   };
 
   if (data.slowerCount === 1) {
