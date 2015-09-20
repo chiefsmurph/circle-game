@@ -391,7 +391,7 @@ socket.on('playerCount', function(data) {
 
     numPlayers = data.count;
     $('#numPlayers').text(numPlayers + '/' + data.max);
-    if (numPlayers === 1) {
+    if (activeGame && numPlayers === 1) {
       activeGame = false;
       backToWaiting();
     }
