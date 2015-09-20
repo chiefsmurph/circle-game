@@ -577,12 +577,11 @@ socket.on('winner', function(data) {
 
     // BOTLOGIC
     console.log('topColor: ' + topColor);
-    console.log('winner: ' + colorRGBtoName[topColor]);
     console.log('all users: ' + JSON.stringify(playersInTheRoom));
 
     // update high score table if user is winner
     if (colorRGBtoName[topColor] && colorRGBtoName[topColor].toLowerCase() === myColor.toLowerCase()) {
-
+      console.log('winner: true');
       myHighs.curStreak.games++;
       myHighs.curStreak.points += data.winBy;
       $('#streakGames span').text( myHighs.curStreak.games );
@@ -617,7 +616,7 @@ socket.on('winner', function(data) {
       $('#streakPoints span').text('00000');
       myHighs.curStreak.games = 0;
       myHighs.curStreak.points = 0;
-
+      console.log('winner: false');
     }
 
     $('#rulesPanel').addClass('hider');      // just in case
