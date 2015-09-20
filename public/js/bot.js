@@ -440,7 +440,7 @@ socket.on('playerCount', function(data) {
     } else if(numPlayers===1) {
       // BOTLOGIC
       setTimeout(function() {
-        moveToLobby();
+        backToRoomChooser();
       }, 300 + Math.round(Math.random() * 600));
     }
 
