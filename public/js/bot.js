@@ -575,7 +575,7 @@ socket.on('winner', function(data) {
     var topColor = data.topColor;
 
     // BOTLOGIC
-    console.log('topColor: ' + topColor);
+    //console.log('topColor: ' + topColor);
 
     // update high score table if user is winner
     if (colorRGBtoName[topColor] && colorRGBtoName[topColor].toLowerCase() === myColor.toLowerCase()) {
