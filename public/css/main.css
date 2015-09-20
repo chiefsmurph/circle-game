@@ -24,6 +24,12 @@ html, body {
   /*box-shadow: 4px 4px 20px rgba(255,255,255,0.3);*/
   cursor: default;
 }
+#gamearea, #gamearea * {
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  user-select: none;          /* Likely future */
+}
 #gamearea {
   background-image: url('/img/asfalt-light.png');
   top: -400px;
