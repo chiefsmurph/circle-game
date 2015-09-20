@@ -200,13 +200,14 @@ var startBot = function() {
 
   var shootCircle = function() {
 
+    var shootRad = (Math.random() > 0.6) ? maxClickerSize : Math.round((maxClickerSize/2)+Math.floor(Math.random() * (maxClickerSize /2) ));
+
     setTimeout(function() {
 
       console.log('shooting bot circle');
 
       if (lastReceived) {
 
-        var shootRad = (Math.random() > 0.6) ? maxClickerSize : Math.round((maxClickerSize/2)+Math.floor(Math.random() * (maxClickerSize /2) ));
           // 60% - full maxClickerSize
           // 40% - random between 50% - 100% of maxClickerSize
         var shootOffsetX = Math.round(Math.random() * 250);
@@ -220,7 +221,7 @@ var startBot = function() {
 
       shootCircle();
 
-    }, Math.floor(Math.random() * clickerSpeed * 600));
+    }, 500 + (shootRad*3) + Math.floor(Math.random() * clickerSpeed * 600));
 
   }
   shootCircle();
