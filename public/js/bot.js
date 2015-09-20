@@ -206,9 +206,9 @@ var startBot = function() {
           // 60% - full maxClickerSize
           // 40% - random between 50% - 100% of maxClickerSize
         var shootOffsetX = Math.round(Math.random() * 250);
-        var shootX = (lastReceived.x + shootOffsetX > 500) ? lastReceived.x - shootOffsetX ? lastReceived.x + shootOffsetX;
+        var shootX = (lastReceived.x + shootOffsetX > 500) ? lastReceived.x - shootOffsetX : lastReceived.x + shootOffsetX;
         var shootOffsetY = Math.round(Math.random() * 250);
-        var shootY = (lastReceived.y + shootOffsetY > 500) ? lastReceived.y - shootOffsetY ? lastReceived.y + shootOffsetY;
+        var shootY = (lastReceived.y + shootOffsetY > 500) ? lastReceived.y - shootOffsetY : lastReceived.y + shootOffsetY;
 
         socket.emit('addCircle', {x: shootX, y: shootY, rad: shootRad, col: myColor});
 
