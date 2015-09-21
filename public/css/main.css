@@ -392,8 +392,13 @@ button:focus, input[type='button']:focus {outline:0;}
 }
 #infoPanel table button {
   line-height: 1.2;
-  margin: 10px 0 0;
-  border: 1px solid black;
+  margin: 0 0;
+  width: 200px;
+  height: 50px;
+  border: 0px;
+}
+#infoPanel table tr td button:first-child {
+  border-bottom: 1px solid black;
 }
 #infoPanel table button:enabled {
   background-color: white;
