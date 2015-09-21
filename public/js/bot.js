@@ -1,5 +1,5 @@
 // establish socket connection
-var socket = io.connect(window.location.hostname + ":" + window.location.port);
+var socket = io.connect('http://www.circlebattle.com');
 
 var maxClickerSize = 170; // bigger = easier, smaller = harder
 var clickerSpeed = 9; // higher = longer, lower = fasterer
