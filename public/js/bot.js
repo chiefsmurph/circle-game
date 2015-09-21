@@ -598,11 +598,11 @@ socket.on('winner', function(data) {
         //check against high score table
         if (highScoreData.length < 10 || (highScoreData[highScoreData.length-1] && myHighs.topStreak.games > highScoreData[highScoreData.length-1].games)) {
           //console.log('new hs sending');
-          socket.emit('submitHS', {
-            username: username,
-            games: myHighs.topStreak.games,
-            pts: myHighs.topStreak.points
-          });
+          // socket.emit('submitHS', {
+          //   username: username,
+          //   games: myHighs.topStreak.games,
+          //   pts: myHighs.topStreak.points
+          // });
         } else {
           //console.log('not a highscore ' + highScoreData.length);
         }
