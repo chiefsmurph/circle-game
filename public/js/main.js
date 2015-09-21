@@ -60,7 +60,7 @@ var myHighs = {
 // socket.emit('joinRoom', {room: 'public'});
 // $('#curRoom').text('public');
 
-var validateText = function(min, max, el) {
+var validateText = function(min, max, el) { // boolean
 
   var badWords = ['fuck', 'cock', 'pus', 'dick', 'bastard', 'cunt', 'ass', 'nig', 'bitch'];
 
@@ -138,7 +138,6 @@ var chooseRoom = function(roomToGo) {
       $('#curRoom').text(roomToGo);
 
 
-      setStatus('Waiting for other players');
       $('#rulesPanel').removeClass('hider');
       $('#backRoomButton').prop('disabled', false);
 
@@ -395,8 +394,10 @@ socket.on('playerCount', function(data) {
     if (activeGame && numPlayers === 1) {
       activeGame = false;
       backToWaiting();
-    } else if (!activeGame && numPlayers > 2) {
+    } else if (!activeGame && numPlayers > 1) {
       setStatus('Waiting for game to start');
+    } else if (!activeGame && numPlayers === 1) {
+      setStatus('Waiting for others to join');
     }
 
 });
