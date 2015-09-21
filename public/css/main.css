@@ -420,6 +420,7 @@ button:focus, input[type='button']:focus {outline:0;}
   top: 720px;
   width: 100%;
   margin: 0 auto 20px;
+  display: none;
 }
 #below div {
   width: 550px;
