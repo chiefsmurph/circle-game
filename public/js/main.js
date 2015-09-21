@@ -395,9 +395,9 @@ socket.on('playerCount', function(data) {
       activeGame = false;
       backToWaiting();
     } else if (!activeGame && numPlayers > 1) {
-      setStatus('Waiting for game to start');
+      setStatus('Waiting for<br>game to start');
     } else if (!activeGame && numPlayers === 1) {
-      setStatus('Waiting for others to join');
+      setStatus('Waiting for<br>others to join');
     }
 
 });
