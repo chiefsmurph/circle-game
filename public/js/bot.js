@@ -444,11 +444,11 @@ socket.on('playerCount', function(data) {
     if (activeGame && numPlayers === 1) {
       activeGame = false;
       backToWaiting();
-    } else if(numPlayers===1) {
+    } else if (numPlayers===1) {
       // BOTLOGIC
       setTimeout(function() {
         backToRoomChooser();
-      }, 700 + Math.round(Math.random() * 3000));
+      }, 700 + Math.round(Math.random() * 1500));
     }
 
 });
