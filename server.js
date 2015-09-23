@@ -472,6 +472,7 @@ var checkAndHandleWinners = function(myRoom, force) {      // void
         rooms[myRoom].curPlayingQueue = [];
         rooms[myRoom].waitFiveThenCheckAndStart(12000); // wait 12 then start
         clearTimeout(rooms[myRoom].waitingToRush);
+        rooms[myRoom].waitingToRush = null;
 
       };
 
@@ -614,6 +615,7 @@ io.sockets.on('connection', function (socket) {
 
     if (!rooms[myRoom].waitingToRush) {
       rooms[myRoom].waitingToRush = setTimeout(function() {
+        console.log('had to force it');
         checkAndHandleWinners(myRoom, true);   // force it!
       }, 5000);
     }
