@@ -31,6 +31,7 @@
 
     <!-- styles -->
     <link href="css/normalize.css" rel="stylesheet">
+    <link href="css/loading-animation.css" rel="stylesheet">
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 
     <link href='https://fonts.googleapis.comcss?family=Satisfy' rel='stylesheet' type='textcss'>
@@ -39,6 +40,22 @@
     <link href="css/main.css" rel="stylesheet">
   </head>
   <body>
+
+    <div id='splashscreen'>
+
+      <div id="fountainG">
+        <div id="fountainG_1" class="fountainG"></div>
+        <div id="fountainG_2" class="fountainG"></div>
+        <div id="fountainG_3" class="fountainG"></div>
+        <div id="fountainG_4" class="fountainG"></div>
+        <div id="fountainG_5" class="fountainG"></div>
+        <div id="fountainG_6" class="fountainG"></div>
+        <div id="fountainG_7" class="fountainG"></div>
+        <div id="fountainG_8" class="fountainG"></div>
+      </div>
+
+    </div>
+
     <div id='hiddenGameArea'></div>
     <div id='gamearea'>
       <div id='titleScreen'>
@@ -71,6 +88,7 @@
           </ol>
       </div>
       <div id='ticker'></div>
+      <div id='muteunmute' onclick='toggleMute()'></div>
 
       <div id='yourClicker'></div>
       <div id='bottomStatus'>total # of battlers: <span id='numPlayers'></span></div>
@@ -151,6 +169,10 @@
         <img src='img/contac.png'>
       </div>
     </div>
+
+
+
+
 
     <!-- javascript includes -->
     <script src="https://cdn.socket.io/socket.io-1.3.5.js"></script>

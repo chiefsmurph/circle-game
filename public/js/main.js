@@ -45,6 +45,11 @@ var highPanelShowing = false;
 var highScoreData = [];
 var clickEquality = 0;
 
+var audioBank = {};
+var audioLoaded = false;   // turns true when all audio loaded
+var isMuted = false;
+var curAudio = null;
+
 var myHighs = {
   curStreak: {
     games: 0,
@@ -106,6 +111,8 @@ var moveToLobby = function() {
   setStatus('Choose a room');
   $('#roomChooser').show();
   $('#bottomStatus').show();
+
+  changeAudio('jovial');
 }
 
 var showUserScreen = function(cb) {
@@ -120,6 +127,100 @@ var showUserScreen = function(cb) {
 
 };
 
+var preloadAudio = function() {
+
+  audioBank['contemplative'] = loadAudio('audio/contemplative t1.mp3', true);
+  audioBank['anthem'] = loadAudio('audio/30s anthem t1.mp3');
+  audioBank['jovial'] = loadAudio('audio/jovial t1.mp3', true);
+  audioBank['welcome'] = loadAudio('audio/welcome t1.mp3');
+
+  audioBank['slower'] = loadAudio('audio/slow lobby.mp3', true);
+  audioBank['medium'] = loadAudio('audio/medium lobby.mp3', true);
+  audioBank['faster'] = loadAudio('audio/fast lobby.mp3', true);
+
+  unmute = loadImage('img/unmuted.png');
+
+  filesToLoad = 7;
+  filesLoaded = 0;
+
+  function loadImage(uri)
+  {
+      var img = new Image();
+      img.onload = isAppLoaded;
+      img.src = uri;
+      return img;
+  }
+
+  function loadAudio(uri, loop)
+  {
+      var audio = new Audio();
+      //audio.onload = isAppLoaded; // It doesn't works!
+      audio.addEventListener('canplaythrough', isAppLoaded, false); // It works!!
+      if (loop) {
+        audio.addEventListener('ended', function() {      //for looping the audio
+            this.currentTime = 0;
+            this.play();
+        }, false);
+      }
+      audio.src = uri;
+      return audio;
+  }
+
+  function isAppLoaded()
+  {
+      filesLoaded++;
+      if (filesLoaded >= filesToLoad) {
+        audioLoaded = true;
+      }
+  }
+
+};
+
+preloadAudio();
+
+var quietAudio = function() {
+  for (var clip in audioBank) {
+    $(audioBank[clip]).animate({volume: 0}, 10);
+  }
+}
+
+var toggleMute = function() {
+  if (!isMuted) {
+    $('#muteunmute').css('background-image', 'url("img/muted.png")');
+    $('#muteunmute').css('background-color', 'rgba(244,69,0,0.8)');
+    quietAudio();
+    docCookies.setItem('muted', 'true');
+  } else {
+    $('#muteunmute').css('background-image', 'url("img/unmuted.png")');
+    $('#muteunmute').css('background-color', 'rgba(255,255,255,0.9)');
+    $(audioBank[curAudio]).animate({volume: 1}, 3);
+    docCookies.setItem('muted', 'false');
+  }
+  isMuted = !isMuted;
+}
+
+var changeAudio = function(c) {
+
+  for (var clip in audioBank) {
+    if (clip !== c) {
+      $(audioBank[clip]).animate({volume: 0}, 1000, function() {
+        $(this).stop();
+      });
+    }
+  }
+
+  console.log('now playing ' + c);
+
+  if (!isMuted) {
+    $(audioBank[c]).animate({volume: 1}, 2);
+  }
+  audioBank[c].currentTime = 0;
+  audioBank[c].play();
+
+  curAudio = c;
+
+};
+
 var chooseRoom = function(roomToGo) {
 
   roomToGo = roomToGo || $('#customRoomName').val();
@@ -127,6 +228,10 @@ var chooseRoom = function(roomToGo) {
   $('#statusPanel').fadeOut(950);
   $('#roomChooser').fadeOut(950);
   curRoom = roomToGo;
+
+  if (['slower','medium','faster'].indexOf(curRoom) !== -1) {
+    changeAudio(curRoom);
+  }
 
   setTimeout(function() {
 
@@ -210,7 +315,7 @@ var showTitleScreen = function(cb) {
         cb();
 
       });
-    }, 900);
+    }, 2500);
 
 
   });
@@ -221,6 +326,8 @@ var backToRoomChooser = function() {
 
   socket.emit('leaveRoom');
   socket.emit('joinRoom', {room: 'lobby'});
+
+  changeAudio('jovial');
 
   ticker = 0;   // time left on ticker
   window.clearInterval(timer);
@@ -293,14 +400,14 @@ socket.on('usersColors', function(data) {
 
 socket.on('highScores', function(data) {
 
-  console.log('received high scores' + JSON.stringify(data));
+  //console.log('received high scores' + JSON.stringify(data));
   $('#highScorePanel tbody').empty();
   highScoreData = data.scoreArr;
   for (var i = 0; i < highScoreData.length; i++) {
     var newRow = $('<tr></tr>');
     newRow.append('<td>' + (i+1) + '</td>');
     for (var field in highScoreData[i]) {
-      console.log('this field ' + field + ' and ' + highScoreData[i][field]);
+      //console.log('this field ' + field + ' and ' + highScoreData[i][field]);
       var newTD = $('<td>' + highScoreData[i][field] + '</td>');
       newRow.append(newTD);
     }
@@ -322,13 +429,20 @@ socket.on('startGame', function(data) {
       console.log('new game');
       $('#backRoomButton').prop('disabled', true);  // no back to room during countdown
       $('#rulesPanel').addClass('hider');
+
       setStatus('3', 1000, function() {
 
         if (numPlayers > 1) {
           setStatus('2', 1000, function() {
 
             if (numPlayers > 1) {
+
+              setTimeout(function() {
+                changeAudio('anthem');
+              }, 600);
+
               setStatus('1', 1000, function() {
+
 
                 if (numPlayers > 1) {
                   setStatus('GO!', 1000, function() {
@@ -560,6 +674,8 @@ socket.on('winner', function(data) {
           setStatus('Waiting for new<br>game to start');
           $('#rulesPanel').removeClass('hider');
           $('#bottomStatus').show();
+
+          changeAudio(curRoom);
         }
 
     });
@@ -647,21 +763,9 @@ socket.on('newCircle', function (data) {
 
 $(function() {
 
-  setTimeout(function() {
-
-    showTitleScreen(function() {
-
-      showUserScreen(function() {
-
-        moveToLobby();
-
-      });
-
-    });
-
-  }, 200);
-
-  $("#username").val(docCookies.getItem('pastusername'));
+  if (docCookies.getItem('muted') == 'true') {
+    toggleMute();
+  }
 
   $('#closeHS').click(function() {
     toggleHighs();
@@ -786,9 +890,46 @@ $(function() {
   $(window).blur(function() {
     console.log('blur');
     if (curRoom && curRoom !== 'lobby') {
-      backToRoomChooser();
+      //backToRoomChooser();
     }
   });
+
+  $(window).load(function() {
+    $('#splashscreen').fadeOut();
+
+
+          $('#infoPanel').fadeIn(250);
+
+
+          $('#gamearea').fadeIn(250, function() {
+
+            $('#chatPanel').fadeIn(250);
+            $('#usersColors').fadeIn(250);
+
+              changeAudio('welcome');
+
+              setTimeout(function() {
+
+                showTitleScreen(function() {
+
+                  changeAudio('contemplative');
+                  showUserScreen(function() {
+
+                    moveToLobby();
+
+                  });
+
+                });
+
+              }, 900);
+
+              $("#username").val(docCookies.getItem('pastusername'));
+
+
+          });
+
+  });
+
 
   // enter submits
   $("#customRoomName").keypress(function(event) {
