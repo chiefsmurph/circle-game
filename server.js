@@ -568,7 +568,10 @@ io.sockets.on('connection', function (socket) {
     if (myRoom !== data.room) {  // ignore duplicate requests to join room
 
       myRoom = data.room;
-      myUsername = data.uid;
+      if (!myUsername) {
+        myUsername = data.uid;
+        console.log(myUsername + ' just logged in');
+      }
       socket.join(myRoom);
 
       if (myRoom !== 'lobby') {
