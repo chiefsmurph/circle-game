@@ -201,12 +201,10 @@ var toggleMute = function() {
 
 var changeAudio = function(c) {
 
-  for (var clip in audioBank) {
-    if (clip !== c) {
-      $(audioBank[clip]).animate({volume: 0}, 1000, function() {
-        $(this).stop();
-      });
-    }
+  if (curAudio) {
+    $(audioBank[curAudio]).animate({volume: 0}, 1000, function() {
+      $(this).stop();
+    });
   }
 
   console.log('now playing ' + c);
@@ -459,6 +457,8 @@ socket.on('startGame', function(data) {
                           $('#ticker').text(ticker);
                           $('#ticker').show();
                           $('#backRoomButton').prop('disabled', false);
+                          $('#muteunmute').hide();
+
                           clickEquality = 0;
 
                           timer = setInterval(function() {
@@ -469,6 +469,7 @@ socket.on('startGame', function(data) {
                               $('#gamearea').find('.circle').stop();
                               $('#yourClicker').stop();
                               $('#yourClicker').hide();
+                              $('#muteunmute').show();
                               window.clearInterval(timer);
                               timer = null;
                               activeGame = false;
@@ -899,7 +900,7 @@ $(function() {
 
 
           $('#infoPanel').fadeIn(250);
-
+          $('#hiddenGameArea').fadeIn(250);
 
           $('#gamearea').fadeIn(250, function() {
 
