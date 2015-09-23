@@ -609,9 +609,9 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('finishedCalc', function(data) {
 
-    if (!waitingToRush) {
-      waitingToRush = setTimeout(function() {
-        checkAndHandleWinners(myRoomm, true);   // force it!
+    if (!rooms[myRoom].waitingToRush) {
+      rooms[myRoom].waitingToRush = setTimeout(function() {
+        checkAndHandleWinners(myRoom, true);   // force it!
       }, 5000);
     }
 
