@@ -45,6 +45,7 @@ var highScoreData = [];
 var clickEquality = 0;
 
 //BOTLOGIC
+var sentTo = [];
 var lastReceived;
 var playersInTheRoom = [];
 
@@ -222,7 +223,7 @@ var startBot = function() {
         shootCircle();
       }
 
-    }, 800 + (shootRad*clickerSpeed) + Math.floor(Math.random() * 400));
+    }, 400 + (shootRad*clickerSpeed/3.5) + Math.floor(Math.random() * 600));
 
   }
   shootCircle();
@@ -332,6 +333,13 @@ socket.on('usersColors', function(data) {
     }
 
   });
+
+  // BOTLOGIC
+  if (Object.keys(data.usersColors).length < 2) {
+    setTimeout(function() {
+      backToRoomChooser();
+    }, 700 + Math.round(Math.random() * 1500));
+  }
 
 });
 
@@ -444,7 +452,7 @@ socket.on('playerCount', function(data) {
     if (activeGame && numPlayers === 1) {
       activeGame = false;
       backToWaiting();
-    } else if (numPlayers===1) {
+    } else if (numPlayers < 2) {
       // BOTLOGIC
       setTimeout(function() {
         backToRoomChooser();
@@ -472,6 +480,16 @@ socket.on('roomTotals', function(data) {
   var followtoroom = function(r) {
     setTimeout(function() {
       chooseRoom(r);
+
+      var meId = playersInTheRoom.indexOf(username);
+      var otherId = (meId) ? 0 : 1;
+      if (sentTo.indexOf(playersInTheRoom[otherId]) === -1) {
+        sentTo.push(playersInTheRoom[otherId]);
+        setTimeout(function() {
+          socket.emit('chat', { msg: 'hey im a computer, and thats cool and all, but id recommend you calling up a friend or two and challenging them to a game of circle battle' });
+        }, 15000);
+      }
+
     }, 300 + (Math.random() * 2000));
   };
 

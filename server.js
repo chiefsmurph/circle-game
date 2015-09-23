@@ -23,7 +23,7 @@ app.use(express.static(__dirname + '/public'));
 var updateScoresAndEmit = function(client, done) {
 
   updateHighScores(client, function() {
-    console.log('updated high scores');
+    //console.log('updated high scores');
     io.sockets.emit('highScores', {scoreArr: highScoreData});
     done();
   });
@@ -34,11 +34,11 @@ var updateScoresAndEmit = function(client, done) {
 app.get('/removeScore', function(req, res, next) {
 
   pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
-    console.log('deleting username ' + req.query.user + ' in table');
+    //console.log('deleting username ' + req.query.user + ' in table');
 
     client.query('DELETE from highscores WHERE username=\'' + req.query.user + '\'', function(err, result) {
 
-      console.log('err ' + err + ' and result ' + result);
+      //console.log('err ' + err + ' and result ' + result);
       done();
       updateScoresAndEmit(client, done);
       res.send(JSON.stringify(result));
@@ -131,16 +131,16 @@ var updateHighScores = function(client, cb) {       // void
 
   var handleResult = function(result) {
 
-      console.log('high score rows' + JSON.stringify(result));
+      //console.log('high score rows' + JSON.stringify(result));
       if (result) highScoreData = result.rows;
-      console.log('hs data ' + highScoreData);
+      //console.log('hs data ' + highScoreData);
       if (cb) cb();
 
   }
 
   if (!client) {
       pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
-        console.log(err);
+        //console.log(err);
         client.query('SELECT username, dateset, games, points FROM highscores ORDER BY games DESC, points DESC LIMIT 10', function(err, result) {
 
           console.log(' err ' + err);
@@ -154,7 +154,7 @@ var updateHighScores = function(client, cb) {       // void
 
     client.query('SELECT username, dateset, games, points FROM highscores ORDER BY games DESC, points DESC LIMIT 10', function(err, result) {
 
-      console.log(' err ' + err);
+      //console.log(' err ' + err);
       handleResult(result);
 
     });
@@ -221,10 +221,10 @@ var newRoom = function(roomName) {
       rooms[roomName].RGBCounts = {};
       rooms[roomName].timerToStart = null;
 
-      console.log('start game num: ' + rooms[roomName].numPlayers);
+      //console.log('start game num: ' + rooms[roomName].numPlayers);
 
     } else {
-      console.log('only ' + rooms[roomName].numPlayers + ' are here currently');
+      //console.log('only ' + rooms[roomName].numPlayers + ' are here currently');
     }
 
   };
@@ -257,7 +257,7 @@ var newRoom = function(roomName) {
       //console.log('sending off because rgbcounts size ' + rooms[roomName].getRGBCountsSize() + ' equals numplayers ' + rooms[roomName].numPlayers);
       hasAllOfThem = true;
     }
-    console.log('rgbcounts size ' + rooms[roomName].getRGBCountsSize() + ' equals numplayers ' + rooms[roomName].numPlayers);
+    //console.log('rgbcounts size ' + rooms[roomName].getRGBCountsSize() + ' equals numplayers ' + rooms[roomName].numPlayers);
     return hasAllOfThem;
 
   };
@@ -266,7 +266,7 @@ var newRoom = function(roomName) {
   rooms[roomName].setupNewUser = function(id, sock, username) {
 
     var col = rooms[roomName].getUnusedColorName();
-    console.log('col ' + col);
+    //console.log('col ' + col);
     rooms[roomName].numPlayers++;
 
     rooms[roomName].userBank[id] = {
@@ -279,7 +279,7 @@ var newRoom = function(roomName) {
     sock.emit('setColor', {color: col});
 
     if (!col) {
-      console.log('adding ' + id + ' to queue');
+      //console.log('adding ' + id + ' to queue');
       rooms[roomName].waitingForSpaceQueue.push(id);
     }
 
@@ -340,18 +340,18 @@ var newRoom = function(roomName) {
     if (rooms[roomName].numPlayers < rooms[roomName].maxPeople) {
 
         var allColors = possibleColors.slice(0);
-        console.log('allcols' + allColors + ' and ' + possibleColors);
+        //console.log('allcols' + allColors + ' and ' + possibleColors);
         var takenColors = new Array;
         for (var user in rooms[roomName].userBank) {
           if (rooms[roomName].userBank.hasOwnProperty(user)) {
             takenColors.push(rooms[roomName].userBank[user].color);
           }
         }
-        console.log('takencols' + JSON.stringify(takenColors));
+        //console.log('takencols' + JSON.stringify(takenColors));
         var remainingColors = allColors.filter(function(i) {
           return takenColors.indexOf(i) < 0;
         });
-        console.log('remainingColors ' + remainingColors);
+        //console.log('remainingColors ' + remainingColors);
         if (remainingColors.length) {
           return remainingColors[ Math.floor( Math.random() * remainingColors.length ) ];
         }
@@ -388,26 +388,26 @@ var updateLobbyTotals = function() {
 
 };
 
-var checkAndHandleWinners = function(myRoom) {      // void
+var checkAndHandleWinners = function(myRoom, force) {      // void
 
-      if (rooms[myRoom].hasAllRGBCounts() && rooms[myRoom].inGame) {
+      if ((rooms[myRoom].hasAllRGBCounts() && rooms[myRoom].inGame) || force) {
 
-        console.log('rooms my room rgbcounts: ' + JSON.stringify(rooms[myRoom].RGBCounts));
+        //console.log('rooms my room rgbcounts: ' + JSON.stringify(rooms[myRoom].RGBCounts));
 
         // compute the winning rgb
         var avgRGBCounts = {};
         for (var userId in rooms[myRoom].RGBCounts) {
 
           for (var rgb in rooms[myRoom].RGBCounts[userId]) {
-            console.log('rgb ' + rgb);
+            //console.log('rgb ' + rgb);
             // first sum them all up for each of the colors
             var curRGB = rooms[myRoom].RGBCounts[userId].rgb;
-            console.log('user id ' + userId + ' rgb ' + rgb + ' val ' + rooms[myRoom].RGBCounts[userId][rgb]);
+            //console.log('user id ' + userId + ' rgb ' + rgb + ' val ' + rooms[myRoom].RGBCounts[userId][rgb]);
             avgRGBCounts[rgb] = (avgRGBCounts[rgb]) ? avgRGBCounts[rgb] + rooms[myRoom].RGBCounts[userId][rgb] : rooms[myRoom].RGBCounts[userId][rgb];
           }
         }
 
-        console.log('sum-avgRGBcounts1: ' + JSON.stringify(avgRGBCounts));
+        //console.log('sum-avgRGBcounts1: ' + JSON.stringify(avgRGBCounts));
 
         for (var rgb in avgRGBCounts) {
 
@@ -416,7 +416,7 @@ var checkAndHandleWinners = function(myRoom) {      // void
 
         }
 
-        console.log('avgRGBcounts2: ' + JSON.stringify(avgRGBCounts));
+        //console.log('avgRGBcounts2: ' + JSON.stringify(avgRGBCounts));
 
         // now that we have the average rgb data
         // figure out the top score
@@ -427,7 +427,7 @@ var checkAndHandleWinners = function(myRoom) {      // void
               sortableScores.push([color, avgRGBCounts[color]]);
         }
         sortableScores.sort(function(a, b) {return b[1] - a[1]});
-        console.log('sortablescores ' + JSON.stringify(sortableScores));
+        //console.log('sortablescores ' + JSON.stringify(sortableScores));
         var winBy = Math.round((sortableScores[0][1] - sortableScores[1][1]) / 10);
 
         // old way of determining top score
@@ -461,7 +461,9 @@ var checkAndHandleWinners = function(myRoom) {      // void
           winBy: winBy
         });
 
-        console.log('game over and all users finishedcalc');
+        //console.log('game over and all users finishedcalc');
+
+        // game over reset
         rooms[myRoom].finishedCalc = 0;
         rooms[myRoom].inGame = false;
         rooms[myRoom].numWaitingForNewGame = 0;
@@ -469,6 +471,7 @@ var checkAndHandleWinners = function(myRoom) {      // void
         rooms[myRoom].timerToStart = null;
         rooms[myRoom].curPlayingQueue = [];
         rooms[myRoom].waitFiveThenCheckAndStart(12000); // wait 12 then start
+        clearTimeout(rooms[myRoom].waitingToRush);
 
       };
 
@@ -497,7 +500,7 @@ io.sockets.on('connection', function (socket) {
       while (!passed) {
         var firstInLine = rooms[myRoom].waitingForSpaceQueue.shift(); // id of first in line
         if (firstInLine===undefined) {passed = true;}
-        console.log('giving color ' + rooms[myRoom].userBank[myUserId].color + ' to user ' + firstInLine);
+        //console.log('giving color ' + rooms[myRoom].userBank[myUserId].color + ' to user ' + firstInLine);
         if (rooms[myRoom].socketBank[myUserId][ firstInLine ]) {
           rooms[myRoom].socketBank[firstInLine].emit('setColor', {color: rooms[myRoom].userBank[myUserId].color });
           rooms[myRoom].userBank[firstInLine].color = rooms[myRoom].userBank[myUserId].color;
@@ -508,13 +511,13 @@ io.sockets.on('connection', function (socket) {
         }
       }
     } else {
-      console.log('couldnt pass color off ' + myUserId + ' ' + myRoom + ' and numplayers ' + rooms[myRoom].numPlayers);
+      //console.log('couldnt pass color off ' + myUserId + ' ' + myRoom + ' and numplayers ' + rooms[myRoom].numPlayers);
     }
 
   };
 
   socket.on('disconnect', function() {
-    console.log(myUserId + ' ' + myRoom + ' disconnected');
+    //console.log(myUserId + ' ' + myRoom + ' disconnected');
     if (myRoom === 'lobby') {
       lobbyCount--;
       updateLobbyTotals();
@@ -539,7 +542,7 @@ io.sockets.on('connection', function (socket) {
 
     if (myRoom) {
 
-      console.log('user' + myUserId + ' leaving ' + myRoom);
+      //console.log('user' + myUserId + ' leaving ' + myRoom);
       socket.leave(myRoom);
 
       if (myRoom !== 'lobby') {
@@ -570,7 +573,7 @@ io.sockets.on('connection', function (socket) {
 
       if (myRoom !== 'lobby') {
 
-          console.log('user number ' + myUserId + ' joining room "' + myRoom + '" with ' + myUsername);
+          //console.log('user number ' + myUserId + ' joining room "' + myRoom + '" with ' + myUsername);
 
           if (!rooms[myRoom]) {
             newRoom(myRoom);
@@ -579,7 +582,7 @@ io.sockets.on('connection', function (socket) {
           rooms[myRoom].setupNewUser(myUserId, socket, myUsername);
 
           if (roomSettings.hasOwnProperty(myRoom)) {
-            console.log('setSettings: ' + JSON.stringify(roomSettings[myRoom]) + ' in ' + myRoom);
+            //console.log('setSettings: ' + JSON.stringify(roomSettings[myRoom]) + ' in ' + myRoom);
             rooms[myRoom].sendAll('setSettings', roomSettings[myRoom]);
           }
 
@@ -606,7 +609,13 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('finishedCalc', function(data) {
 
-    console.log('user finishedcalc');
+    if (!waitingToRush) {
+      waitingToRush = setTimeout(function() {
+        checkAndHandleWinners(myRoomm, true);   // force it!
+      }, 5000);
+    }
+
+    //console.log('user finishedcalc');
     rooms[myRoom].finishedCalc++;
     rooms[myRoom].RGBCounts[myUserId] = data.pixelData;
 
@@ -616,19 +625,19 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('submitHS', function(data) {
 
-    console.log('inserting score...' + JSON.stringify(data));
+    //console.log('inserting score...' + JSON.stringify(data));
 
       pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
-        console.log('about to insert');
+        //console.log('about to insert');
         var dateNow = new Date().toISOString().slice(0, 10);
         dateNow = dateNow.substr(5) + '-' + dateNow.substr(0, 4);
         var queryText = 'UPDATE "highscores" SET "games"=' + data.games + ', "points"=' + data.pts + ' WHERE "username"=\'' + data.username + '\' AND "games"<' + data.games + ' AND "dateset"=\'' + dateNow + '\'';
 
-        console.log(queryText);
+        //console.log(queryText);
 
         client.query(queryText, function(err, result) {
 
-          console.log( err, result);
+          //console.log( err, result);
           done();
 
           if (err || result.rowCount === 0) {
@@ -637,21 +646,21 @@ io.sockets.on('connection', function (socket) {
             // but dont go ahead and insert if they already sent in a better record today
             client.query('SELECT * FROM "highscores" WHERE "username"=\'' + data.username + '\' AND "dateset"=\'' + dateNow + '\'', function(err, result) {
 
-              console.log('select from highscores where username and dateset');
-              console.log('err for this ' + err);
-              console.log('result here ' + JSON.stringify(result));
+              //console.log('select from highscores where username and dateset');
+              //console.log('err for this ' + err);
+              //console.log('result here ' + JSON.stringify(result));
 
               if (result.rowCount === 0) {
                 // only go ahead with the insert if they havent had any records from the same day that are less than data.games
 
                     var queryText = 'INSERT INTO "highscores" ("username", "dateset", "games", "points") VALUES ($1, $2, $3, $4)';
 
-                    console.log(queryText);
+                    //console.log(queryText);
 
                     client.query(queryText, [data.username, dateNow, data.games, data.pts], function(err, result) {
-                      console.log('here' + JSON.stringify(result) + ' ' + err);
+                      //console.log('here' + JSON.stringify(result) + ' ' + err);
                       if (!err) {
-                        console.log('no error');
+                        //console.log('no error');
                         done();
 
                         socket.emit('congrats');
@@ -659,9 +668,9 @@ io.sockets.on('connection', function (socket) {
 
 
                       } else {
-                        console.log('err ' + err);
+                        //console.log('err ' + err);
                       }
-                      console.log('now here');
+                      //console.log('now here');
 
                     });
 
@@ -685,7 +694,7 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('addCircle', function(circle) {
-    console.log('circle: ' +  JSON.stringify(circle) + ' goes to ' + myRoom);
+    //console.log('circle: ' +  JSON.stringify(circle) + ' goes to ' + myRoom);
     rooms[myRoom].sendAll('newCircle', {x: circle.x, y: circle.y, rad: circle.rad, col: circle.col});
   });
 

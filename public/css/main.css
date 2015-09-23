@@ -441,5 +441,5 @@ button:focus, input[type='button']:focus {outline:0;}
   color: black;
 }
 .blue-button {
-  background-color: cyan;
+  background-color: cyan !important;
 }
