@@ -738,9 +738,13 @@ socket.on('newCircle', function (data) {
 
 $(function() {
 
+  $('#gamearea').show();
+
   setTimeout(function() {
 
     showTitleScreen(function() {
+
+      console.log('here');
 
       showUserScreen(function() {
 

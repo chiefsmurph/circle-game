@@ -212,7 +212,7 @@ var changeAudio = function(c) {
   console.log('now playing ' + c);
 
   if (!isMuted) {
-    $(audioBank[c]).animate({volume: 1}, 2);
+    $(audioBank[c]).volume = 1.0;
   }
   audioBank[c].currentTime = 0;
   audioBank[c].play();
