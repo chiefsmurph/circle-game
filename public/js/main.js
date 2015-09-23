@@ -135,7 +135,7 @@ var preloadAudio = function() {
   audioBank['welcome'] = loadAudio('audio/welcome t1.mp3');
 
   audioBank['slower'] = loadAudio('audio/slow lobby.mp3', true);
-  audioBank['medium'] = loadAudio('audio/medium lobby.mp3', true);
+  audioBank['medium'] = loadAudio('audio/medium lobby mod.mp3', true);
   audioBank['faster'] = loadAudio('audio/fast lobby.mp3', true);
 
   unmute = loadImage('img/unmuted.png');
