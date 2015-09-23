@@ -339,6 +339,7 @@ var backToRoomChooser = function() {
     $(this).remove();
   });
 
+  $('#muteunmute').show();
   $('#rulesPanel').addClass('hider');
   $('#ticker').hide();
   $('#bottomStatus').html("total # of battlers: <span id='numPlayers'></span>");
@@ -891,7 +892,7 @@ $(function() {
   $(window).blur(function() {
     console.log('blur');
     if (curRoom && curRoom !== 'lobby') {
-      //backToRoomChooser();
+      backToRoomChooser();
     }
   });
 
