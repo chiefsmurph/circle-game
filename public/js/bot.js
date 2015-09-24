@@ -223,7 +223,7 @@ var startBot = function() {
         shootCircle();
       }
 
-    }, 400 + (shootRad*clickerSpeed/3.5) + Math.floor(Math.random() * 600));
+    }, (shootRad*clickerSpeed) + Math.floor(Math.random() * 1200));
 
   }
   shootCircle();
