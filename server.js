@@ -290,12 +290,12 @@ var Bot = function(options) {
           setTimeout(function() {
             lobbyCount++;
             updateLobbyTotals();
-            bot.joinRoom(Object.keys(roomSettings)[Math.floor(Math.random() * 3)]);
+            bot.joinRoom(Object.keys(roomSettings)[Math.floor(Math.random() * roomSettings.length)]);
           }, 5000 + Math.round(Math.random() * 189000));
         } else {
           // dont go to sleep bot just go back into another room
           setTimeout(function() {
-            bot.joinRoom(Object.keys(roomSettings)[Math.floor(Math.random() * 3)]);
+            bot.joinRoom(Object.keys(roomSettings)[Math.floor(Math.random() * roomSettings.length)]);
           }, 1000 + Math.round(Math.random() * 6000));
         }
 
