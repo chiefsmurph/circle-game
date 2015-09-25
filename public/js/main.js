@@ -191,8 +191,8 @@ var changeAudio = function(c) {
   if (!isMuted) {
     audioBank[c].pos(0, 0);
     audioBank[c].volume(1.0);
-    audioBank[c].play();
   }
+  audioBank[c].play();
   curAudio = c;
 
 };
