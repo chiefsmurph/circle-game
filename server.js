@@ -211,8 +211,6 @@ var Bot = function(options) {
 
       setTimeout(function() {
 
-        //console.log('shooting bot circle');
-
         if (bot.room && bot.room.lastReceived) {
 
             // 60% - full maxClickerSize
@@ -221,7 +219,7 @@ var Bot = function(options) {
           var shootY = (Math.random() > 0.5) ? bot.room.lastReceived.y + Math.round(Math.random() * ( (500 - Math.round(shootRad/2)) - bot.room.lastReceived.y) ) : Math.round(shootRad/2) + Math.floor(Math.random() * bot.room.lastReceived.y);
 
           bot.room.sendAll('newCircle', {x: shootX, y: shootY, rad: shootRad, col: bot.color});
-          console.log('shooting ' + bot.color + ' circle to room ' + bot.roomName);
+          //console.log('shooting ' + bot.color + ' circle to room ' + bot.roomName);
 
         }
 
@@ -264,12 +262,12 @@ var Bot = function(options) {
     bot.gameGoing = false;
     if (Math.random() < 0.2) {
       // 20% chance of leaveroom and then join other random room
-      console.log('bot leaving then joining');
+      //console.log('bot leaving then joining');
       setTimeout(function() {
 
         bot.leaveRoom();
         if (Math.random() < 0.2) {
-          console.log('sleeping a bot');
+          //console.log('sleeping a bot');
           // go to sleep bot!
           lobbyCount--;
           updateLobbyTotals();
@@ -288,7 +286,7 @@ var Bot = function(options) {
       }, 3000 + Math.round(Math.random() * 6000));
 
     } else {
-      console.log('nope');
+      //console.log('nope');
     }
 
   }
