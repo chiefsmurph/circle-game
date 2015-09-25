@@ -291,7 +291,7 @@ var Bot = function(options) {
             lobbyCount++;
             updateLobbyTotals();
             bot.joinRoom(Object.keys(roomSettings)[Math.floor(Math.random() * 3)]);
-          }, 5000 + Math.round(Math.random() * 89000));
+          }, 5000 + Math.round(Math.random() * 189000));
         } else {
           // dont go to sleep bot just go back into another room
           setTimeout(function() {
