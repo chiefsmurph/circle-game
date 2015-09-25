@@ -577,7 +577,7 @@ var updateLobbyTotals = function() {
 
 var checkAndHandleWinners = function(myRoom, force) {      // void
 
-      if ((rooms[myRoom].hasAllRGBCounts() || force) && rooms[myRoom].inGame) {
+      if (rooms[myRoom] && (rooms[myRoom].hasAllRGBCounts() || force) && rooms[myRoom].inGame) {
 
         //console.log('rooms my room rgbcounts: ' + JSON.stringify(rooms[myRoom].RGBCounts));
 
