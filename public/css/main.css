@@ -172,24 +172,46 @@ html, body {
 #roomChooser {
   position: absolute;
   top: 100px;
-  left: 50px;
-  width: 400px;
+  left: 0px;
+  width: 500px;
   z-index: 1000000;
   text-align: center;
   padding: 0px;
   font-size: 33px;
   display: none;
+  color: white;
 }
-#roomChooser ul {
-  padding: 0;
-  list-style-type: none;
+#roomChooser #intensity {
+  text-shadow:
+   -2px -2px 0 #FF0000,
+    2px -2px 0 #FF0000,
+    -2px 2px 0 #FF0000,
+     2px 2px 0 #FF0000;
+}
+#roomChooser table {
+  width: 100%;
+  margin: 13px auto 0;
+}
+#roomChooser thead th {
+  border-bottom: 2px solid white;
+}
+#roomChooser tbody td {
+  padding: 10px;
+}
+#roomChooser tbody td:nth-child(2) {
+  border-left: 2px solid white;
 }
 #roomChooser button {
   border: 1px solid white;
   border-radius: 8px;
-  margin-bottom: 24px;
+  margin: 0;
   background-color: white;
-  padding: 2px 20px;
+  width: 190px;
+  color: black;
+  font-size: 90%;
+}
+#roomChooser tr:nth-child(4) button {
+  width: auto;
 }
 #roomChooser button:hover {
   background-color: rgb(255,255,0);
@@ -198,10 +220,8 @@ button:focus, input[type='button']:focus {outline:0;}
 #roomChooser #customText {
   display: none;
   height: 45px;
-}
-#roomChooser li * {
-  display: inline-block;
-  vertical-align: middle;
+  margin-top: 10px;
+  color: black;
 }
 #roomChooser #customRoomName {
   height: 45px;
@@ -215,6 +235,7 @@ button:focus, input[type='button']:focus {outline:0;}
   border-left: 0;
   border-radius: 0 10px 10px 0;
   background-color: #D3D3D3;
+  color: black;
 }
 #roomChooser input[type='button']:hover, #loginScreen #setUserBtn:hover {
   background-color: yellow;

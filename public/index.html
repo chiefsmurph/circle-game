@@ -71,14 +71,34 @@
       </div>
       <div id='statusPanel'></div>
       <div id='roomChooser'>
-        <ul>
-          <li><button onclick='chooseRoom("slower")'>slower<span id='slower-count'></span></button></li>
-          <li><button onclick='chooseRoom("medium")'>medium<span id='medium-count'></span></button></li>
-          <li><button onclick='chooseRoom("faster")'>faster<span id='faster-count'></span></button></li>
-
-          <li><button onclick='toggleCustomText()'>custom</button></li>
-          <div id='customText'><input type='text' id='customRoomName'><input type='button' onclick='chooseRoom()' value='GO!'></div>
-        </ul>
+        <table>
+          <thead>
+            <tr>
+              <th>original</th>
+              <th><div id='intensity'>intensity</div></th>
+            </tr>
+          <thead>
+          <tbody>
+            <tr>
+              <td><button onclick='chooseRoom("slower")'>slower<span id='slower-count'></span></button></td>
+              <td><button onclick='chooseRoom("smaller")'>smaller<span id='smaller-count'></span></button></td>
+            </tr>
+            <tr>
+              <td><button onclick='chooseRoom("medium")'>medium<span id='medium-count'></span></button></td>
+              <td><button onclick='chooseRoom("middle")'>middle<span id='middle-count'></span></button></td>
+            </tr>
+            <tr>
+              <td><button onclick='chooseRoom("faster")'>faster<span id='faster-count'></span></button></td>
+              <td><button onclick='chooseRoom("larger")'>larger<span id='larger-count'></span></button></td>
+            </tr>
+            <tr>
+              <td colspan='2'>
+                <button onclick='toggleCustomText()'>private room</button>
+                <div id='customText'><input type='text' id='customRoomName'><input type='button' onclick='chooseRoom()' value='GO!'></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       <div id='rulesPanel' class='hider'>
           <ol>

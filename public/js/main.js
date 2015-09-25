@@ -151,12 +151,16 @@ var preloadAudio = function() {
 
   audioBank['contemplative'] = loadAudio('audio/contemplative t1.mp3', true, true);
   audioBank['jovial'] = loadAudio('audio/jovial t1 mod.mp3', true, true);
-  audioBank['welcome'] = loadAudio('audio/welcome t1.mp3', false, true);
+  audioBank['welcome'] = loadAudio('audio/welcome t1 mod vox.mp3', false, true);
   audioBank['anthem'] = loadAudio('audio/30s anthem t1.mp3', false );
 
   audioBank['slower'] = loadAudio('audio/slow lobby.mp3', true );
   audioBank['medium'] = loadAudio('audio/medium lobby mod.mp3', true );
   audioBank['faster'] = loadAudio('audio/fast lobby.mp3', true );
+
+  audioBank['smaller'] = audioBank['slower'];
+  audioBank['middle'] = audioBank['medium'];
+  audioBank['larger'] = audioBank['faster'];
 
 };
 
@@ -205,7 +209,7 @@ var chooseRoom = function(roomToGo) {
   $('#roomChooser').fadeOut(950);
   curRoom = roomToGo;
 
-  if (['slower','medium','faster'].indexOf(curRoom) !== -1) {
+  if (['slower','medium','faster', 'smaller','middle','larger'].indexOf(curRoom) !== -1) {
     changeAudio(curRoom);
   }
 
@@ -508,6 +512,9 @@ socket.on('roomTotals', function(data) {
   $('#slower-count').text("(" + data.slowerCount + ")");
   $('#medium-count').text("(" + data.mediumCount + ")");
   $('#faster-count').text("(" + data.fasterCount + ")");
+  $('#smaller-count').text("(" + data.smallerCount + ")");
+  $('#middle-count').text("(" + data.middleCount + ")");
+  $('#larger-count').text("(" + data.largerCount + ")");
   $('#numPlayers').text( data.totalBattlers );
 
 });

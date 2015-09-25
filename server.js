@@ -120,6 +120,21 @@ var roomSettings = {
     maxClickerSize: 60,
     clickerSpeed: 3,
     maxPeople: 6
+  },
+  'smaller': {
+    maxClickerSize: 60,
+    clickerSpeed: 0.5,
+    maxPeople: 6
+  },
+  'middle': {
+    maxClickerSize: 110,
+    clickerSpeed: 0.5,
+    maxPeople: 6
+  },
+  'larger': {
+    maxClickerSize: 180,
+    clickerSpeed: 0.5,
+    maxPeople: 6
   }
 };
 
@@ -166,7 +181,7 @@ updateHighScores();
 
 // WHATS A BOT?
 
-var botNames = ["Georgey", "Timothy", "CP-42", "DG3000", "NARTA", "Bengi", "Corrie"];
+var botNames = ["tempest", "larry", "tod", "manik", "wonton", "remla", "nashua", "tarren", "zenbot", "durnery", "tona", "karalata", "ghendan", "dora", "lucy"];
 var bots = [];
 
 var Bot = function(options) {
@@ -249,6 +264,7 @@ var Bot = function(options) {
 
   bot.leaveRoom = function() {
     if (bot.room) {
+      passColorOff(bot.id, bot.roomName);
       bot.room.userLeaving(bot.id, true);
       bot.room = null;
       bot.roomName = null;
@@ -547,7 +563,10 @@ var updateLobbyTotals = function() {
     slowerCount: getRoomCount('slower'),
     mediumCount: getRoomCount('medium'),
     fasterCount: getRoomCount('faster'),
-    totalBattlers: ['slower', 'medium', 'faster'].reduce(function(total, rname) {
+    smallerCount: getRoomCount('smaller'),
+    middleCount: getRoomCount('middle'),
+    largerCount: getRoomCount('larger'),
+    totalBattlers: ['slower', 'medium', 'faster', 'smaller', 'middle', 'larger'].reduce(function(total, rname) {
       return total + getRoomCount(rname);
     }, 0) + lobbyCount
 
@@ -643,13 +662,39 @@ var checkAndHandleWinners = function(myRoom, force) {      // void
 
       };
 
-}
+};
+
+var passColorOff = function(id, room) {   // void
+
+  if (rooms[room] && rooms[room].userBank[id].color && rooms[room].waitingForSpaceQueue.length > 0) {
+    // person in front of the queue gets the person leaving's old color
+    var passed = false;
+    while (!passed) {
+      var firstInLine = rooms[room].waitingForSpaceQueue.shift(); // id of first in line
+      if (firstInLine===undefined) {passed = true;}
+      //console.log('giving color ' + rooms[myRoom].userBank[myUserId].color + ' to user ' + firstInLine);
+      if (rooms[room].socketBank[id][ firstInLine ]) {
+        rooms[room].socketBank[firstInLine].emit('setColor', {color: rooms[room].userBank[id].color });
+        rooms[room].userBank[firstInLine].color = rooms[room].userBank[id].color;
+        rooms[room].curPlayingQueue.push(firstInLine);
+        passed = true;
+      } else if (rooms[room].waitingForSpaceQueue.length > 0) {
+        passed = true;
+      }
+    }
+  } else {
+    //console.log('couldnt pass color off ' + myUserId + ' ' + myRoom + ' and numplayers ' + rooms[myRoom].numPlayers);
+  }
+
+};
 
 //init main rooms
-rooms['slower'] = Room({roomName: 'slower'});
-rooms['medium'] = Room({roomName: 'medium'});
-rooms['faster'] = Room({roomName: 'faster'});
-
+var initRoom = function(r) {
+  rooms[r] = Room({roomName: r});
+}
+Object.keys(roomSettings).forEach(function(room) {
+  initRoom(room);
+})
 // init bots
 bots.push(Bot({roomName: 'medium'}));
 bots.push(Bot({roomName: 'medium'}));
@@ -657,7 +702,11 @@ bots.push(Bot({roomName: 'slower'}));
 bots.push(Bot({roomName: 'faster'}));
 bots.push(Bot({roomName: 'medium'}));
 bots.push(Bot({roomName: 'faster'}));
-
+bots.push(Bot({roomName: 'middle'}));
+bots.push(Bot({roomName: 'larger'}));
+bots.push(Bot({roomName: 'smaller'}));
+bots.push(Bot({roomName: 'smaller'}));
+bots.push(Bot({roomName: 'middle'}));
 // SOCKET STUFF
 
 
@@ -672,29 +721,7 @@ io.sockets.on('connection', function (socket) {
 
   currentUserId++;
 
-  var passColorOff = function() {   // void
 
-    if (rooms[myRoom] && rooms[myRoom].userBank[myUserId].color && rooms[myRoom].waitingForSpaceQueue.length > 0) {
-      // person in front of the queue gets the person leaving's old color
-      var passed = false;
-      while (!passed) {
-        var firstInLine = rooms[myRoom].waitingForSpaceQueue.shift(); // id of first in line
-        if (firstInLine===undefined) {passed = true;}
-        //console.log('giving color ' + rooms[myRoom].userBank[myUserId].color + ' to user ' + firstInLine);
-        if (rooms[myRoom].socketBank[myUserId][ firstInLine ]) {
-          rooms[myRoom].socketBank[firstInLine].emit('setColor', {color: rooms[myRoom].userBank[myUserId].color });
-          rooms[myRoom].userBank[firstInLine].color = rooms[myRoom].userBank[myUserId].color;
-          rooms[myRoom].curPlayingQueue.push(firstInLine);
-          passed = true;
-        } else if (rooms[myRoom].waitingForSpaceQueue.length > 0) {
-          passed = true;
-        }
-      }
-    } else {
-      //console.log('couldnt pass color off ' + myUserId + ' ' + myRoom + ' and numplayers ' + rooms[myRoom].numPlayers);
-    }
-
-  };
 
   socket.on('disconnect', function() {
     //console.log(myUserId + ' ' + myRoom + ' disconnected');
@@ -702,7 +729,7 @@ io.sockets.on('connection', function (socket) {
       lobbyCount--;
       updateLobbyTotals();
     } else if (rooms[myRoom]) {
-      passColorOff();
+      passColorOff(myUserId, myRoom);
       rooms[myRoom].userLeaving(myUserId);
       // update room userandcolors
       rooms[myRoom].sendAll('usersColors', {
@@ -727,7 +754,7 @@ io.sockets.on('connection', function (socket) {
 
       if (myRoom !== 'lobby') {
 
-        passColorOff();
+        passColorOff(myUserId, myRoom);
         rooms[myRoom].userLeaving(myUserId);
 
       } else {
