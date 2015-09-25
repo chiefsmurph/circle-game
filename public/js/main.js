@@ -129,50 +129,32 @@ var showUserScreen = function(cb) {
 
 var preloadAudio = function() {
 
-  audioBank['contemplative'] = new Howl({ urls: ['audio/contemplative t1.mp3'], loop: true });
-  audioBank['anthem'] = new Howl({ urls: ['audio/30s anthem t1.mp3'], loop: false });
-  audioBank['jovial'] = new Howl({ urls: ['audio/jovial t1 mod.mp3'], loop: true });
-  audioBank['welcome'] = new Howl({ urls: ['audio/welcome t1.mp3'], loop: false });
+  var audioLoaded = 0;
+  var audioToLoad = 7;
 
-  audioBank['slower'] = new Howl({ urls: ['audio/slow lobby.mp3'], loop: true });
-  audioBank['medium'] = new Howl({ urls: ['audio/medium lobby mod.mp3'], loop: true });
-  audioBank['faster'] = new Howl({ urls: ['audio/fast lobby.mp3'], loop: true });
-
-  unmute = loadImage('img/unmuted.png');
-
-  filesToLoad = 7;
-  filesLoaded = 0;
-
-  function loadImage(uri)
-  {
-      var img = new Image();
-      img.onload = isAppLoaded;
-      img.src = uri;
-      return img;
-  }
-
-  function loadAudio(uri, loop)
-  {
-      var audio = new Audio();
-      //audio.onload = isAppLoaded; // It doesn't works!
-      audio.addEventListener('canplaythrough', isAppLoaded, false); // It works!!
-      if (loop) {
-        audio.addEventListener('ended', function() {      //for looping the audio
-            this.currentTime = 0;
-            this.play();
-        }, false);
+  var loadAudio = function(url, loop) {
+    var audio = new Howl({
+      urls: [url],
+      loop: loop,
+      onload: function() {
+        audioLoaded++;
+        console.log('loaded');
+        if (audioLoaded === audioToLoad) {
+          start();
+        }
       }
-      audio.src = uri;
-      return audio;
+    });
+    return audio;
   }
 
-  function isAppLoaded()
-  {
-      filesLoaded++;
-      if (filesLoaded >= filesToLoad) {
-        audioLoaded = true;
-      }
-  }
+  audioBank['contemplative'] = loadAudio('audio/contemplative t1.mp3', true );
+  audioBank['anthem'] = loadAudio('audio/30s anthem t1.mp3', false );
+  audioBank['jovial'] = loadAudio('audio/jovial t1 mod.mp3', true );
+  audioBank['welcome'] = loadAudio('audio/welcome t1.mp3', false );
+
+  audioBank['slower'] = loadAudio('audio/slow lobby.mp3', true );
+  audioBank['medium'] = loadAudio('audio/medium lobby mod.mp3', true );
+  audioBank['faster'] = loadAudio('audio/fast lobby.mp3', true );
 
 };
 
@@ -601,6 +583,45 @@ var calculateWinner = function() {
 
 };
 
+
+var start = function() {
+
+  $('#splashscreen').fadeOut();
+
+  $('#infoPanel').fadeIn(250);
+  $('#hiddenGameArea').fadeIn(250);
+
+  changeAudio('welcome');
+
+  $('#gamearea').fadeIn(250, function() {
+
+    $('#chatPanel').fadeIn(250);
+    $('#usersColors').fadeIn(250);
+
+
+      setTimeout(function() {
+
+        showTitleScreen(function() {
+
+          changeAudio('contemplative');
+          showUserScreen(function() {
+
+            moveToLobby();
+
+          });
+
+        });
+
+      }, 900);
+
+      $("#username").val(docCookies.getItem('pastusername'));
+
+  });
+
+}
+
+// SOCKET STUFF
+
 socket.on('congrats', function() {
 
   $('#togHSbtn').addClass('blue-button');
@@ -891,39 +912,7 @@ $(function() {
   });
 
   $(window).load(function() {
-    $('#splashscreen').fadeOut();
-
-
-          $('#infoPanel').fadeIn(250);
-          $('#hiddenGameArea').fadeIn(250);
-
-          $('#gamearea').fadeIn(250, function() {
-
-            $('#chatPanel').fadeIn(250);
-            $('#usersColors').fadeIn(250);
-
-              changeAudio('welcome');
-
-              setTimeout(function() {
-
-                showTitleScreen(function() {
-
-                  changeAudio('contemplative');
-                  showUserScreen(function() {
-
-                    moveToLobby();
-
-                  });
-
-                });
-
-              }, 900);
-
-              $("#username").val(docCookies.getItem('pastusername'));
-
-
-          });
-
+    // nevermind
   });
 
 
