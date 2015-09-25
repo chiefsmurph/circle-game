@@ -166,13 +166,132 @@ updateHighScores();
 
 // WHATS A BOT?
 
+var botNames = ["Georgey", "Timothy", "CP-42", "DG3000", "NARTA", "Bengi", "Corrie"];
+var bots = [];
+
 var Bot = function(options) {
 
   var bot = {};
 
-  bot.room = options.room;
+  bot.gameGoing = false;
 
+  bot.joinRoom = function(roomName) {
+    lobbyCount--;
+    bot.roomName = roomName;
+    bot.room = rooms[roomName];
+    bot.room.setupNewUser(bot.id, null, bot.username, function(col) {
+      bot.color = col;
+    });
+    updateLobbyTotals();
+  };
 
+  bot.setupBot = function() {
+
+    bot.id = currentUserId;
+    currentUserId++;
+    bot.username = botNames[bots.length];
+
+    lobbyCount++;
+    if (options && options.roomName) {
+      bot.joinRoom(options.roomName);
+    }
+
+  };
+  bot.setupBot();
+
+  bot.startingGame = function() {
+
+    var settings = roomSettings[bot.roomName];
+    var maxClickerSize = settings.maxClickerSize;
+    var clickerSpeed = settings.clickerSpeed;
+
+    var shootCircle = function() {
+
+      var shootRad = (Math.random() > 0.6) ? maxClickerSize : Math.round((maxClickerSize/2)+Math.floor(Math.random() * (maxClickerSize /2) ));
+
+      setTimeout(function() {
+
+        //console.log('shooting bot circle');
+
+        if (bot.room && bot.room.lastReceived) {
+
+            // 60% - full maxClickerSize
+            // 40% - random between 50% - 100% of maxClickerSize
+          var shootX = (Math.random() > 0.5) ? bot.room.lastReceived.x + Math.round(Math.random() * ( (500 - Math.round(shootRad/2)) - bot.room.lastReceived.x) ) : Math.round(shootRad/2) + Math.floor(Math.random() * bot.room.lastReceived.x);
+          var shootY = (Math.random() > 0.5) ? bot.room.lastReceived.y + Math.round(Math.random() * ( (500 - Math.round(shootRad/2)) - bot.room.lastReceived.y) ) : Math.round(shootRad/2) + Math.floor(Math.random() * bot.room.lastReceived.y);
+
+          bot.room.sendAll('newCircle', {x: shootX, y: shootY, rad: shootRad, col: bot.color});
+          console.log('shooting ' + bot.color + ' circle to room ' + bot.roomName);
+
+        }
+
+        if (bot.gameGoing) {  // auto stops when game is over (30 sec);
+          shootCircle();
+        }
+
+      }, (shootRad*clickerSpeed) + Math.floor(Math.random() * 1200));
+
+    }
+
+    // wait three seconds then go!
+
+    setTimeout(function() {
+
+        bot.gameGoing = true;
+        shootCircle();    // start chooting them
+        setTimeout(function() {
+          // gameover
+          bot.stopGame();
+
+        }, 30000);
+
+    }, 3000);
+
+  };
+
+  bot.leaveRoom = function() {
+    if (bot.room) {
+      bot.room.userLeaving(bot.id, true);
+      bot.room = null;
+      bot.roomName = null;
+      lobbyCount++;
+      updateLobbyTotals();
+    }
+  };
+
+  bot.stopGame = function() {
+
+    bot.gameGoing = false;
+    if (Math.random() < 0.2) {
+      // 20% chance of leaveroom and then join other random room
+      console.log('bot leaving then joining');
+      setTimeout(function() {
+
+        bot.leaveRoom();
+        if (Math.random() < 0.2) {
+          console.log('sleeping a bot');
+          // go to sleep bot!
+          lobbyCount--;
+          updateLobbyTotals();
+          setTimeout(function() {
+            lobbyCount++;
+            updateLobbyTotals();
+            bot.joinRoom(Object.keys(roomSettings)[Math.floor(Math.random() * 3)]);
+          }, 5000 + Math.round(Math.random() * 89000));
+        } else {
+          // dont go to sleep bot just go back into another room
+          setTimeout(function() {
+            bot.joinRoom(Object.keys(roomSettings)[Math.floor(Math.random() * 3)]);
+          }, 1000 + Math.round(Math.random() * 6000));
+        }
+
+      }, 3000 + Math.round(Math.random() * 6000));
+
+    } else {
+      console.log('nope');
+    }
+
+  }
 
   return bot;
 
@@ -192,6 +311,11 @@ var Room = function(options) {
   room.numWaitingForNewGame = 0;     // number of people waiting for new game to start
   room.waitingForSpaceQueue = [];    // queue of userId's of people waiting for space in the room ('watch mode')
   room.RGBCounts = {};               // object to hold rgb data for each user
+  room.humans = [];
+  room.lastReceived = {
+    x: Math.floor(Math.random() * 500),
+    y: Math.floor(Math.random() * 500)
+  };
 
   room.getRGBCountsSize = function() {
     // for rgbcounts count
@@ -221,13 +345,28 @@ var Room = function(options) {
 
     io.sockets.in(room.roomName).emit(event, obj);
 
+    if (event === "newCircle") {
+      room.lastReceived.x = obj.x;
+      room.lastReceived.y = obj.y;
+    }
+
+  };
+
+  room.getBots = function() {   // array of Bots
+    return bots.filter(function(bot) {
+      return (bot.roomName === room.roomName);
+    });
   };
 
   room.checkAndStart = function() {  // void
 
-    if (room.numPlayers > 1) {
+    if (room.humans.length > 0 && room.numPlayers > 1) {
 
       io.sockets.in(room.roomName).emit('startGame');
+
+      room.getBots().forEach(function(bot) {
+        bot.startingGame();
+      });
 
       room.inGame = true;
       room.finishedCalc = 0;
@@ -277,9 +416,10 @@ var Room = function(options) {
   };
 
   // more important room methods
-  room.setupNewUser = function(id, sock, username) {
+  room.setupNewUser = function(id, sock, username, cb) {
 
     var col = room.getUnusedColorName();
+    if (cb) cb(col);    // for bots
     //console.log('col ' + col);
     room.numPlayers++;
 
@@ -290,7 +430,10 @@ var Room = function(options) {
 
     room.socketBank[id] = sock;
 
-    sock.emit('setColor', {color: col});
+    if (sock) {
+      sock.emit('setColor', {color: col});
+      room.humans.push(id);
+    }
 
     if (!col) {
       //console.log('adding ' + id + ' to queue');
@@ -310,9 +453,15 @@ var Room = function(options) {
 
   };
 
-  room.userLeaving = function(id) {
+  room.userLeaving = function(id, botBool) {
     room.numPlayers--;
     room.curPlayingQueue.splice(room.curPlayingQueue.indexOf(id), 1);     // remove user from the room queue
+
+    // remove from humans
+    if (!botBool) {
+      console.log('REMOVING HUMAN');
+      room.humans.splice(room.humans.indexOf(id), 1);
+    }
 
     // remove from userBank
     room.userBank[id] = null;
@@ -337,7 +486,7 @@ var Room = function(options) {
       checkAndHandleWinners(room.roomName);
     }
 
-    if (room.numPlayers < 2) {
+    if (room.numPlayers < 2 || room.humans.length < 1) {
       // stop game if only one person in room
       room.inGame = false;
       room.finishedCalc = 0;
@@ -345,6 +494,11 @@ var Room = function(options) {
       room.RGBCounts = {};
       clearTimeout(room.timerToStart);
       room.timerToStart = null;
+      if (!botBool) {
+        room.getBots().forEach(function(bot) {
+          bot.stopGame();     // stop bots
+        });
+      }
     }
 
   };
@@ -381,7 +535,7 @@ var Room = function(options) {
   };
 
   return room;
-}
+};
 
 // ONE global HELPER function
 var updateLobbyTotals = function() {
@@ -493,6 +647,18 @@ var checkAndHandleWinners = function(myRoom, force) {      // void
 
 }
 
+//init main rooms
+rooms['slower'] = Room({roomName: 'slower'});
+rooms['medium'] = Room({roomName: 'medium'});
+rooms['faster'] = Room({roomName: 'faster'});
+
+// init bots
+bots.push(Bot({roomName: 'medium'}));
+bots.push(Bot({roomName: 'medium'}));
+bots.push(Bot({roomName: 'slower'}));
+bots.push(Bot({roomName: 'faster'}));
+bots.push(Bot({roomName: 'medium'}));
+bots.push(Bot({roomName: 'faster'}));
 
 // SOCKET STUFF
 
@@ -586,7 +752,8 @@ io.sockets.on('connection', function (socket) {
       myRoom = data.room;
       if (!myUsername) {
         myUsername = data.uid;
-        console.log(myUsername + ' just logged in');
+        if (myUsername)
+          console.log(myUsername + ' just logged in (' + myUserId + ')');
       }
       socket.join(myRoom);
 
@@ -599,6 +766,7 @@ io.sockets.on('connection', function (socket) {
           }
 
           rooms[myRoom].setupNewUser(myUserId, socket, myUsername);
+          console.log('setting up ' + myUserId + 'with username ' + myUsername);
 
           if (roomSettings.hasOwnProperty(myRoom)) {
             //console.log('setSettings: ' + JSON.stringify(roomSettings[myRoom]) + ' in ' + myRoom);
