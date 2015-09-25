@@ -129,14 +129,14 @@ var showUserScreen = function(cb) {
 
 var preloadAudio = function() {
 
-  audioBank['contemplative'] = loadAudio('audio/contemplative t1.mp3', true);
-  audioBank['anthem'] = loadAudio('audio/30s anthem t1.mp3');
-  audioBank['jovial'] = loadAudio('audio/jovial t1 mod.mp3', true);
-  audioBank['welcome'] = loadAudio('audio/welcome t1.mp3');
+  audioBank['contemplative'] = new Howl({ urls: ['audio/contemplative t1.mp3'], loop: true });
+  audioBank['anthem'] = new Howl({ urls: ['audio/30s anthem t1.mp3'], loop: false });
+  audioBank['jovial'] = new Howl({ urls: ['audio/jovial t1 mod.mp3'], loop: true });
+  audioBank['welcome'] = new Howl({ urls: ['audio/welcome t1.mp3'], loop: false });
 
-  audioBank['slower'] = loadAudio('audio/slow lobby.mp3', true);
-  audioBank['medium'] = loadAudio('audio/medium lobby mod.mp3', true);
-  audioBank['faster'] = loadAudio('audio/fast lobby.mp3', true);
+  audioBank['slower'] = new Howl({ urls: ['audio/slow lobby.mp3'], loop: true });
+  audioBank['medium'] = new Howl({ urls: ['audio/medium lobby mod.mp3'], loop: true });
+  audioBank['faster'] = new Howl({ urls: ['audio/fast lobby.mp3'], loop: true });
 
   unmute = loadImage('img/unmuted.png');
 
@@ -178,22 +178,16 @@ var preloadAudio = function() {
 
 preloadAudio();
 
-var quietAudio = function() {
-  for (var clip in audioBank) {
-    $(audioBank[clip]).animate({volume: 0}, 10);
-  }
-}
-
 var toggleMute = function() {
   if (!isMuted) {
     $('#muteunmute').css('background-image', 'url("img/muted.png")');
     $('#muteunmute').css('background-color', 'rgba(244,69,0,0.8)');
-    quietAudio();
+    Howler.mute();
     docCookies.setItem('muted', 'true');
   } else {
     $('#muteunmute').css('background-image', 'url("img/unmuted.png")');
     $('#muteunmute').css('background-color', 'rgba(255,255,255,0.9)');
-    $(audioBank[curAudio]).animate({volume: 1}, 3);
+    Howler.unmute();
     docCookies.setItem('muted', 'false');
   }
   isMuted = !isMuted;
@@ -202,19 +196,19 @@ var toggleMute = function() {
 var changeAudio = function(c) {
 
   if (curAudio) {
-    $(audioBank[curAudio]).animate({volume: 0}, 1000, function() {
-      $(this).stop();
+    var pastAudio = curAudio;
+    audioBank[pastAudio].fadeOut(0, 500, function() {
+      audioBank[pastAudio].stop();
     });
   }
 
   console.log('now playing ' + c);
 
   if (!isMuted) {
-    audioBank[c].volume = 1.0;
+    audioBank[c].pos(0, 0);
+    audioBank[c].volume(1.0);
+    audioBank[c].play();
   }
-  audioBank[c].currentTime = 0;
-  audioBank[c].play();
-
   curAudio = c;
 
 };
