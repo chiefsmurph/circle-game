@@ -191,6 +191,7 @@ var Bot = function(options) {
   bot.gameGoing = false;
 
   bot.joinRoom = function(roomName) {
+    //console.log('bot joining ' + roomName);
     lobbyCount--;
     bot.roomName = roomName;
     bot.room = rooms[roomName];
@@ -290,7 +291,7 @@ var Bot = function(options) {
           setTimeout(function() {
             lobbyCount++;
             updateLobbyTotals();
-            bot.joinRoom(Object.keys(roomSettings)[Math.floor(Math.random() * roomSettings.length)]);
+            bot.joinRoom(Object.keys(roomSettings)[Math.floor(Math.random() * Object.keys(roomSettings).length)]);
           }, 5000 + Math.round(Math.random() * 189000));
         } else {
           // dont go to sleep bot just go back into another room
