@@ -130,27 +130,29 @@ var showUserScreen = function(cb) {
 var preloadAudio = function() {
 
   var audioLoaded = 0;
-  var audioToLoad = 7;
+  var audioToLoad = 3;
 
-  var loadAudio = function(url, loop) {
+  var loadAudio = function(url, loop, necessary) {
     var audio = new Howl({
       urls: [url],
       loop: loop,
       onload: function() {
-        audioLoaded++;
-        console.log('loaded');
-        if (audioLoaded === audioToLoad) {
-          start();
+        if (necessary) {
+          audioLoaded++;
+          console.log('loaded');
+          if (audioLoaded === audioToLoad) {
+            start();
+          }
         }
       }
     });
     return audio;
   }
 
-  audioBank['contemplative'] = loadAudio('audio/contemplative t1.mp3', true );
+  audioBank['contemplative'] = loadAudio('audio/contemplative t1.mp3', true, true);
+  audioBank['jovial'] = loadAudio('audio/jovial t1 mod.mp3', true, true);
+  audioBank['welcome'] = loadAudio('audio/welcome t1.mp3', false, true);
   audioBank['anthem'] = loadAudio('audio/30s anthem t1.mp3', false );
-  audioBank['jovial'] = loadAudio('audio/jovial t1 mod.mp3', true );
-  audioBank['welcome'] = loadAudio('audio/welcome t1.mp3', false );
 
   audioBank['slower'] = loadAudio('audio/slow lobby.mp3', true );
   audioBank['medium'] = loadAudio('audio/medium lobby mod.mp3', true );
