@@ -699,8 +699,6 @@ Object.keys(roomSettings).forEach(function(room) {
 // init bots
 bots.push(Bot({roomName: 'medium'}));
 bots.push(Bot({roomName: 'slower'}));
-bots.push(Bot({roomName: 'medium'}));
-bots.push(Bot({roomName: 'middle'}));
 bots.push(Bot({roomName: 'smaller'}));
 bots.push(Bot({roomName: 'middle'}));
 // SOCKET STUFF
