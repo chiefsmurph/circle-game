@@ -226,6 +226,7 @@ var Bot = function(options) {
 
       var shootRad = (Math.random() > 0.6) ? maxClickerSize : Math.round((maxClickerSize/2)+Math.floor(Math.random() * (maxClickerSize /2) ));
       var variationSpeed = (Math.random() > 0.5) ? Math.round(Math.random() * 300) : Math.round(Math.random() * 300) * -1;
+      var randCoefficient = Math.round(Math.random() * 60) / 10;
 
       setTimeout(function() {
 
@@ -233,10 +234,17 @@ var Bot = function(options) {
 
             // 60% - full maxClickerSize
             // 40% - random between 50% - 100% of maxClickerSize
-          var shootX = (Math.random() > 0.5) ? bot.room.lastReceived.x + Math.round(Math.random() * ( (500 - Math.round(shootRad/2)) - bot.room.lastReceived.x) ) : Math.round(shootRad/2) + Math.floor(Math.random() * bot.room.lastReceived.x);
-          var shootY = (Math.random() > 0.5) ? bot.room.lastReceived.y + Math.round(Math.random() * ( (500 - Math.round(shootRad/2)) - bot.room.lastReceived.y) ) : Math.round(shootRad/2) + Math.floor(Math.random() * bot.room.lastReceived.y);
+          var shootCoords;
+          if (Math.random() > randCoefficient) {
+            shootCoords = {
+              x: (Math.random() > 0.5) ? bot.room.lastReceived.x + Math.round(Math.random() * ( (500 - Math.round(shootRad/2)) - bot.room.lastReceived.x) ) : Math.round(shootRad/2) + Math.floor(Math.random() * bot.room.lastReceived.x),
+              y: (Math.random() > 0.5) ? bot.room.lastReceived.y + Math.round(Math.random() * ( (500 - Math.round(shootRad/2)) - bot.room.lastReceived.y) ) : Math.round(shootRad/2) + Math.floor(Math.random() * bot.room.lastReceived.y)
+            }
+          } else {
+            shootCoords = getRandomCoords();
+          }
 
-          bot.room.sendAll('newCircle', {x: shootX, y: shootY, rad: shootRad, col: bot.color});
+          bot.room.sendAll('newCircle', {x: shootCoords.x, y: shootCoords.y, rad: shootRad, col: bot.color});
           //console.log('shooting ' + bot.color + ' circle to room ' + bot.roomName);
 
         }
@@ -329,10 +337,7 @@ var Room = function(options) {
   room.waitingForSpaceQueue = [];    // queue of userId's of people waiting for space in the room ('watch mode')
   room.RGBCounts = {};               // object to hold rgb data for each user
   room.humans = [];
-  room.lastReceived = {
-    x: Math.floor(Math.random() * 500),
-    y: Math.floor(Math.random() * 500)
-  };
+  room.lastReceived = getRandomCoords();
 
   room.getRGBCountsSize = function() {
     // for rgbcounts count
@@ -554,7 +559,15 @@ var Room = function(options) {
   return room;
 };
 
-// ONE global HELPER function
+// global HELPER FUNCTIONS
+
+var getRandomCoords = function() {
+    return {
+      x: Math.floor(Math.random() * 500),
+      y: Math.floor(Math.random() * 500)
+    };
+};
+
 var updateLobbyTotals = function() {
 
   var getRoomCount = function(rname) {
