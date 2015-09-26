@@ -220,10 +220,12 @@ var Bot = function(options) {
     var settings = roomSettings[bot.roomName];
     var maxClickerSize = settings.maxClickerSize;
     var clickerSpeed = settings.clickerSpeed;
+    var myskillspeed = Math.round(Math.random() * 600) + 600;
 
     var shootCircle = function() {
 
       var shootRad = (Math.random() > 0.6) ? maxClickerSize : Math.round((maxClickerSize/2)+Math.floor(Math.random() * (maxClickerSize /2) ));
+      var variationSpeed = (Math.random() > 0.5) ? Math.round(Math.random() * 300) : Math.round(Math.random() * 300) * -1;
 
       setTimeout(function() {
 
@@ -243,7 +245,7 @@ var Bot = function(options) {
           shootCircle();
         }
 
-      }, (shootRad*clickerSpeed) + Math.floor(Math.random() * 1200));
+      }, (shootRad*clickerSpeed) + myskillspeed + variationSpeed);
 
     }
 
@@ -699,6 +701,8 @@ Object.keys(roomSettings).forEach(function(room) {
 // init bots
 bots.push(Bot({roomName: 'medium'}));
 bots.push(Bot({roomName: 'slower'}));
+bots.push(Bot({roomName: 'medium'}));
+bots.push(Bot({roomName: 'middle'}));
 bots.push(Bot({roomName: 'smaller'}));
 bots.push(Bot({roomName: 'middle'}));
 // SOCKET STUFF
