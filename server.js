@@ -283,7 +283,7 @@ var Bot = function(options) {
       setTimeout(function() {
 
         bot.leaveRoom();
-        if (Math.random() < 0.2) {
+        if (Math.random() < 0.3) {
           //console.log('sleeping a bot');
           // go to sleep bot!
           lobbyCount--;
@@ -698,14 +698,9 @@ Object.keys(roomSettings).forEach(function(room) {
 })
 // init bots
 bots.push(Bot({roomName: 'medium'}));
-bots.push(Bot({roomName: 'medium'}));
 bots.push(Bot({roomName: 'slower'}));
-bots.push(Bot({roomName: 'faster'}));
 bots.push(Bot({roomName: 'medium'}));
-bots.push(Bot({roomName: 'faster'}));
 bots.push(Bot({roomName: 'middle'}));
-bots.push(Bot({roomName: 'larger'}));
-bots.push(Bot({roomName: 'smaller'}));
 bots.push(Bot({roomName: 'smaller'}));
 bots.push(Bot({roomName: 'middle'}));
 // SOCKET STUFF
