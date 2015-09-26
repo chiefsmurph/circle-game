@@ -220,7 +220,7 @@ var Bot = function(options) {
     var settings = roomSettings[bot.roomName];
     var maxClickerSize = settings.maxClickerSize;
     var clickerSpeed = settings.clickerSpeed;
-    var myskillspeed = (clickerSpeed>1) ? Math.round(Math.random() * 900) + 100 : Math.round(Math.random() * 200) + 50;
+    var myskillspeed = (clickerSpeed>1) ? Math.round(Math.random() * 900) + 100 : Math.round(Math.random() * 400) + 150;
 
     var shootCircle = function() {
 
@@ -310,7 +310,7 @@ var Bot = function(options) {
           }, 1000 + Math.round(Math.random() * 6000));
         }
 
-      }, 3000 + Math.round(Math.random() * 6000));
+      }, 4000 + Math.round(Math.random() * 6000));
 
     } else {
       //console.log('nope');
