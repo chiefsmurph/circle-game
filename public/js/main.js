@@ -799,7 +799,7 @@ socket.on('newCircle', function (data) {
         setTimeout(function() {
           if (newCircle)
             newCircle.remove();
-        }, 7000);
+        }, 20000);
       }
 
   }
