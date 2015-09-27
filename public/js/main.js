@@ -302,6 +302,14 @@ var showTitleScreen = function(cb) {
 
 };
 
+var saySomething = function(txt) {
+  $('#consoleMessage').text('says "' + txt + '"');
+  $('#consoleMessage').show();
+  setTimeout(function() {
+    $('#consoleMessage').fadeOut(3000);
+  }, 4000);
+};
+
 var backToRoomChooser = function() {
 
   socket.emit('leaveRoom');
@@ -384,6 +392,11 @@ socket.on('highScores', function(data) {
   //console.log('received high scores' + JSON.stringify(data));
   $('#highScorePanel tbody').empty();
   highScoreData = data.scoreArr;
+
+  setTimeout(function() {
+    saySomething( "All hail " + highScoreData[0].username + "!" );
+  }, 11000);
+
   for (var i = 0; i < highScoreData.length; i++) {
     var newRow = $('<tr></tr>');
     newRow.append('<td>' + (i+1) + '</td>');
@@ -599,6 +612,7 @@ var start = function() {
 
   $('#infoPanel').fadeIn(250);
   $('#hiddenGameArea').fadeIn(250);
+  $('#topArea').fadeIn(250);
 
   changeAudio('welcome');
 

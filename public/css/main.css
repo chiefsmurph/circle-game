@@ -19,8 +19,29 @@ html, body {
   background-color: transparent;
   z-index: 1000;
 }
-#top {
-  text-align: center;
+#topArea {
+  margin: 0 auto;
+  width: 500px;
+  position: relative;
+  top: 100px;
+  background-color: rgba(255,255,255,0.34);
+  border-radius: 10px 5px 0px 0px;
+  color: black;
+  text-decoration: underline;
+  text-align: left;
+  font-family: monospace;
+  padding: 10px 6px 10px 12px;
+  font-size: 110%;
+  height: 45px;
+  display: none;
+}
+#consoleMessage {
+  font-size: 135%;
+  color: yellow;
+  margin: 0px 10px 0px 40px;
+  font-variant: small-caps;
+  text-decoration: none;
+  float: right;
 }
 #gamearea, #hiddenGameArea {
   font-family: monospace;
