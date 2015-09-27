@@ -802,8 +802,6 @@ socket.on('newCircle', function (data) {
         }, 7000);
       }
 
-      }, );
-
   }
 
 });
