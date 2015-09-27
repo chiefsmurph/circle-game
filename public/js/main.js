@@ -795,12 +795,14 @@ socket.on('newCircle', function (data) {
         borderBottomRightRadius: data.rad
       }, data.rad * 20);
 
-      if (clickerSpeed < 1) {
-        setTimeout(function() {
-          if (newCircle)
-            newCircle.remove();
-        }, 20000);
-      }
+      // removing this because it was a bad idea :(
+      
+      // if (clickerSpeed < 1) {
+      //   setTimeout(function() {
+      //     if (newCircle)
+      //       newCircle.remove();
+      //   }, 20000);
+      // }
 
   }
 
