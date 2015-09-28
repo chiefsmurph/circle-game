@@ -315,6 +315,10 @@ var saySomething = function(txt) {
 
 var backToRoomChooser = function() {
 
+  setTimeout(function() {
+    saySomething( "Circle Battle Party every day at 6:30 PST" );
+  }, 500);
+
   socket.emit('leaveRoom');
   socket.emit('joinRoom', {room: 'lobby'});
 
