@@ -396,13 +396,15 @@ socket.on('usersColors', function(data) {
 
 socket.on('highScores', function(data) {
 
+  //console.log(JSON.stringify(data));
+
   //console.log('received high scores' + JSON.stringify(data));
   $('#highScorePanel tbody').empty();
   highScoreData = data.scoreArr;
 
   setTimeout(function() {
     saySomething( "All hail " + highScoreData[0].username + "!" );
-  }, 11000);
+  }, 2000);
 
   for (var i = 0; i < highScoreData.length; i++) {
     var newRow = $('<tr></tr>');
@@ -637,6 +639,10 @@ var start = function() {
           showUserScreen(function() {
 
             moveToLobby();
+
+            setTimeout(function() {
+              saySomething('congrats last week\'s winner - p00p!');
+            }, 10000);
 
           });
 

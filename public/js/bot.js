@@ -345,6 +345,8 @@ socket.on('usersColors', function(data) {
 
 socket.on('highScores', function(data) {
 
+  console.log(JSON.stringify(data));
+
   //console.log('received high scores' + JSON.stringify(data));
   $('#highScorePanel tbody').empty();
   highScoreData = data.scoreArr;
