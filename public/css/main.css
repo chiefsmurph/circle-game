@@ -34,10 +34,11 @@ html, body {
   padding: 10px 6px 10px 12px;
   font-size: 110%;
   height: 45px;
+  overflow: visible;
   display: none;
 }
 #consoleMessage {
-  font-size: 135%;
+  font-size: 115%;
   color: yellow;
   margin: 0px 10px 0px 40px;
   font-variant: small-caps;

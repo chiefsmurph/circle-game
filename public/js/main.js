@@ -113,6 +113,9 @@ var moveToLobby = function() {
   $('#bottomStatus').show();
 
   changeAudio('jovial');
+  setTimeout(function() {
+    saySomething( "Circle Battle Party every day at 6:30 PST" );
+  }, 500);
 }
 
 var showUserScreen = function(cb) {
@@ -716,6 +719,9 @@ socket.on('winner', function(data) {
           $('#bottomStatus').show();
 
           changeAudio(curRoom);
+          setTimeout(function() {
+            saySomething( "Circle Battle Party every day at 6:30 PST" );
+          }, 500);
         }
 
     });
@@ -796,7 +802,7 @@ socket.on('newCircle', function (data) {
       }, data.rad * 20);
 
       // removing this because it was a bad idea :(
-      
+
       // if (clickerSpeed < 1) {
       //   setTimeout(function() {
       //     if (newCircle)
