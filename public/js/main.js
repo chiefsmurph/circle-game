@@ -402,10 +402,12 @@ socket.on('highScores', function(data) {
   $('#highScorePanel tbody').empty();
   highScoreData = data.scoreArr;
 
-  setTimeout(function() {
-    saySomething( "All hail " + highScoreData[0].username + "!" );
-  }, 2000);
-
+  if (highScoreData[0]) {
+    setTimeout(function() {
+      saySomething( "All hail " + highScoreData[0].username + "!" );
+    }, 2000);
+  }
+  
   for (var i = 0; i < highScoreData.length; i++) {
     var newRow = $('<tr></tr>');
     newRow.append('<td>' + (i+1) + '</td>');
