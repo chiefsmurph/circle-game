@@ -181,7 +181,7 @@ updateHighScores();
 
 // WHATS A BOT?
 
-var botNames = ["manik", "brendan", "nashua", "remla", "tarren", "zenbot", "durnery", "ronad", "tona", "tempest", "larry", "karalata", "lucy"];
+var botNames = ["manik", "turnip", "nashua", "remla", "tarren", "zenbot", "durnery", "ronad", "tona", "tempest", "larry", "karalata", "lucy"];
 var bots = [];
 
 var Bot = function(options) {
@@ -191,14 +191,26 @@ var Bot = function(options) {
   bot.gameGoing = false;
 
   bot.joinRoom = function(roomName) {
+
     console.log('bot joining ' + roomName);
+
+    if (bot.roomName) {
+      bot.leaveRoom();
+    }
+
     lobbyCount--;
+    updateLobbyTotals();
+
     bot.roomName = roomName;
     bot.room = rooms[roomName];
     bot.room.setupNewUser(bot.id, null, bot.username, function(col) {
       bot.color = col;
     });
-    updateLobbyTotals();
+
+  };
+
+  bot.goToRandomRoom = function() {
+    bot.joinRoom(Object.keys(roomSettings)[Math.floor(Math.random() * Object.keys(roomSettings).length)]);
   };
 
   bot.setupBot = function() {
@@ -210,6 +222,8 @@ var Bot = function(options) {
     lobbyCount++;
     if (options && options.roomName) {
       bot.joinRoom(options.roomName);
+    } else {
+      bot.goToRandomRoom();
     }
 
   };
@@ -249,7 +263,7 @@ var Bot = function(options) {
 
         }
 
-        if (bot.gameGoing) {  // auto stops when game is over (30 sec);
+        if (bot.gameGoing) {  // keep shooting circles or auto stops when game is over (30 sec);
           shootCircle();
         }
 
@@ -284,6 +298,18 @@ var Bot = function(options) {
     }
   };
 
+  bot.sleepAndAwake = function(cb) {
+    if (bot.room === null) {  // must currently be in lobby
+      lobbyCount--;
+      updateLobbyTotals();
+      setTimeout(function() {
+        lobbyCount++;
+        updateLobbyTotals();
+        if (cb) cb();
+      }, 5000 + Math.round(Math.random() * 189000));
+    }
+  };
+
   bot.stopGame = function() {
 
     bot.gameGoing = false;
@@ -296,27 +322,22 @@ var Bot = function(options) {
         if (Math.random() < 0.3) {
           //console.log('sleeping a bot');
           // go to sleep bot!
-          lobbyCount--;
-          updateLobbyTotals();
-          setTimeout(function() {
-            lobbyCount++;
-            updateLobbyTotals();
-            bot.joinRoom(Object.keys(roomSettings)[Math.floor(Math.random() * Object.keys(roomSettings).length)]);
-          }, 5000 + Math.round(Math.random() * 189000));
+          bot.sleepAndAwake(function() {
+            bot.goToRandomRoom();
+          });
+
         } else {
           // dont go to sleep bot just go back into another room
           setTimeout(function() {
-            bot.joinRoom(Object.keys(roomSettings)[Math.floor(Math.random() * Object.keys(roomSettings).length)]);
+            bot.goToRandomRoom();
           }, 1000 + Math.round(Math.random() * 6000));
         }
 
       }, 4000 + Math.round(Math.random() * 6000));
 
-    } else {
-      //console.log('nope');
     }
 
-  }
+  };
 
   return bot;
 
@@ -452,9 +473,18 @@ var Room = function(options) {
 
     room.socketBank[id] = sock;
 
-    if (sock) {
+    if (sock) {   // the new user being added is a human if sock exists otherwise its just a BOT
       sock.emit('setColor', {color: col});
       room.humans.push(id);
+
+      // check if any other people are in the room
+      if (room.numPlayers === 1) {
+        // if not then send a bot!
+        setTimeout(function() {
+          findUnusedBot().joinRoom(room.roomName);
+        }, 400 + Math.floor(Math.random() * 2500))
+
+      }
     }
 
     if (!col) {
@@ -561,14 +591,15 @@ var Room = function(options) {
 
 // global HELPER FUNCTIONS
 
-var getRandomCoords = function() {
+var getRandomCoords = function() {  // object {x: int, y: int}
+    // assumes 500x500 board
     return {
       x: 20 + Math.floor(Math.random() * 460),
       y: 20 + Math.floor(Math.random() * 460)
     };
 };
 
-var updateLobbyTotals = function() {
+var updateLobbyTotals = function() {    // void
 
   var getRoomCount = function(rname) {
       return (rooms[rname]) ? rooms[rname].numPlayers : 0;
@@ -704,23 +735,38 @@ var passColorOff = function(id, room) {   // void
 
 };
 
+var findUnusedBot = function() {  // returns a Bot
+
+  for (var i = 0; i < bots.length; i++) {
+    if (bots[i].roomName === null) {
+      return bots[i];
+    }
+  }
+
+  // if reached here... then
+  // all bots are in rooms
+  // find a bot in a room with no humans
+
+  for (var i = 0; i < bots.length; i++) {
+    if (bots[i].room && bots[i].room.humans.length === 0) {
+      return bots[i];
+    }
+  }
+
+};
+
 //init main rooms
-var initRoom = function(r) {
+Object.keys(roomSettings).forEach(function(r) {
   rooms[r] = Room({roomName: r});
-}
-Object.keys(roomSettings).forEach(function(room) {
-  initRoom(room);
 })
+
 // init bots
-bots.push(Bot({roomName: 'medium'}));
-bots.push(Bot({roomName: 'slower'}));
-bots.push(Bot({roomName: 'medium'}));
-bots.push(Bot({roomName: 'middle'}));
-bots.push(Bot({roomName: 'smaller'}));
-bots.push(Bot({roomName: 'middle'}));
-// SOCKET STUFF
+for (var i=0; i<6; i++) {
+  bots.push(Bot());
+}
 
 
+// SOCKET LISTENERS
 io.sockets.on('connection', function (socket) {
 
   // first send high score data
