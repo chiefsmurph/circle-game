@@ -887,12 +887,14 @@ $(function() {
           offsetLeft: elm.offset().left,
           offsetTop: elm.offset().top,
           xPos: xPos,
-          yPos: yPos
+          yPos: yPos,
+          finX: xPos - elm.offset().left,
+          finY: yPos - elm.offset().top
         });
         sentOffsetLogs = true;
       }
 
-      xPos -= elm.offset().left / 2;
+      xPos -= elm.offset().left;
       yPos -= elm.offset().top;
 
       var endPt = {
