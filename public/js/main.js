@@ -884,7 +884,7 @@ $(function() {
       socket.emit('log', {
         offsetLeft: elm.offset().left,
         offsetTop: elm.offset().top,
-        boundingLeft: ,
+        boundingLeft: elm[0].getBoundingClientRect().left,
         boundingTop: elm[0].getBoundingClientRect().top,
         xPos: xPos,
         yPos: yPos,
