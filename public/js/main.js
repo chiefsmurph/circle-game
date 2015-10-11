@@ -892,8 +892,9 @@ $(function() {
         finY: yPos - elm.offset().top,
       });
 
+      // what the heck world??!
       xPos -= elm[0].getBoundingClientRect().left;
-      yPos -= elm[0].getBoundingClientRect().top;
+      yPos -= elm.offset().top;
 
       var endPt = {
         x: xPos - (maxClickerSize / 2),
