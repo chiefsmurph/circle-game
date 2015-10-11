@@ -881,16 +881,16 @@ $(function() {
                     ? e.pageY
                     : e.originalEvent.touches[0].pageY;
 
-      socket.emit('log', {
-        offsetLeft: elm.offset().left,
-        offsetTop: elm.offset().top,
-        boundingLeft: elm[0].getBoundingClientRect().left,
-        boundingTop: elm[0].getBoundingClientRect().top,
-        xPos: xPos,
-        yPos: yPos,
-        finX: xPos - elm[0].getBoundingClientRect().left,
-        finY: yPos - elm.offset().top,
-      });
+      // socket.emit('log', {
+      //   offsetLeft: elm.offset().left,
+      //   offsetTop: elm.offset().top,
+      //   boundingLeft: elm[0].getBoundingClientRect().left,
+      //   boundingTop: elm[0].getBoundingClientRect().top,
+      //   xPos: xPos,
+      //   yPos: yPos,
+      //   finX: xPos - elm[0].getBoundingClientRect().left,
+      //   finY: yPos - elm.offset().top,
+      // });
 
       // what the heck world??!
       xPos -= elm[0].getBoundingClientRect().left;
@@ -901,7 +901,7 @@ $(function() {
         y: yPos - (maxClickerSize / 2),
       };
 
-      var startRad = maxClickerSize / 4;
+      var startRad = maxClickerSize / 6;
 
       $('#yourClicker').css('width', startRad);
       $('#yourClicker').css('height', startRad);
