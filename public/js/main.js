@@ -876,11 +876,11 @@ $(function() {
       xPos = (e.type.toLowerCase() === 'mousedown')
                     ? e.pageX
                     : e.originalEvent.touches[0].pageX;
-      xPos -= elm.offset().left;
+
       yPos = (e.type.toLowerCase() === 'mousedown')
                     ? e.pageY
                     : e.originalEvent.touches[0].pageY;
-      yPos -= elm.offset().top;
+
 
       if (Math.random() < 0.3) {
         socket.emit('log', {
@@ -891,6 +891,9 @@ $(function() {
         });
         sentOffsetLogs = true;
       }
+
+      xPos -= elm.offset().left / 2;
+      yPos -= elm.offset().top;
 
       var endPt = {
         x: xPos - (maxClickerSize / 2),
