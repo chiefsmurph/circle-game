@@ -874,13 +874,12 @@ $(function() {
 
       var elm = $(this);
       xPos = (e.type.toLowerCase() === 'mousedown')
-                    ? e.pageX
-                    : e.originalEvent.touches[0].pageX;
-      xPos -= elm.offset().left;
+                    ? e.pageX - elm.offset().left
+                    : e.originalEvent.touches[0].clientX;
+
       yPos = (e.type.toLowerCase() === 'mousedown')
-                    ? e.pageY
-                    : e.originalEvent.touches[0].pageY;
-      yPos -= elm.offset().top;
+                    ? e.pageY - elm.offset().top
+                    : e.originalEvent.touches[0].clientY;
 
       var endPt = {
         x: xPos - (maxClickerSize / 2),
