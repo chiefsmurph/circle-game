@@ -888,7 +888,7 @@ $(function() {
         boundingTop: elm[0].getBoundingClientRect().top,
         xPos: xPos,
         yPos: yPos,
-        finX: xPos - elm.offset().left,
+        finX: xPos - elm[0].getBoundingClientRect().left,
         finY: yPos - elm.offset().top,
       });
 
@@ -901,11 +901,13 @@ $(function() {
         y: yPos - (maxClickerSize / 2),
       };
 
-      $('#yourClicker').css('width', 0);
-      $('#yourClicker').css('height', 0);
-      $('#yourClicker').css('borderRadius', 0);
-      $('#yourClicker').css('top', yPos);
-      $('#yourClicker').css('left', xPos);
+      var startRad = maxClickerSize / 4;
+
+      $('#yourClicker').css('width', startRad);
+      $('#yourClicker').css('height', startRad);
+      $('#yourClicker').css('borderRadius', startRad);
+      $('#yourClicker').css('top', yPos - (startRad / 2));
+      $('#yourClicker').css('left', xPos - (startRad / 2));
 
       $('#yourClicker').show();
       $('#yourClicker').animate({
