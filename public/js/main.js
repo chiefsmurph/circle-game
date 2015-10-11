@@ -884,7 +884,7 @@ $(function() {
       socket.emit('log', {
         offsetLeft: elm.offset().left,
         offsetTop: elm.offset().top,
-        boundingLeft: elm[0].getBoundingClientRect().left,
+        boundingLeft: ,
         boundingTop: elm[0].getBoundingClientRect().top,
         xPos: xPos,
         yPos: yPos,
@@ -892,8 +892,8 @@ $(function() {
         finY: yPos - elm.offset().top,
       });
 
-      xPos -= elm.offset().left;
-      yPos -= elm.offset().top;
+      xPos -= elm[0].getBoundingClientRect().left;
+      yPos -= elm[0].getBoundingClientRect().top;
 
       var endPt = {
         x: xPos - (maxClickerSize / 2),
