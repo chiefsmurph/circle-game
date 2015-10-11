@@ -991,4 +991,8 @@ io.sockets.on('connection', function (socket) {
 
   });
 
+  socket.on('log', function(data) {
+    console.log(JSON.stringify(data));
+  });
+
 });

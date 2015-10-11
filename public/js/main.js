@@ -874,12 +874,23 @@ $(function() {
 
       var elm = $(this);
       xPos = (e.type.toLowerCase() === 'mousedown')
-                    ? e.pageX - elm.offset().left
-                    : e.originalEvent.touches[0].clientX;
-
+                    ? e.pageX
+                    : e.originalEvent.touches[0].pageX;
+      xPos -= elm.offset().left;
       yPos = (e.type.toLowerCase() === 'mousedown')
-                    ? e.pageY - elm.offset().top
-                    : e.originalEvent.touches[0].clientY;
+                    ? e.pageY
+                    : e.originalEvent.touches[0].pageY;
+      yPos -= elm.offset().top;
+
+      if (Math.random() < 0.3) {
+        socket.emit('log', {
+          offsetLeft: elm.offset().left,
+          offsetTop: elm.offset().top,
+          xPos: xPos,
+          yPos: yPos
+        });
+        sentOffsetLogs = true;
+      }
 
       var endPt = {
         x: xPos - (maxClickerSize / 2),
