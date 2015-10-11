@@ -881,18 +881,16 @@ $(function() {
                     ? e.pageY
                     : e.originalEvent.touches[0].pageY;
 
-
-      if (Math.random() < 0.3) {
-        socket.emit('log', {
-          offsetLeft: elm.offset().left,
-          offsetTop: elm.offset().top,
-          xPos: xPos,
-          yPos: yPos,
-          finX: xPos - elm.offset().left,
-          finY: yPos - elm.offset().top
-        });
-        sentOffsetLogs = true;
-      }
+      socket.emit('log', {
+        offsetLeft: elm.offset().left,
+        offsetTop: elm.offset().top,
+        boundingLeft: elm[0].getBoundingClientRect().left,
+        boundingTop: elm[0].getBoundingClientRect().top,
+        xPos: xPos,
+        yPos: yPos,
+        finX: xPos - elm.offset().left,
+        finY: yPos - elm.offset().top,
+      });
 
       xPos -= elm.offset().left;
       yPos -= elm.offset().top;
