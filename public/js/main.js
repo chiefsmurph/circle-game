@@ -407,7 +407,7 @@ socket.on('highScores', function(data) {
       saySomething( "All hail " + highScoreData[0].username + "!" );
     }, 2000);
   }
-  
+
   for (var i = 0; i < highScoreData.length; i++) {
     var newRow = $('<tr></tr>');
     newRow.append('<td>' + (i+1) + '</td>');
@@ -874,13 +874,12 @@ $(function() {
 
       var elm = $(this);
       xPos = (e.type.toLowerCase() === 'mousedown')
-                    ? e.pageX
+                    ? e.pageX - elm.offset().left
                     : e.originalEvent.touches[0].pageX;
-      xPos -= elm.offset().left;
+
       yPos = (e.type.toLowerCase() === 'mousedown')
-                    ? e.pageY
+                    ? e.pageY - elm.offset().top
                     : e.originalEvent.touches[0].pageY;
-      yPos -= elm.offset().top;
 
       var endPt = {
         x: xPos - (maxClickerSize / 2),
