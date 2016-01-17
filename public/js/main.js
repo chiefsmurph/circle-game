@@ -923,7 +923,7 @@ $(function() {
 
         if (lastClickCoords.xPos !== xPos || lastClickCoords.yPos !== yPos) {
 
-          // if user holds down for full second
+          // if user holds down for full length of clickerSpeed
           $('#yourClicker').hide();
           console.log('here');
           socket.emit('addCircle', {x: xPos, y: yPos, rad: maxClickerSize, col: myColor});
