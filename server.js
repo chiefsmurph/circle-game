@@ -89,6 +89,8 @@ pg.connect(process.env.DATABASE_URL, function(err, client) {
 });
 */
 
+CREATE TABLE players (playerId serial primary key, username VARCHAR(20) not null, dateset VARCHAR(20) not null, starscaught INT)
+
 /*
 pg.connect(process.env.DATABASE_URL, function(err, client) {
   var query = client.query('ALTER TABLE highscores ALTER COLUMN dateset type varchar(40)');
@@ -98,6 +100,8 @@ pg.connect(process.env.DATABASE_URL, function(err, client) {
   });
 });
 */
+
+ALTER TABLE players ALTER COLUMN handshake VARCHAR(20);
 
 // CONFIG
 
@@ -688,11 +692,13 @@ var checkAndHandleWinners = function(myRoom, force) {      // void
           }
         }
         */
-
+        var winColor = (winBy !== 0) ? sortableScores[0][0] : '0,0,0';
         rooms[myRoom].sendAll('winner', {
-          topColor: (winBy !== 0) ? sortableScores[0][0] : '0,0,0', // tie if tie or nothing on the board
+          topColor: winColor, // tie if tie or nothing on the board
           winBy: winBy
         });
+
+        console.log('game over in ' + myRoom + ' winningColor: ' + winColor);
 
         //console.log('game over and all users finishedcalc');
 
@@ -720,7 +726,7 @@ var passColorOff = function(id, room) {   // void
       var firstInLine = rooms[room].waitingForSpaceQueue.shift(); // id of first in line
       if (firstInLine===undefined) {passed = true;}
       //console.log('giving color ' + rooms[myRoom].userBank[myUserId].color + ' to user ' + firstInLine);
-      if (rooms[room].socketBank[id][ firstInLine ]) {
+      if (rooms[room] && rooms[room].socketBank[id] && rooms[room].socketBank[id][ firstInLine ]) {
         rooms[room].socketBank[firstInLine].emit('setColor', {color: rooms[room].userBank[id].color });
         rooms[room].userBank[firstInLine].color = rooms[room].userBank[id].color;
         rooms[room].curPlayingQueue.push(firstInLine);
@@ -761,238 +767,253 @@ Object.keys(roomSettings).forEach(function(r) {
 })
 
 // init bots
-for (var i=0; i<6; i++) {
+for (var i=0; i<3; i++) {
   bots.push(Bot());
 }
 
+// BANNED IPs
+
+var bannedIps = [];
 
 // SOCKET LISTENERS
 io.sockets.on('connection', function (socket) {
 
-  // first send high score data
-  socket.emit('highScores', {scoreArr: highScoreData});
+  var clientIp = socket.handshake.headers['x-forwarded-for'];
+  clientIp = (clientIp && clientIp.indexOf(',') > -1) ? clientIp.split(',')[1].trim() : clientIp;
+  console.log('user clientip ' + clientIp + ' approaches.');
 
-  var myUserId = currentUserId;
-  var myUsername;
-  var myRoom = null;
+  // dont respond to bad ip's
+  if (bannedIps.indexOf(clientIp) === -1) {
 
-  currentUserId++;
+      // first send high score data
+      socket.emit('highScores', {scoreArr: highScoreData});
+
+      var myUserId = currentUserId;
+      var myUsername;
+      var myRoom = null;
+
+      currentUserId++;
 
 
 
-  socket.on('disconnect', function() {
-    //console.log(myUserId + ' ' + myRoom + ' disconnected');
-    if (myRoom === 'lobby') {
-      lobbyCount--;
-      updateLobbyTotals();
-    } else if (rooms[myRoom]) {
-      passColorOff(myUserId, myRoom);
-      rooms[myRoom].userLeaving(myUserId);
-      // update room userandcolors
-      rooms[myRoom].sendAll('usersColors', {
-        usersColors: rooms[myRoom].userBank
+      socket.on('disconnect', function() {
+        //console.log(myUserId + ' ' + myRoom + ' disconnected');
+        if (myRoom === 'lobby') {
+          lobbyCount--;
+          updateLobbyTotals();
+        } else if (rooms[myRoom]) {
+          passColorOff(myUserId, myRoom);
+          rooms[myRoom].userLeaving(myUserId);
+          // update room userandcolors
+          rooms[myRoom].sendAll('usersColors', {
+            usersColors: rooms[myRoom].userBank
+          });
+        }
+
       });
-    }
 
-  });
+      socket.on('addToRound', function(data) {
 
-  socket.on('addToRound', function(data) {
+        rooms[myRoom].curPlayingQueue.push(myUserId);
 
-    rooms[myRoom].curPlayingQueue.push(myUserId);
+      });
 
-  });
+      socket.on('leaveRoom', function() {
 
-  socket.on('leaveRoom', function() {
+        if (myRoom) {
 
-    if (myRoom) {
+          //console.log('user' + myUserId + ' leaving ' + myRoom);
+          socket.leave(myRoom);
 
-      //console.log('user' + myUserId + ' leaving ' + myRoom);
-      socket.leave(myRoom);
+          if (myRoom !== 'lobby') {
 
-      if (myRoom !== 'lobby') {
+            passColorOff(myUserId, myRoom);
+            rooms[myRoom].userLeaving(myUserId);
 
-        passColorOff(myUserId, myRoom);
-        rooms[myRoom].userLeaving(myUserId);
-
-      } else {
-
-        lobbyCount--;
-
-      }
-
-      myRoom = null;
-
-    }
-
-  });
-
-
-  socket.on('joinRoom', function(data) {
-
-    if (myRoom !== data.room) {  // ignore duplicate requests to join room
-
-      myRoom = data.room;
-      if (!myUsername) {
-        myUsername = data.uid;
-        if (myUsername)
-          console.log(myUsername + ' just logged in (' + myUserId + ')');
-      }
-      socket.join(myRoom);
-
-      if (myRoom !== 'lobby') {
-
-          //console.log('user number ' + myUserId + ' joining room "' + myRoom + '" with ' + myUsername);
-
-          if (!rooms[myRoom]) {
-            rooms[myRoom] = Room({roomName: myRoom});
-          }
-
-          rooms[myRoom].setupNewUser(myUserId, socket, myUsername);
-          console.log('setting up ' + myUserId + 'with username ' + myUsername);
-
-          if (roomSettings.hasOwnProperty(myRoom)) {
-            //console.log('setSettings: ' + JSON.stringify(roomSettings[myRoom]) + ' in ' + myRoom);
-            rooms[myRoom].sendAll('setSettings', roomSettings[myRoom]);
-          }
-
-          if (rooms[myRoom].inGame) {
-            // of already in game then
-            socket.emit('alreadyInGame');
-            rooms[myRoom].numWaitingForNewGame++;
           } else {
-            // CHECK AND IF MORE THAN ONE PERSON HERE START A GAME
-            rooms[myRoom].waitFiveThenCheckAndStart();
+
+            lobbyCount--;
+
           }
 
-      } else {
+          myRoom = null;
 
-        lobbyCount++;
-        updateLobbyTotals();
+        }
 
-      }
-
-    }
+      });
 
 
-  });
+      socket.on('joinRoom', function(data) {
 
-  socket.on('finishedCalc', function(data) {
+        if (myRoom !== data.room) {  // ignore duplicate requests to join room
 
-    if (!rooms[myRoom].waitingToRush) {
-      rooms[myRoom].waitingToRush = setTimeout(function() {
-        console.log('had to force it');
-        checkAndHandleWinners(myRoom, true);   // force it!
-      }, 5000);
-    }
+          myRoom = data.room;
+          if (!myUsername) {
+            myUsername = data.uid;
+            if (myUsername)
+              console.log(myUsername + ' just logged in (' + myUserId + ') with clientIp ' + clientIp );
+          }
+          socket.join(myRoom);
 
-    //console.log('user finishedcalc');
-    rooms[myRoom].finishedCalc++;
-    rooms[myRoom].RGBCounts[myUserId] = data.pixelData;
+          if (myRoom !== 'lobby') {
 
-    checkAndHandleWinners(myRoom);
+              //console.log('user number ' + myUserId + ' joining room "' + myRoom + '" with ' + myUsername);
 
-  });
+              if (!rooms[myRoom]) {
+                rooms[myRoom] = Room({roomName: myRoom});
+              }
 
-  socket.on('submitHS', function(data) {
+              rooms[myRoom].setupNewUser(myUserId, socket, myUsername);
+              console.log('setting up ' + myUserId + 'with username ' + myUsername);
 
-    //console.log('inserting score...' + JSON.stringify(data));
+              if (roomSettings.hasOwnProperty(myRoom)) {
+                //console.log('setSettings: ' + JSON.stringify(roomSettings[myRoom]) + ' in ' + myRoom);
+                rooms[myRoom].sendAll('setSettings', roomSettings[myRoom]);
+              }
 
-      pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
-        //console.log('about to insert');
-        var dateNow = new Date().toISOString().slice(0, 10);
-        dateNow = dateNow.substr(5) + '-' + dateNow.substr(0, 4);
-        var queryText = 'UPDATE "highscores" SET "games"=' + data.games + ', "points"=' + data.pts + ' WHERE "username"=\'' + data.username + '\' AND "games"<' + data.games + ' AND "dateset"=\'' + dateNow + '\'';
+              if (rooms[myRoom].inGame) {
+                // of already in game then
+                socket.emit('alreadyInGame');
+                rooms[myRoom].numWaitingForNewGame++;
+              } else {
+                // CHECK AND IF MORE THAN ONE PERSON HERE START A GAME
+                rooms[myRoom].waitFiveThenCheckAndStart();
+              }
 
-        //console.log(queryText);
+          } else {
 
-        client.query(queryText, function(err, result) {
+            lobbyCount++;
+            updateLobbyTotals();
 
-          //console.log( err, result);
-          done();
+          }
 
-          if (err || result.rowCount === 0) {
-
-            // okay so we couldnt update when username sent in a record today...
-            // but dont go ahead and insert if they already sent in a better record today
-            client.query('SELECT * FROM "highscores" WHERE "username"=\'' + data.username + '\' AND "dateset"=\'' + dateNow + '\'', function(err, result) {
-
-              //console.log('select from highscores where username and dateset');
-              //console.log('err for this ' + err);
-              //console.log('result here ' + JSON.stringify(result));
-
-              if (result.rowCount === 0) {
-                // only go ahead with the insert if they havent had any records from the same day that are less than data.games
-
-                    var queryText = 'INSERT INTO "highscores" ("username", "dateset", "games", "points") VALUES ($1, $2, $3, $4)';
-
-                    //console.log(queryText);
-
-                    client.query(queryText, [data.username, dateNow, data.games, data.pts], function(err, result) {
-                      //console.log('here' + JSON.stringify(result) + ' ' + err);
-                      if (!err) {
-                        //console.log('no error');
-                        done();
-
-                        socket.emit('congrats');
-                        updateScoresAndEmit(client, done);
+        }
 
 
-                      } else {
-                        //console.log('err ' + err);
-                      }
-                      //console.log('now here');
+      });
 
-                    });
+      socket.on('finishedCalc', function(data) {
+
+        if (!rooms[myRoom].waitingToRush) {
+          rooms[myRoom].waitingToRush = setTimeout(function() {
+            console.log('had to force it');
+            checkAndHandleWinners(myRoom, true);   // force it!
+          }, 5000);
+        }
+
+        //console.log('user finishedcalc');
+        rooms[myRoom].finishedCalc++;
+        rooms[myRoom].RGBCounts[myUserId] = data.pixelData;
+
+        checkAndHandleWinners(myRoom);
+
+      });
+
+      socket.on('submitHS', function(data) {
+
+        //console.log('inserting score...' + JSON.stringify(data));
+
+          pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
+            //console.log('about to insert');
+            var dateNow = new Date().toISOString().slice(0, 10);
+            dateNow = dateNow.substr(5) + '-' + dateNow.substr(0, 4);
+            var queryText = 'UPDATE "highscores" SET "games"=' + data.games + ', "points"=' + data.pts + ' WHERE "username"=\'' + data.username + '\' AND "games"<' + data.games + ' AND "dateset"=\'' + dateNow + '\'';
+
+            //console.log(queryText);
+
+            client.query(queryText, function(err, result) {
+
+              //console.log( err, result);
+              done();
+
+              if (err || result.rowCount === 0) {
+
+                // okay so we couldnt update when username sent in a record today...
+                // but dont go ahead and insert if they already sent in a better record today
+                client.query('SELECT * FROM "highscores" WHERE "username"=\'' + data.username + '\' AND "dateset"=\'' + dateNow + '\'', function(err, result) {
+
+                  //console.log('select from highscores where username and dateset');
+                  //console.log('err for this ' + err);
+                  //console.log('result here ' + JSON.stringify(result));
+
+                  if (result.rowCount === 0) {
+                    // only go ahead with the insert if they havent had any records from the same day that are less than data.games
+
+                        var queryText = 'INSERT INTO "highscores" ("username", "dateset", "games", "points") VALUES ($1, $2, $3, $4)';
+
+                        //console.log(queryText);
+
+                        client.query(queryText, [data.username, dateNow, data.games, data.pts], function(err, result) {
+                          //console.log('here' + JSON.stringify(result) + ' ' + err);
+                          if (!err) {
+                            //console.log('no error');
+                            done();
+
+                            socket.emit('congrats');
+                            updateScoresAndEmit(client, done);
+
+
+                          } else {
+                            //console.log('err ' + err);
+                          }
+                          //console.log('now here');
+
+                        });
+
+                  }
+
+                });
+
+
+              } else {
+
+                // update worked
+                socket.emit('congrats');
+                updateScoresAndEmit(client, done);
 
               }
 
             });
 
+          });
 
-          } else {
+      });
 
-            // update worked
-            socket.emit('congrats');
-            updateScoresAndEmit(client, done);
+      socket.on('addCircle', function(circle) {
+        //console.log('circle: ' +  JSON.stringify(circle) + ' goes to ' + myRoom);
+        rooms[myRoom].sendAll('newCircle', {x: circle.x, y: circle.y, rad: circle.rad, col: circle.col});
+      });
 
-          }
+      socket.on('chat', function(data) {
 
+        var MAP = { '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'};
+
+        function escapeHTML (s, forAttribute) {
+            return s.replace(forAttribute ? /[&<>'"]/g : /[&<>]/g, function(c) {
+                return MAP[c];
+            });
+        }
+
+        console.log('CHAT::' + myUsername + ' says ' + data.msg);
+
+        rooms[myRoom].sendAll('chatMsg', {
+          username: myUsername,
+          msg: escapeHTML(data.msg)
         });
 
       });
 
-  });
+      socket.on('log', function(data) {
+        console.log(JSON.stringify(data));
+      });
 
-  socket.on('addCircle', function(circle) {
-    //console.log('circle: ' +  JSON.stringify(circle) + ' goes to ' + myRoom);
-    rooms[myRoom].sendAll('newCircle', {x: circle.x, y: circle.y, rad: circle.rad, col: circle.col});
-  });
+  } else {
+    console.log("WARNING: BLOCKED ATTEMPT FROM " + clientIp);
+  }
 
-  socket.on('chat', function(data) {
-
-    var MAP = { '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#39;'};
-
-    function escapeHTML (s, forAttribute) {
-        return s.replace(forAttribute ? /[&<>'"]/g : /[&<>]/g, function(c) {
-            return MAP[c];
-        });
-    }
-
-    console.log('CHAT::' + myUsername + ' says ' + data.msg);
-
-    rooms[myRoom].sendAll('chatMsg', {
-      username: myUsername,
-      msg: escapeHTML(data.msg)
-    });
-
-  });
-
-  socket.on('log', function(data) {
-    console.log(JSON.stringify(data));
-  });
 
 });
