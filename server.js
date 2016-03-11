@@ -851,8 +851,7 @@ io.sockets.on('connection', function (socket) {
           myRoom = data.room;
           if (!myUsername) {
             myUsername = data.uid;
-            if (myUsername)
-              console.log(myUsername + ' just logged in (' + myUserId + ') with clientIp ' + clientIp );
+            console.log(myUsername + ' just logged in (' + myUserId + ') with clientIp ' + clientIp );
           }
           socket.join(myRoom);
 

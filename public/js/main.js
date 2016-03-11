@@ -922,11 +922,14 @@ $(function() {
       }, maxClickerSize * clickerSpeed, 'linear', function() {
 
         if (lastClickCoords.xPos !== xPos || lastClickCoords.yPos !== yPos) {
+          console.debug('lastClickCoords, ', lastClickCoords.xPos, lastClickCoords.yPos );
+          console.debug('now,', xPos, yPos)
 
           // if user holds down for full length of clickerSpeed
           $('#yourClicker').hide();
           console.log('here');
           socket.emit('addCircle', {x: xPos, y: yPos, rad: maxClickerSize, col: myColor});
+          console.debug('sending circle', xPos, yPos, ' ANIMATEOVER');
           lastClickCoords.xPos = xPos;
           lastClickCoords.yPos = yPos;
           activeClick = false;
@@ -949,9 +952,9 @@ $(function() {
 
       if ((lastClickCoords.xPos !== xPos || lastClickCoords.yPos !== yPos) || clickEquality !== 0) {
 
-        console.log('there');
         socket.emit('addCircle', {x: xPos, y: yPos, rad: $('#yourClicker').width(), col: myColor});
-        $('#yourClicker').stop();
+        console.debug('sending circle', xPos, yPos);
+        $('#yourClicker').stop(true, false);
         $('#yourClicker').hide();
         $('#yourClicker').css('width', 0);
         $('#yourClicker').css('height', 0);
