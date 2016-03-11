@@ -77,6 +77,7 @@ app.get('/clearScores', function(req, res, next) {
 
 });
 
+
 // INIT HIGH SCORE TABLE
 
 /*
@@ -89,7 +90,7 @@ pg.connect(process.env.DATABASE_URL, function(err, client) {
 });
 */
 
-CREATE TABLE players (playerId serial primary key, username VARCHAR(20) not null, dateset VARCHAR(20) not null, starscaught INT)
+// CREATE TABLE players (playerId serial primary key, username VARCHAR(20) not null, dateset VARCHAR(20) not null, starscaught INT)
 
 /*
 pg.connect(process.env.DATABASE_URL, function(err, client) {
@@ -101,7 +102,7 @@ pg.connect(process.env.DATABASE_URL, function(err, client) {
 });
 */
 
-ALTER TABLE players ALTER COLUMN handshake VARCHAR(20);
+// ALTER TABLE players ALTER COLUMN handshake VARCHAR(20);
 
 // CONFIG
 
