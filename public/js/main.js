@@ -167,8 +167,6 @@ var preloadAudio = function() {
 
 };
 
-preloadAudio();
-
 var toggleMute = function() {
   if (!isMuted) {
     $('#muteunmute').css('background-image', 'url("img/muted.png")');
@@ -1008,6 +1006,8 @@ $(function() {
           sendChat();
       }
   });
+
+  preloadAudio();
 
   //END INITS
 
