@@ -143,9 +143,9 @@ var preloadAudio = function() {
         if (necessary) {
           audioLoaded++;
           console.log('loaded');
-          if (audioLoaded === audioToLoad) {
-            start();
-          }
+          // if (audioLoaded === audioToLoad) {
+          //   start();
+          // }
         }
       }
     });
@@ -184,21 +184,25 @@ var toggleMute = function() {
 
 var changeAudio = function(c) {
 
-  if (curAudio) {
-    var pastAudio = curAudio;
-    audioBank[pastAudio].fadeOut(0, 500, function() {
-      audioBank[pastAudio].stop();
-    });
-  }
+  if (audioBank[c]) {
 
-  console.log('now playing ' + c);
+      if (curAudio) {
+        var pastAudio = curAudio;
+        audioBank[pastAudio].fadeOut(0, 500, function() {
+          audioBank[pastAudio].stop();
+        });
+      }
 
-  if (!isMuted) {
-    audioBank[c].pos(0, 0);
-    audioBank[c].volume(1.0);
+      console.log('now playing ' + c);
+
+      if (!isMuted) {
+        audioBank[c].pos(0, 0);
+        audioBank[c].volume(1.0);
+      }
+      audioBank[c].play();
+      curAudio = c;
+
   }
-  audioBank[c].play();
-  curAudio = c;
 
 };
 
@@ -1007,7 +1011,11 @@ $(function() {
       }
   });
 
+
+
   preloadAudio();
+
+  start();
 
   //END INITS
 
