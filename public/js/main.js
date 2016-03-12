@@ -152,18 +152,26 @@ var preloadAudio = function() {
     return audio;
   }
 
-  audioBank['contemplative'] = loadAudio('audio/contemplative t1.mp3', true, true);
-  audioBank['jovial'] = loadAudio('audio/jovial t1 mod.mp3', true, true);
-  audioBank['welcome'] = loadAudio('audio/welcome t1 mod vox.mp3', false, true);
-  audioBank['anthem'] = loadAudio('audio/30s anthem t1.mp3', false );
+  if (!!(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) === false) {
 
-  audioBank['slower'] = loadAudio('audio/slow lobby.mp3', true );
-  audioBank['medium'] = loadAudio('audio/medium lobby mod.mp3', true );
-  audioBank['faster'] = loadAudio('audio/fast lobby.mp3', true );
+    console.debug('yeah')
 
-  audioBank['smaller'] = audioBank['slower'];
-  audioBank['middle'] = audioBank['medium'];
-  audioBank['larger'] = audioBank['faster'];
+      audioBank['contemplative'] = loadAudio('audio/contemplative t1.mp3', true, true);
+      audioBank['jovial'] = loadAudio('audio/jovial t1 mod.mp3', true, true);
+      audioBank['welcome'] = loadAudio('audio/welcome t1 mod vox.mp3', false, true);
+      audioBank['anthem'] = loadAudio('audio/30s anthem t1.mp3', false );
+
+      audioBank['slower'] = loadAudio('audio/slow lobby.mp3', true );
+      audioBank['medium'] = loadAudio('audio/medium lobby mod.mp3', true );
+      audioBank['faster'] = loadAudio('audio/fast lobby.mp3', true );
+
+      audioBank['smaller'] = audioBank['slower'];
+      audioBank['middle'] = audioBank['medium'];
+      audioBank['larger'] = audioBank['faster'];
+
+  } else {
+    console.debug('nah')
+  }
 
 };
 
@@ -202,6 +210,8 @@ var changeAudio = function(c) {
       audioBank[c].play();
       curAudio = c;
 
+  } else {
+    console.debug('blocked ' + c);
   }
 
 };
