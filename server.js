@@ -239,7 +239,7 @@ var Bot = function(options) {
     var settings = roomSettings[bot.roomName];
     var maxClickerSize = settings.maxClickerSize;
     var clickerSpeed = settings.clickerSpeed;
-    var myskillspeed = (clickerSpeed>1) ? Math.round(Math.random() * 900) + 100 : Math.round(Math.random() * 800) + 200;
+    var myskillspeed = (clickerSpeed>1) ? Math.round(Math.random() * 700) + 100 : Math.round(Math.random() * 550) + 200;
 
     var shootCircle = function() {
 
