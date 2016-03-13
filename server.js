@@ -186,7 +186,7 @@ updateHighScores();
 
 // WHATS A BOT?
 
-var botNames = ["manik", "turnip", "nashua", "remla", "tarren", "zenbot", "durnery", "ronad", "tona", "tempest", "larry", "karalata", "lucy"];
+var botNames = ["COMPUTERPLAYER", "manik", "turnip", "nashua", "remla", "tarren", "zenbot", "durnery", "ronad", "tona", "tempest", "larry", "karalata", "lucy"];
 var bots = [];
 
 var Bot = function(options) {
