@@ -534,7 +534,7 @@ var Room = function(options) {
             bot.leaveRoom();
           });
         }
-      }, 1000 + (Math.random()*800));
+      }, 1000 + (Math.random()*2200));
 
     }
 
