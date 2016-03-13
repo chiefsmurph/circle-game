@@ -492,6 +492,10 @@ var Room = function(options) {
           }
         }, 400 + Math.floor(Math.random() * 2500))
 
+      } else if (room.numPlayers > 1) {
+        getAllBotsInRoom(room.roomName).forEach(function(bot) {
+          bot.leaveRoom();
+        });
       }
     }
 
@@ -744,6 +748,14 @@ var passColorOff = function(id, room) {   // void
   }
 
 };
+
+var getAllBotsInRoom = function(roomName) {
+
+  return bots.filter(function(bot) {
+    return (bots[i].roomName === roomName);
+  });
+
+}
 
 var findUnusedBot = function() {  // returns a Bot
 
