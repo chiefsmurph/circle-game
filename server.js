@@ -486,7 +486,10 @@ var Room = function(options) {
       if (room.numPlayers === 1) {
         // if not then send a bot!
         setTimeout(function() {
-          findUnusedBot().joinRoom(room.roomName);
+          var newBot = findUnusedBot();
+          if (newBot) {
+            newBot.joinRoom(room.roomName);
+          }
         }, 400 + Math.floor(Math.random() * 2500))
 
       }
