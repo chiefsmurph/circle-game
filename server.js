@@ -768,7 +768,7 @@ Object.keys(roomSettings).forEach(function(r) {
 })
 
 // init bots
-for (var i=0; i<3; i++) {
+for (var i=0; i<1; i++) {
   bots.push(Bot());
 }
 
