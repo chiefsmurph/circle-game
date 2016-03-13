@@ -527,11 +527,14 @@ var Room = function(options) {
       console.log('REMOVING HUMAN');
       room.humans.splice(room.humans.indexOf(id), 1);
 
-      if (room.humans.length === 0) {
-        getAllBotsInRoom(room.roomName).forEach(function(bot) {
-          bot.leaveRoom();
-        });
-      }
+      // if no humans left then remove the bots too
+      setTimeout(function() {
+        if (room.humans.length === 0) {
+          getAllBotsInRoom(room.roomName).forEach(function(bot) {
+            bot.leaveRoom();
+          });
+        }
+      }, 1000 + (Math.random()*800));
 
     }
 
