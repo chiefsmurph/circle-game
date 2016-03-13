@@ -752,7 +752,7 @@ var passColorOff = function(id, room) {   // void
 var getAllBotsInRoom = function(roomName) {
 
   return bots.filter(function(bot) {
-    return (bots[i].roomName === roomName);
+    return (bot.roomName === roomName);
   });
 
 }
