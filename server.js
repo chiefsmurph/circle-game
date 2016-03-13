@@ -492,7 +492,8 @@ var Room = function(options) {
           }
         }, 400 + Math.floor(Math.random() * 2500))
 
-      } else if (room.numPlayers > 1) {
+      } else if (room.humans.length > 1) {
+        // if more than one human remove bots
         getAllBotsInRoom(room.roomName).forEach(function(bot) {
           bot.leaveRoom();
         });
@@ -525,6 +526,13 @@ var Room = function(options) {
     if (!botBool) {
       console.log('REMOVING HUMAN');
       room.humans.splice(room.humans.indexOf(id), 1);
+
+      if (room.humans.length === 0) {
+        getAllBotsInRoom(room.roomName).forEach(function(bot) {
+          bot.leaveRoom();
+        });
+      }
+
     }
 
     // remove from userBank
