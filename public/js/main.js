@@ -239,7 +239,7 @@ var chooseRoom = function(roomToGo) {
       socket.emit('joinRoom', {room: roomToGo, uid: username});
       $('#curRoom').text(roomToGo);
 
-
+      renderRulesPanel();
       $('#rulesPanel').removeClass('hider');
       $('#backRoomButton').prop('disabled', false);
 
@@ -248,6 +248,34 @@ var chooseRoom = function(roomToGo) {
   }, 1000);
 
 };
+
+var renderRulesPanel = function() {
+
+  console.log('renderrulespanel')
+
+  // generate the contents of the rulesPanel
+  var rulesList;
+  if (['smaller','middle','larger'].indexOf(curRoom) !== -1) {
+    // intensity
+    rulesList = ['Start clicking.', 'All clicks = max size', 'Cover the maximum playing area and dominate the game with your color!!!'];
+  } else {
+    // non-intensity rooms
+    rulesList = ['Start clicking.', 'Longer clicks = bigger circles', 'Cover the maximum playing area and dominate the game with your color!!!'];
+  }
+
+  // render the rulesPanel HTML
+  if (!$('#rulesPanel ol').length) {
+    $('#rulesPanel').append('<ol></ol>');
+  }
+
+  console.log(rulesList);
+
+  $('#rulesPanel ol').empty();
+  rulesList.forEach(function(rule) {
+    $('#rulesPanel ol').append('<li>' + rule + '</li>');
+  });
+
+}
 
 var toggleHighs = function() {
 
@@ -566,6 +594,7 @@ var backToWaiting = function() {
   window.clearInterval(timer);
   timer = null;
   $('#ticker').fadeOut();
+  renderRulesPanel();
   $('#rulesPanel').removeClass('hider');
   $('#backRoomButton').prop('disabled', false);
   clearCircles();
@@ -738,6 +767,7 @@ socket.on('winner', function(data) {
         if (curRoom !== 'lobby') {
           // back to the waiting for new game
           setStatus('Waiting for new<br>game to start');
+          renderRulesPanel();
           $('#rulesPanel').removeClass('hider');
           $('#bottomStatus').show();
 
