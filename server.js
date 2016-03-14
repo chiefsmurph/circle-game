@@ -364,6 +364,7 @@ var Room = function(options) {
   room.RGBCounts = {};               // object to hold rgb data for each user
   room.humans = [];
   room.lastReceived = getRandomCoords();
+  // room.removeBotTimeout = null; // jic
 
   room.getRGBCountsSize = function() {
     // for rgbcounts count
@@ -493,7 +494,8 @@ var Room = function(options) {
         }, 400 + Math.floor(Math.random() * 2500))
 
       } else if (room.humans.length > 1) {
-        // if more than one human remove bots
+        // if more than one human remove bots on join
+        console.log('removing more than one human')
         getAllBotsInRoom(room.roomName).forEach(function(bot) {
           bot.leaveRoom();
         });
@@ -530,6 +532,7 @@ var Room = function(options) {
       // if no humans left then remove the bots too
       setTimeout(function() {
         if (room.humans.length === 0) {
+          console.log('removing because no humans left after leaving')
           getAllBotsInRoom(room.roomName).forEach(function(bot) {
             bot.leaveRoom();
           });
@@ -876,7 +879,8 @@ io.sockets.on('connection', function (socket) {
 
           myRoom = data.room;
           if (!myUsername) {
-            myUsername = data.uid;
+            console.log(JSON.stringify(data));
+            if (data.uid) myUsername = data.uid;
             console.log(myUsername + ' just logged in (' + myUserId + ') with clientIp ' + clientIp );
           }
           socket.join(myRoom);
@@ -1012,24 +1016,30 @@ io.sockets.on('connection', function (socket) {
 
       socket.on('chat', function(data) {
 
-        var MAP = { '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#39;'};
+        console.log('CHAT::' + myUsername + ' says ' + data.msg, myUsername, 'sad');
 
-        function escapeHTML (s, forAttribute) {
-            return s.replace(forAttribute ? /[&<>'"]/g : /[&<>]/g, function(c) {
-                return MAP[c];
-            });
+        if (myUsername) {
+
+          var MAP = { '&': '&amp;',
+                  '<': '&lt;',
+                  '>': '&gt;',
+                  '"': '&quot;',
+                  "'": '&#39;'};
+
+          function escapeHTML (s, forAttribute) {
+              return s.replace(forAttribute ? /[&<>'"]/g : /[&<>]/g, function(c) {
+                  return MAP[c];
+              });
+          }
+
+          console.log('CHAT::' + myUsername + ' says ' + data.msg);
+
+          io.sockets.emit('chatMsg', {
+            username: myUsername,
+            msg: escapeHTML(data.msg)
+          });
+
         }
-
-        console.log('CHAT::' + myUsername + ' says ' + data.msg);
-
-        rooms[myRoom].sendAll('chatMsg', {
-          username: myUsername,
-          msg: escapeHTML(data.msg)
-        });
 
       });
 

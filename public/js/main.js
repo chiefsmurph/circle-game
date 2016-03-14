@@ -107,7 +107,7 @@ var handleUsernameSubmit = function(cb) {   //void
 }
 
 var moveToLobby = function() {
-  socket.emit('joinRoom', {room: 'lobby'});
+  socket.emit('joinRoom', {room: 'lobby', uid: username});
   setStatus('Choose a room');
   $('#roomChooser').show();
   $('#bottomStatus').show();
@@ -116,6 +116,8 @@ var moveToLobby = function() {
   setTimeout(function() {
     saySomething( "Circle Battle Party every day at 6:30 PST" );
   }, 500);
+
+  slideOutChat();
 }
 
 var showUserScreen = function(cb) {
@@ -266,6 +268,7 @@ var sendChat = function() {
 
   var chatTxt = $('#msgText').val();
   if (chatTxt) {
+    console.log('chat', { msg: chatTxt });
     socket.emit('chat', { msg: chatTxt });
     $('#msgText').val('');
   }
@@ -357,12 +360,12 @@ var backToRoomChooser = function() {
   setStatus('Choose a room');
 
   $('#usersAndColors div').slideUp(500, function() {
-    $('#chatPanel').animate({'left':'189px'}, 700, function() {
-      if (curRoom === 'lobby') {    // make sure
-        $('#chatArea').empty();
-        $('#chatPanel').addClass('hider');
-      }
-    });
+    // $('#chatPanel').animate({'left':'189px'}, 700, function() {
+    //   if (curRoom === 'lobby') {    // make sure
+    //     $('#chatArea').empty();
+    //     $('#chatPanel').addClass('hider');
+    //   }
+    // });
     $('#usersAndColors table').empty();
     $('#usersAndColors').hide();
 
@@ -378,6 +381,11 @@ var backToRoomChooser = function() {
 
 };
 
+var slideOutChat = function() {
+  $('#chatPanel').removeClass('hider');
+  $('#chatPanel').animate({'left':'309px'}, 700);
+}
+
 socket.on('usersColors', function(data) {
   console.log('usercolors ' + JSON.stringify(data.usersColors));
 
@@ -392,17 +400,8 @@ socket.on('usersColors', function(data) {
   }
   usersColsTable.html($('tr',usersColsTable).get().reverse());
   // slideright usercolors
-  $('#chatPanel').removeClass('hider');
-  $('#chatPanel').animate({'left':'309px'}, 700, function() {
-
-    if (curRoom !== 'lobby') {    // in case they are clicking real fast
-
-      $('#usersAndColors').show();
-      $('#usersAndColors div').slideDown();
-
-    }
-
-  });
+  $('#usersAndColors').show();
+  $('#usersAndColors div').slideDown();
 
 });
 

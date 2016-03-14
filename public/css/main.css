@@ -85,6 +85,14 @@ html, body {
   /*display: none;*/
   z-index: 10000000;
 }
+#yourCursor {
+  background-color: rgba(255,255,255,0.2);
+  position: absolute;
+  width: 0;
+  height: 0;
+  /*display: none;*/
+  z-index: 9999;
+}
 #highScorePanel {
   position: absolute;
   top: 500px;
@@ -112,7 +120,7 @@ html, body {
   background-color: rgba(255,255,255,0.6);
 }
 #highScorePanel th, #highScorePanel td {
-  border: 1px solid black;  
+  border: 1px solid black;
   height: 29px;
 }
 #highScorePanel tbody td:nth-child(5) {
