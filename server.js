@@ -5,9 +5,6 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
-var dNow = new Date().toISOString();
-console.log(dNow);
-
 var connectionString = "postgres://mbxlvabrzzicaj:*PASSWORD*@*HOST*:*PORT:/*DATABASE*"
 
 var port = process.env.PORT || 5000; // Use the port that Heroku
@@ -948,9 +945,8 @@ io.sockets.on('connection', function (socket) {
 
           pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
             //console.log('about to insert');
-            var dateNow = new Date().toISOString().slice(0, 10);
-            dateNow = dateNow.substr(5) + '-' + dateNow.substr(0, 4);
-            var queryText = 'UPDATE "highscores" SET "games"=' + data.games + ', "points"=' + data.pts + ' WHERE "username"=\'' + data.username + '\' AND "games"<' + data.games + ' AND "dateset"=\'' + dateNow + '\'';
+            var textDate = getCurDate();
+            var queryText = 'UPDATE "highscores" SET "games"=' + data.games + ', "points"=' + data.pts + ' WHERE "username"=\'' + data.username + '\' AND "games"<' + data.games + ' AND "dateset"=\'' + textDate + '\'';
 
             //console.log(queryText);
 
@@ -963,7 +959,7 @@ io.sockets.on('connection', function (socket) {
 
                 // okay so we couldnt update when username sent in a record today...
                 // but dont go ahead and insert if they already sent in a better record today
-                client.query('SELECT * FROM "highscores" WHERE "username"=\'' + data.username + '\' AND "dateset"=\'' + dateNow + '\'', function(err, result) {
+                client.query('SELECT * FROM "highscores" WHERE "username"=\'' + data.username + '\' AND "dateset"=\'' + textDate + '\'', function(err, result) {
 
                   //console.log('select from highscores where username and dateset');
                   //console.log('err for this ' + err);
@@ -976,7 +972,7 @@ io.sockets.on('connection', function (socket) {
 
                         //console.log(queryText);
 
-                        client.query(queryText, [data.username, dateNow, data.games, data.pts], function(err, result) {
+                        client.query(queryText, [data.username, textDate, data.games, data.pts], function(err, result) {
                           //console.log('here' + JSON.stringify(result) + ' ' + err);
                           if (!err) {
                             //console.log('no error');
@@ -1056,3 +1052,12 @@ io.sockets.on('connection', function (socket) {
 
 
 });
+
+var getCurDate = function() {
+  var dateNow = new Date();
+  var adjDate = new Date();
+  adjDate.setHours(dateNow.getHours() - 5);
+  var textDate = adjDate.toISOString().slice(0, 10);
+  textDate = textDate.substr(5) + '-' + textDate.substr(0, 4);
+  return textDate;
+}
