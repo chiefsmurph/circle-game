@@ -946,6 +946,7 @@ io.sockets.on('connection', function (socket) {
           pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
             //console.log('about to insert');
             var dateNow = new Date().toISOString().slice(0, 10);
+            console.log(dateNow);
             dateNow = dateNow.substr(5) + '-' + dateNow.substr(0, 4);
             var queryText = 'UPDATE "highscores" SET "games"=' + data.games + ', "points"=' + data.pts + ' WHERE "username"=\'' + data.username + '\' AND "games"<' + data.games + ' AND "dateset"=\'' + dateNow + '\'';
 
