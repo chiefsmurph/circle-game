@@ -5,7 +5,7 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
-var dNow = new Date().toISOString().slice(0, 10);
+var dNow = new Date().toISOString();
 console.log(dNow);
 
 var connectionString = "postgres://mbxlvabrzzicaj:*PASSWORD*@*HOST*:*PORT:/*DATABASE*"
