@@ -5,6 +5,9 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
+var dNow = new Date().toISOString().slice(0, 10);
+console.log(dNow);
+
 var connectionString = "postgres://mbxlvabrzzicaj:*PASSWORD*@*HOST*:*PORT:/*DATABASE*"
 
 var port = process.env.PORT || 5000; // Use the port that Heroku
@@ -946,7 +949,6 @@ io.sockets.on('connection', function (socket) {
           pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
             //console.log('about to insert');
             var dateNow = new Date().toISOString().slice(0, 10);
-            console.log(dateNow);
             dateNow = dateNow.substr(5) + '-' + dateNow.substr(0, 4);
             var queryText = 'UPDATE "highscores" SET "games"=' + data.games + ', "points"=' + data.pts + ' WHERE "username"=\'' + data.username + '\' AND "games"<' + data.games + ' AND "dateset"=\'' + dateNow + '\'';
 
