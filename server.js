@@ -1061,3 +1061,5 @@ var getCurDate = function() {
   textDate = textDate.substr(5) + '-' + textDate.substr(0, 4);
   return textDate;
 }
+
+console.log(getCurDate());
