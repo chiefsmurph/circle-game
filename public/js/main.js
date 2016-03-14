@@ -654,7 +654,7 @@ var start = function() {
             moveToLobby();
 
             setTimeout(function() {
-              saySomething('congrats last week\'s winner - p00p!');
+              saySomething('last week\'s winners - tie!...dikfuk & ggrff');
             }, 10000);
 
           });
