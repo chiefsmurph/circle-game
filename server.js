@@ -441,7 +441,7 @@ var Room = function(options) {
 
         room.checkAndStart();
 
-    }, t || 5000);
+    }, t || 7500);
 
   };
 
