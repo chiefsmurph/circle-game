@@ -310,6 +310,7 @@ var toggleCustomText = function() {
 };
 
 var setStatus = function(text, length, cb) {
+  console.log(text);
   $('#statusPanel').show();
   $('#statusPanel').html(text);
 
@@ -718,6 +719,7 @@ socket.on('winner', function(data) {
     $('#ticker').hide();
 
     var topColor = data.topColor;
+    var topName = data.topName;
     console.log('topColor: ' + topColor);
 
     // update high score table if user is winner
@@ -765,7 +767,7 @@ socket.on('winner', function(data) {
 
 
     // display winner and winBy
-    setStatus('winner: ' + ((colorRGBtoName[topColor]) ? colorRGBtoName[topColor] + '<br><br>and won by...<br><i>' + data.winBy + ' points</i>'  : 'tie'), 4000, function() {
+    setStatus('winner: ' + ((topName != "tie") ? '<u style="color: rgb(' + topColor + ') !important">' + topName + '</u><br><br>and won by...<br><i>' + data.winBy + ' points</i>'  : 'tie'), 4000, function() {
 
         if (curRoom !== 'lobby') {
           // back to the waiting for new game
