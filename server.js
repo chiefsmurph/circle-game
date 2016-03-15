@@ -722,6 +722,14 @@ var checkAndHandleWinners = function(myRoom, force) {      // void
         //console.log('sortablescores ' + JSON.stringify(sortableScores));
         var winBy = Math.round((sortableScores[0][1] - sortableScores[1][1]) / 10);
 
+        var sumCounts = 0;
+        for (var i = 0; i < sortableScores.length; i++) {
+          sumCounts += sortableScores[i][1];
+        }
+
+        var winByPerc = Math.round(winBy / sumCounts * 1000) + '%';
+        console.log(winBy, sumCounts, winByPerc);
+
         // old way of determining top score
 
         // var topScore = 0;
@@ -755,7 +763,8 @@ var checkAndHandleWinners = function(myRoom, force) {      // void
         rooms[myRoom].sendAll('winner', {
           topColor: winColorRGB,
           topName: winName, // tie if tie or nothing on the board
-          winBy: winBy
+          winBy: winBy,
+          winByPerc: winByPerc
         });
 
         console.log('game over in ' + myRoom + ' winningColor: ' + winColorName + ' winningName ' + winName);
@@ -769,7 +778,7 @@ var checkAndHandleWinners = function(myRoom, force) {      // void
         rooms[myRoom].RGBCounts = {};
         rooms[myRoom].timerToStart = null;
         rooms[myRoom].curPlayingQueue = [];
-        rooms[myRoom].waitFiveThenCheckAndStart(12000); // wait 12 then start
+        rooms[myRoom].waitFiveThenCheckAndStart(16000); // wait 12 then start
         clearTimeout(rooms[myRoom].waitingToRush);
         rooms[myRoom].waitingToRush = null;
 
