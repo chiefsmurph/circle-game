@@ -880,8 +880,14 @@ io.sockets.on('connection', function (socket) {
           myRoom = data.room;
           if (!myUsername) {
             console.log(JSON.stringify(data));
-            if (data.uid) myUsername = data.uid;
-            console.log(myUsername + ' just logged in (' + myUserId + ') with clientIp ' + clientIp );
+            if (data.uid) {
+              myUsername = data.uid;
+              io.sockets.emit('chatMsg', {
+                username: 'CB',
+                msg: '<b><i>' + myUsername + ' just joined the chat.</b></i>'
+              });
+              console.log(myUsername + ' just logged in (' + myUserId + ') with clientIp ' + clientIp );
+            }
           }
           socket.join(myRoom);
 
