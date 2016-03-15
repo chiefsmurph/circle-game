@@ -385,6 +385,7 @@ button:focus, input[type='button']:focus {outline:0;}
   display: block;
   padding: 6px;
   font-size: 79%;
+  margin: 6px 0 3px;
 }
 #chatPanel #msgText {
   width: 100%;
