@@ -24,7 +24,7 @@ var updateScoresAndEmit = function(client, done) {
 
   updateHighScores(client, function() {
     //console.log('updated high scores');
-    io.sockets.emit('highScores', {scoreArr: highScoreData});
+    sendAll('highScores', {scoreArr: highScoreData});
     done();
   });
 
@@ -791,6 +791,10 @@ var findUnusedBot = function() {  // returns a Bot
 
 };
 
+var sendAll = function(evt, obj) {
+  io.sockets.emit(evt, obj);
+}
+
 //init main rooms
 Object.keys(roomSettings).forEach(function(r) {
   rooms[r] = Room({roomName: r});
@@ -840,6 +844,13 @@ io.sockets.on('connection', function (socket) {
           });
         }
 
+        if (myUsername) {
+          sendAll('chatMsg', {
+            username: 'CB',
+            msg: '<b><i>' + myUsername + ' just left the chat.</b></i>'
+          });
+        }
+
       });
 
       socket.on('addToRound', function(data) {
@@ -882,7 +893,7 @@ io.sockets.on('connection', function (socket) {
             console.log(JSON.stringify(data));
             if (data.uid) {
               myUsername = data.uid;
-              io.sockets.emit('chatMsg', {
+              sendAll('chatMsg', {
                 username: 'CB',
                 msg: '<b><i>' + myUsername + ' just joined the chat.</b></i>'
               });
@@ -1039,7 +1050,7 @@ io.sockets.on('connection', function (socket) {
 
           console.log('CHAT::' + myUsername + ' says ' + data.msg);
 
-          io.sockets.emit('chatMsg', {
+          sendAll('chatMsg', {
             username: myUsername,
             msg: escapeHTML(data.msg)
           });

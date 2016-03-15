@@ -564,10 +564,13 @@ socket.on('playerCount', function(data) {
 });
 
 socket.on('chatMsg', function(data) {
-
-  $('#chatArea').append('<b>' + data.username + ':</b> ' + data.msg + '<br>');
+  console.debug(data.username);
+  if (data.username === 'CB') {
+    $('#chatArea').append('<note>' + data.msg + '</note>');
+  } else {
+    $('#chatArea').append('<b>' + data.username + ':</b> ' + data.msg + '<br>');
+  }
   $('#chatArea').scrollTop($('#chatArea')[0].scrollHeight);
-
 });
 
 socket.on('roomTotals', function(data) {
