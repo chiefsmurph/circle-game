@@ -33,6 +33,8 @@ var colorRGBtoName = {
   '107,142,35': 'olivedrab'
 };
 
+var userObj;
+
 var ticker;   // time left on ticker
 var timer;  // actual timer setinterval
 var activeGame = false;
@@ -90,14 +92,13 @@ var validateText = function(min, max, el) { // boolean
 
 };
 
-var handleUsernameSubmit = function(cb) {   //void
+var handleUsernameSubmit = function() {   //void
   if (validateText(3,8,'#username')) {
-      // set username
-      username = $('#username').val();
-      docCookies.setItem('pastusername', username);
-      console.log('setting username to ' + username )
-      $('#loginScreen').hide();
-      if (cb) cb();
+
+      socket.emit('usernameSubmit', {
+        username: $('#username').val()
+      });
+
   } else {
     // invalid username
     $('#username').val('');
@@ -412,9 +413,30 @@ var backToRoomChooser = function() {
 
 var slideOutChat = function() {
   $('#chatPanel').removeClass('hider');
-  $('#chatPanel').animate({'left':'309px'}, 700);
-}
+  $('#chatPanel').animate({'left':'259px'}, 700);
+};
 
+var setUserScore = function(num) {
+  userObj.score = num;
+};
+var setUserObj = function(data) {
+  console.debug('setuserobj', data);
+  // set username
+  username = data.username;
+  docCookies.setItem('pastusername', username);
+  console.log('setting username to ' + username );
+  userObj = {
+    username: data.username,
+    handshake: data.handshake,
+    score: data.score
+  };
+  docCookies.setItem('userStatus', JSON.stringify({
+    username: data.username,
+    handshake: data.handshake
+  }), 31536e3, "/");
+
+  $('#userPanel').html(data.username + '<hr><b>' + data.score + '</b>');
+}
 socket.on('usersColors', function(data) {
   console.log('usercolors ' + JSON.stringify(data.usersColors));
 
@@ -461,11 +483,54 @@ socket.on('highScores', function(data) {
 
 });
 
+socket.on('username-feedback', function(data) {
+
+  $('#username-response').removeClass('good bad');
+  $('#username-response').addClass(data.res);
+  $('#username-response').text('response: ' + data.msg);
+
+  if (data.res === 'good') {
+
+    // $('#createuser').prop("disabled",true);
+    console.debug(data);
+    setUserObj(data);
+    setTimeout(function() {
+      $('#loginScreen').hide();
+      moveToLobby();
+    }, 700);
+
+
+  }
+
+});
+
+socket.on('login-feedback', function(data) {
+
+  if (data.res) {
+    setUserObj(data);
+    $('#loginScreen').hide();
+    moveToLobby();
+    console.log('welcome back');
+  } else {
+    console.error('hackz0r');
+    setTimeout(function() {
+      docCookies.removeItem('userStatus');
+      location.reload();
+    }, 4000);
+  }
+
+});
+
+
 socket.on('alreadyInGame', function() {
 
   console.log('alreadyingame');
   setStatus('Waiting for game to finish');
 
+});
+
+socket.on('updateUsrObj', function(data) {
+  setUserObj(data);
 });
 
 socket.on('returnToWait', function() {
@@ -685,6 +750,14 @@ var start = function() {
 
         showTitleScreen(function() {
 
+          if (docCookies.hasItem('userStatus')) {
+
+             userObj = JSON.parse(docCookies.getItem('userStatus'));
+             socket.emit('verifyLogin', userObj);
+             console.log('verify', userObj);
+
+           }
+
           changeAudio('contemplative');
           showUserScreen(function() {
 
@@ -771,7 +844,7 @@ socket.on('winner', function(data) {
 
 
     // display winner and winBy
-    setStatus('winner: ' + ((topName != "tie") ? '<u style="color: rgb(' + topColor + ') !important">' + topName + '</u><br><br>and won by...<br><i>' + data.winByPerc + '</i>'  : 'tie'), 6500, function() {
+    setStatus('winner: ' + ((topName != "tie") ? '<u style="color: rgb(' + topColor + ') !important">' + topName + '</u><br><br>and won by...<br><i>' + data.winByPerc + '%</i>'  : 'tie'), 6500, function() {
 
         if (curRoom !== 'lobby') {
           // back to the waiting for new game
@@ -1046,9 +1119,7 @@ $(function() {
   $("#username").keypress(function(event) {
       if (event.which == 13) {
           event.preventDefault();
-          handleUsernameSubmit(function() {
-            moveToLobby();
-          });
+          handleUsernameSubmit();
       }
   });
 

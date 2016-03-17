@@ -4,6 +4,10 @@ html, body {
   text-align: center;
   height: 110%;
 }
+hr {
+  margin: 0;
+  border: 1px dashed rgba(10,10,10,0.4);
+}
 * {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -25,6 +29,7 @@ html, body {
   width: 500px;
   position: relative;
   top: 100px;
+  left: -50px;
   background-color: rgba(255,255,255,0.34);
   border-radius: 10px 5px 0px 0px;
   color: black;
@@ -50,6 +55,7 @@ html, body {
   margin: 0 auto -500px;
   position: relative;
   top: 100px;
+  left: -50px;
   width: 500px;
   height: 500px;
   background-color: black;
@@ -136,6 +142,7 @@ html, body {
   padding: 0px 5px;
   font-size: 20px;
   background-color: white;
+  cursor: pointer;
 }
 #highScorePanel #closeHS:hover {
   color: red;
@@ -172,6 +179,19 @@ html, body {
   font-size: 18px;
   margin-top: 15px;
 }
+#loginScreen #username-response {
+  font-size: 55%;
+  padding: 10px 10px;
+}
+#loginScreen #username-response.good {
+  color: green;
+  background-color: rgba(255,255,255,0.6)
+}
+#loginScreen #username-response.bad {
+  color: red;
+  background-color: rgba(255,255,255,0.6)
+}
+
 #statusPanel {
   position: absolute;
   top: 0;
@@ -357,12 +377,32 @@ button:focus, input[type='button']:focus {outline:0;}
   border-radius: 10px 0 0 10px;
   background-color: rgba(255,255,0,0.4);
 }
+#userPanel {
+  font-family: monospace;
+  margin: 0 auto 20px;
+  position: relative;
+  background-color: lightyellow;
+  top: -31px;
+  left: 260px;
+  width: 120px;
+  box-shadow: 4px 4px 20px rgba(255,255,255,0.3);
+  cursor: default;
+  z-index: 0;
+  line-height: 1.7;
+}
+#userPanel b {
+  padding: 5px;
+  display: inline-block;
+  background-color: blue;
+  color: white;
+  margin: 5px;
+}
 #chatPanel {
   font-family: monospace;
   margin: 0 auto 20px;
   position: relative;
   top: 0px;
-  left: 189px;
+  left: 139px;
   width: 120px;
   overflow: hidden;
   /*box-shadow: 4px 4px 20px rgba(255,255,255,0.3);*/
@@ -406,7 +446,7 @@ button:focus, input[type='button']:focus {outline:0;}
   margin: 0 auto 20px;
   position: relative;
   top: 0px;
-  left: 309px;
+  left: 259px;
   width: 120px;
   background-color: grey;
   overflow: hidden;
@@ -444,6 +484,7 @@ button:focus, input[type='button']:focus {outline:0;}
   margin: 0 auto 20px;
   position: relative;
   top: 600px;
+  left: -50px;
   width: 500px;
   background-color: grey;
   overflow: hidden;

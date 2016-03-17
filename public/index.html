@@ -73,6 +73,7 @@
         <h2>Choose your<br>username</h2>
         <div id='userfield'><input type='text' id='username'><input type='button' id='setUserBtn' value='GO!'></div>
         <div>must be alpha-numberic<br> and between 3-8 characters</div>
+        <div id="username-response"></div>
       </div>
       <div id='statusPanel'></div>
       <div id='roomChooser'>
@@ -169,11 +170,14 @@
 
     </div>
 
+    <div id="userPanel"></div>
+
     <div id='chatPanel'>
       <div id='chatArea'></div>
       <input type='text' id='msgText' placeholder='chat message'>
       <input type='submit' value='send' onclick='sendChat()'>
     </div>
+
 
     <div id='usersAndColors'>
       <div>
@@ -181,6 +185,7 @@
         </table>
       </div>
     </div>
+
 
     <div id='below'>
       <div>

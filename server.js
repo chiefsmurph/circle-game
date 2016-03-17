@@ -4,6 +4,8 @@ var util = require('util');
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+var uuid = require('node-uuid');
+var async = require('async');
 
 var connectionString = "postgres://mbxlvabrzzicaj:*PASSWORD*@*HOST*:*PORT:/*DATABASE*"
 
@@ -30,6 +32,24 @@ var updateScoresAndEmit = function(client, done) {
 
 };
 
+
+var users = [];
+
+// read all users
+pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
+  var queryText = 'SELECT * FROM highscores';
+  client.query(queryText, function(err, result) {
+
+    done();
+    users = result.rows;
+
+  });
+});
+
+users.push({
+  username: 'computer',
+  score: 132
+});
 
 app.get('/removeScore', function(req, res, next) {
 
@@ -294,7 +314,7 @@ var Bot = function(options) {
 
   bot.leaveRoom = function() {
     if (bot.room) {
-      passColorOff(bot.id, bot.roomName);
+      bot.room.passColorOff(bot.id);
       bot.room.userLeaving(bot.id, true);
       bot.room = null;
       bot.roomName = null;
@@ -496,7 +516,7 @@ var Room = function(options) {
       } else if (room.humans.length > 1) {
         // if more than one human remove bots on join
         console.log('removing more than one human')
-        getAllBotsInRoom(room.roomName).forEach(function(bot) {
+        room.getAllBotsInRoom().forEach(function(bot) {
           bot.leaveRoom();
         });
       }
@@ -533,7 +553,7 @@ var Room = function(options) {
       setTimeout(function() {
         if (room.humans.length === 0) {
           console.log('removing because no humans left after leaving')
-          getAllBotsInRoom(room.roomName).forEach(function(bot) {
+          room.getAllBotsInRoom().forEach(function(bot) {
             bot.leaveRoom();
           });
         }
@@ -561,7 +581,7 @@ var Room = function(options) {
     updateLobbyTotals();
 
     if (Object.keys(room.RGBCounts).length > 0) {
-      checkAndHandleWinners(room.roomName);
+      room.checkAndHandleWinners();
     }
 
     console.log(room.numPlayers, ' left');
@@ -630,6 +650,179 @@ var Room = function(options) {
 
   };
 
+  room.checkAndHandleWinners = function(force) {
+
+    if (room && (room.hasAllRGBCounts() || force) && room.inGame) {
+
+      //console.log('rooms my room rgbcounts: ' + JSON.stringify(room.RGBCounts));
+
+      // compute the winning rgb
+      var avgRGBCounts = {};
+      for (var userId in room.RGBCounts) {
+
+        for (var rgb in room.RGBCounts[userId]) {
+          //console.log('rgb ' + rgb);
+          // first sum them all up for each of the colors
+          var curRGB = room.RGBCounts[userId].rgb;
+          //console.log('user id ' + userId + ' rgb ' + rgb + ' val ' + room.RGBCounts[userId][rgb]);
+          avgRGBCounts[rgb] = (avgRGBCounts[rgb]) ? avgRGBCounts[rgb] + room.RGBCounts[userId][rgb] : room.RGBCounts[userId][rgb];
+        }
+      }
+
+      //console.log('sum-avgRGBcounts1: ' + JSON.stringify(avgRGBCounts));
+
+      for (var rgb in avgRGBCounts) {
+
+        // and here we divide by the number of players in the current game
+        avgRGBCounts[rgb] = avgRGBCounts[rgb] / Object.keys(room.RGBCounts).length;
+
+      }
+
+      //console.log('avgRGBcounts2: ' + JSON.stringify(avgRGBCounts));
+
+      // now that we have the average rgb data
+      // figure out the top score
+
+      // new way of determining top score
+      var sortableScores = [];
+      for (var color in avgRGBCounts) {
+            sortableScores.push([color, avgRGBCounts[color]]);
+      }
+      sortableScores.sort(function(a, b) {return b[1] - a[1]});
+      //console.log('sortablescores ' + JSON.stringify(sortableScores));
+      var winBy = Math.round((sortableScores[0][1] - sortableScores[1][1]) / 10);
+
+      var sumCounts = 0;
+      for (var i = 0; i < sortableScores.length; i++) {
+        sumCounts += sortableScores[i][1];
+      }
+
+      var winByPerc = Math.round(winBy / sumCounts * 1000);
+      console.log(winBy, sumCounts, winByPerc);
+
+      // old way of determining top score
+
+      // var topScore = 0;
+      // var topColor;
+      // for (var color in avgRGBCounts) {
+      //   if (avgRGBCounts[color] > topScore) {
+      //     topScore = avgRGBCounts[color];
+      //     topColor = color;
+      //   }
+      // }
+
+      //
+      /*
+      console.log('sending winner to the curplayingqueue ' + JSON.stringify(room.curPlayingQueue));
+      for (var i=0; i < room.curPlayingQueue.length; i++) {
+        var curPlayer = room.curPlayingQueue[i];
+        if (room.socketBank[curPlayer]) {
+          console.log('sending to ' + curPlayer );
+          room.socketBank[curPlayer].emit('winner', {
+            topColor: (winBy !== 0) ? sortableScores[0][0] : '0,0,0', // tie if tie or nothing on the board
+            winBy: winBy
+          });
+        }
+      }
+      */
+
+      var winColorRGB = (winBy !== 0) ? sortableScores[0][0] : '0,0,0';
+      var winColorName = (winColorRGB === '0,0,0') ? 'tie' : colorRGBtoName[winColorRGB];
+      var winName = (winColorName === 'tie') ? 'tie' : room.convertColorToUsername(winColorName);
+
+      room.sendAll('winner', {
+        topColor: winColorRGB,
+        topName: winName, // tie if tie or nothing on the board
+        winBy: winBy,
+        winByPerc: winByPerc
+      });
+
+      room.updatePlayersScores({
+        winName: winName,
+        winByPerc: winByPerc
+      }, function() {
+
+          console.log('game over in ' + room.roomName + ' winningColor: ' + winColorName + ' winningName ' + winName);
+
+          //console.log('game over and all users finishedcalc');
+
+          // game over reset
+          room.finishedCalc = 0;
+          room.inGame = false;
+          room.numWaitingForNewGame = 0;
+          room.RGBCounts = {};
+          room.timerToStart = null;
+          room.curPlayingQueue = [];
+          room.waitFiveThenCheckAndStart(16000); // wait 12 then start
+          clearTimeout(room.waitingToRush);
+          room.waitingToRush = null;
+
+      });
+
+    };
+  };
+
+  room.updatePlayersScores = function(data, cb) {
+    console.log(data, room.userBank);
+    async.forEach(Object.keys(room.userBank), function(key, next) {
+      console.log(key);
+      var username = room.userBank[key].username;
+      var usersIndex = findWithAttr(users, 'username', username);
+      if (usersIndex !== null) {
+        var dbRec = users[usersIndex]; // from array index to user object
+        var origScore = dbRec.score;
+        var multiplier = (data.winName === username) ? 1 + data.winByPerc / 100 : 1 - data.winByPerc / 100;
+        var newScore = Math.ceil(origScore * multiplier);
+        console.log(dbRec.username, origScore, multiplier, newScore);
+        updateSinglePlayerScore(dbRec.username, newScore, function(userObj) {
+          //send socket update userobj
+          console.log('updated ', userObj);
+          room.socketBank[key].emit('updateUsrObj', userObj);
+          // update the users array
+          dbRec.handshake = userObj.handshake;
+          dbRec.score = userObj.score;
+          next();
+        });
+      } else {
+        console.log('eh');
+        next();
+      }
+
+    }, cb);
+  };
+
+  room.passColorOff = function(id) {   // void
+
+    if (room && room.userBank[id].color && room.waitingForSpaceQueue.length > 0) {
+      // person in front of the queue gets the person leaving's old color
+      var passed = false;
+      while (!passed) {
+        var firstInLine = room.waitingForSpaceQueue.shift(); // id of first in line
+        if (firstInLine===undefined) {passed = true;}
+        //console.log('giving color ' + rooms[myRoom].userBank[myUserId].color + ' to user ' + firstInLine);
+        if (room && room.socketBank[id] && room.socketBank[id][ firstInLine ]) {
+          room.socketBank[firstInLine].emit('setColor', {color: room.userBank[id].color });
+          room.userBank[firstInLine].color = room.userBank[id].color;
+          room.curPlayingQueue.push(firstInLine);
+          passed = true;
+        } else if (room.waitingForSpaceQueue.length > 0) {
+          passed = true;
+        }
+      }
+    } else {
+      //console.log('couldnt pass color off ' + myUserId + ' ' + myRoom + ' and numplayers ' + rooms[myRoom].numPlayers);
+    }
+
+  };
+
+  room.getAllBotsInRoom = function() {
+
+    return bots.filter(function(bot) {
+      return (bot.roomName === room.roomName);
+    });
+
+  };
+
   return room;
 };
 
@@ -683,144 +876,6 @@ var updateLobbyTotals = function() {    // void
 
 };
 
-var checkAndHandleWinners = function(myRoom, force) {      // void
-
-      if (rooms[myRoom] && (rooms[myRoom].hasAllRGBCounts() || force) && rooms[myRoom].inGame) {
-
-        //console.log('rooms my room rgbcounts: ' + JSON.stringify(rooms[myRoom].RGBCounts));
-
-        // compute the winning rgb
-        var avgRGBCounts = {};
-        for (var userId in rooms[myRoom].RGBCounts) {
-
-          for (var rgb in rooms[myRoom].RGBCounts[userId]) {
-            //console.log('rgb ' + rgb);
-            // first sum them all up for each of the colors
-            var curRGB = rooms[myRoom].RGBCounts[userId].rgb;
-            //console.log('user id ' + userId + ' rgb ' + rgb + ' val ' + rooms[myRoom].RGBCounts[userId][rgb]);
-            avgRGBCounts[rgb] = (avgRGBCounts[rgb]) ? avgRGBCounts[rgb] + rooms[myRoom].RGBCounts[userId][rgb] : rooms[myRoom].RGBCounts[userId][rgb];
-          }
-        }
-
-        //console.log('sum-avgRGBcounts1: ' + JSON.stringify(avgRGBCounts));
-
-        for (var rgb in avgRGBCounts) {
-
-          // and here we divide by the number of players in the current game
-          avgRGBCounts[rgb] = avgRGBCounts[rgb] / Object.keys(rooms[myRoom].RGBCounts).length;
-
-        }
-
-        //console.log('avgRGBcounts2: ' + JSON.stringify(avgRGBCounts));
-
-        // now that we have the average rgb data
-        // figure out the top score
-
-        // new way of determining top score
-        var sortableScores = [];
-        for (var color in avgRGBCounts) {
-              sortableScores.push([color, avgRGBCounts[color]]);
-        }
-        sortableScores.sort(function(a, b) {return b[1] - a[1]});
-        //console.log('sortablescores ' + JSON.stringify(sortableScores));
-        var winBy = Math.round((sortableScores[0][1] - sortableScores[1][1]) / 10);
-
-        var sumCounts = 0;
-        for (var i = 0; i < sortableScores.length; i++) {
-          sumCounts += sortableScores[i][1];
-        }
-
-        var winByPerc = Math.round(winBy / sumCounts * 1000) + '%';
-        console.log(winBy, sumCounts, winByPerc);
-
-        // old way of determining top score
-
-        // var topScore = 0;
-        // var topColor;
-        // for (var color in avgRGBCounts) {
-        //   if (avgRGBCounts[color] > topScore) {
-        //     topScore = avgRGBCounts[color];
-        //     topColor = color;
-        //   }
-        // }
-
-        //
-        /*
-        console.log('sending winner to the curplayingqueue ' + JSON.stringify(rooms[myRoom].curPlayingQueue));
-        for (var i=0; i < rooms[myRoom].curPlayingQueue.length; i++) {
-          var curPlayer = rooms[myRoom].curPlayingQueue[i];
-          if (rooms[myRoom].socketBank[curPlayer]) {
-            console.log('sending to ' + curPlayer );
-            rooms[myRoom].socketBank[curPlayer].emit('winner', {
-              topColor: (winBy !== 0) ? sortableScores[0][0] : '0,0,0', // tie if tie or nothing on the board
-              winBy: winBy
-            });
-          }
-        }
-        */
-
-        var winColorRGB = (winBy !== 0) ? sortableScores[0][0] : '0,0,0';
-        var winColorName = (winColorRGB === '0,0,0') ? 'tie' : colorRGBtoName[winColorRGB];
-        var winName = (winColorName === 'tie') ? 'tie' : rooms[myRoom].convertColorToUsername(winColorName);
-
-        rooms[myRoom].sendAll('winner', {
-          topColor: winColorRGB,
-          topName: winName, // tie if tie or nothing on the board
-          winBy: winBy,
-          winByPerc: winByPerc
-        });
-
-        console.log('game over in ' + myRoom + ' winningColor: ' + winColorName + ' winningName ' + winName);
-
-        //console.log('game over and all users finishedcalc');
-
-        // game over reset
-        rooms[myRoom].finishedCalc = 0;
-        rooms[myRoom].inGame = false;
-        rooms[myRoom].numWaitingForNewGame = 0;
-        rooms[myRoom].RGBCounts = {};
-        rooms[myRoom].timerToStart = null;
-        rooms[myRoom].curPlayingQueue = [];
-        rooms[myRoom].waitFiveThenCheckAndStart(16000); // wait 12 then start
-        clearTimeout(rooms[myRoom].waitingToRush);
-        rooms[myRoom].waitingToRush = null;
-
-      };
-
-};
-
-var passColorOff = function(id, room) {   // void
-
-  if (rooms[room] && rooms[room].userBank[id].color && rooms[room].waitingForSpaceQueue.length > 0) {
-    // person in front of the queue gets the person leaving's old color
-    var passed = false;
-    while (!passed) {
-      var firstInLine = rooms[room].waitingForSpaceQueue.shift(); // id of first in line
-      if (firstInLine===undefined) {passed = true;}
-      //console.log('giving color ' + rooms[myRoom].userBank[myUserId].color + ' to user ' + firstInLine);
-      if (rooms[room] && rooms[room].socketBank[id] && rooms[room].socketBank[id][ firstInLine ]) {
-        rooms[room].socketBank[firstInLine].emit('setColor', {color: rooms[room].userBank[id].color });
-        rooms[room].userBank[firstInLine].color = rooms[room].userBank[id].color;
-        rooms[room].curPlayingQueue.push(firstInLine);
-        passed = true;
-      } else if (rooms[room].waitingForSpaceQueue.length > 0) {
-        passed = true;
-      }
-    }
-  } else {
-    //console.log('couldnt pass color off ' + myUserId + ' ' + myRoom + ' and numplayers ' + rooms[myRoom].numPlayers);
-  }
-
-};
-
-var getAllBotsInRoom = function(roomName) {
-
-  return bots.filter(function(bot) {
-    return (bot.roomName === roomName);
-  });
-
-}
-
 var findUnusedBot = function() {  // returns a Bot
 
   for (var i = 0; i < bots.length; i++) {
@@ -841,9 +896,56 @@ var findUnusedBot = function() {  // returns a Bot
 
 };
 
+
+var verifyUser = function(userObj) {
+  console.log('verifying...' + JSON.stringify(userObj));
+
+  for (var i = 0; i < users.length; i++) {
+    if (users[i].username === userObj.username && users[i].handshake === userObj.handshake) {
+      return users[i];
+    }
+  }
+
+  return false;
+
+};
+
+
 var sendAll = function(evt, obj) {
   io.sockets.emit(evt, obj);
+};
+
+var updateSinglePlayerScore = function(username, newScore, cb) {
+  var handshake = uuid.v1();
+  pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
+    //console.log('about to insert');
+    var queryText = 'UPDATE "highscores" SET "score"=' + newScore + ', "handshake"=\'' + handshake + '\' WHERE "username"=\'' + username + '\'';
+
+    //console.log(queryText);
+
+    client.query(queryText, function(err, result) {
+
+      console.log( err, result);
+      done();
+      cb({
+        username: username,
+        handshake: handshake,
+        score: newScore
+      });
+    });
+  });
+  // cb with new handshake
+};
+
+function findWithAttr(array, attr, value) {
+    for(var i = 0; i < array.length; i += 1) {
+        if(array[i][attr] === value) {
+            return i;
+        }
+    }
+    return null;
 }
+
 
 //init main rooms
 Object.keys(roomSettings).forEach(function(r) {
@@ -886,7 +988,7 @@ io.sockets.on('connection', function (socket) {
           lobbyCount--;
           updateLobbyTotals();
         } else if (rooms[myRoom]) {
-          passColorOff(myUserId, myRoom);
+          rooms[myRoom].passColorOff(myUserId);
           rooms[myRoom].userLeaving(myUserId);
           // update room userandcolors
           rooms[myRoom].sendAll('usersColors', {
@@ -898,6 +1000,106 @@ io.sockets.on('connection', function (socket) {
           sendAll('chatMsg', {
             username: 'CB',
             msg: '<b><i>' + myUsername + ' just left the chat.</b></i>'
+          });
+        }
+
+      });
+
+
+      socket.on('usernameSubmit', function(data) {
+
+        console.log(data.username);
+        setTimeout(function() {
+
+          var checkForBadWords = function(name) {
+            var includesBad = false;
+            var badWords = ['fuck', 'cock', 'pus', 'dick', 'bastard', 'cunt', 'ass', 'nig', 'bitch'];
+            for (var i = 0; i < badWords.length; i++) {
+              if (data.username.toLowerCase().indexOf(badWords[i]) !== -1) {
+                includesBad = true;
+              }
+            }
+            return includesBad;
+          };
+
+          var checkForAlreadyUsed = function(name) {
+            console.log(users, name);
+            var taken = false;
+            users.forEach(function(userObj) {
+              if (name === userObj.username) {
+                taken = true;
+              }
+            });
+            return taken;
+          };
+
+
+          if (data.username.length < 3 || data.username.length > 8) {
+            socket.emit('username-feedback', {
+              res: 'bad',
+              msg: 'must be between 3-8 characters long'
+            });
+          } else if (data.username.indexOf(' ') !== -1) {
+            socket.emit('username-feedback', {
+              res: 'bad',
+              msg: 'must not include spaces'
+            });
+          } else if (checkForBadWords(data.username)) {
+            socket.emit('username-feedback', {
+              res: 'bad',
+              msg: 'no curse words'
+            });
+          } else if (checkForAlreadyUsed(data.username)) {
+            socket.emit('username-feedback', {
+              res: 'bad',
+              msg: 'username already taken'
+            });
+          } else if (!myUsername) {
+
+            var handshake = uuid.v1();
+
+            pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
+              var queryText = 'INSERT INTO highscores (username, dateset, games, points, score, handshake) VALUES($1, $2, $3, $4, $5, $6) RETURNING *';
+              client.query(queryText, [data.username, 'today', 0, 0, 100, handshake], function(err, result) {
+
+                username = data.username;
+                users.push(result.rows[0]);
+
+                if (err)  console.error(err);
+
+                done();
+                console.log(JSON.stringify(result));
+                console.log('created new user ' + data.username);
+                socket.emit('username-feedback', {
+                  res: 'good',
+                  msg: 'congratulations, you are good to go',
+                  score: 100,
+                  handshake: handshake,
+                  username: data.username
+                });
+
+              });
+            });
+
+
+
+          }
+
+        }, 1000);
+      });
+
+      socket.on('verifyLogin', function(userObj) {
+        var foundUsr = verifyUser(userObj);
+        if (foundUsr) {
+          socket.emit('login-feedback', {
+            res: true,
+            score: foundUsr.score,
+            username: foundUsr.username,
+            handshake: foundUsr.handshake
+          });
+        } else {
+          socket.emit('login-feedback', {
+            res: false
           });
         }
 
@@ -918,7 +1120,7 @@ io.sockets.on('connection', function (socket) {
 
           if (myRoom !== 'lobby') {
 
-            passColorOff(myUserId, myRoom);
+            rooms[myRoom].passColorOff(myUserId);
             rooms[myRoom].userLeaving(myUserId);
 
           } else {
@@ -994,7 +1196,7 @@ io.sockets.on('connection', function (socket) {
         if (!rooms[myRoom].waitingToRush) {
           rooms[myRoom].waitingToRush = setTimeout(function() {
             console.log('had to force it');
-            checkAndHandleWinners(myRoom, true);   // force it!
+            rooms[myRoom].checkAndHandleWinners(true);   // force it!
           }, 5000);
         }
 
@@ -1002,7 +1204,7 @@ io.sockets.on('connection', function (socket) {
         rooms[myRoom].finishedCalc++;
         rooms[myRoom].RGBCounts[myUserId] = data.pixelData;
 
-        checkAndHandleWinners(myRoom);
+        rooms[myRoom].checkAndHandleWinners();
 
       });
 
