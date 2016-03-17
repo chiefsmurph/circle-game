@@ -768,27 +768,32 @@ var Room = function(options) {
       console.log('key', key);
       var username = room.userBank[key].username;
       console.log('username', username)
-      var usersIndex = findWithAttr(users, 'username', username);
-      console.log('usersiNDEX', usersIndex);
-      if (usersIndex !== null) {
-        var dbRec = users[usersIndex]; // from array index to user object
-        var origScore = dbRec.score;
-        var multiplier = (data.winName === username) ? 1 + data.winByPerc / 100 : 1 - data.winByPerc / 100;
-        var newScore = Math.ceil(origScore * multiplier);
-        console.log(dbRec.username, origScore, multiplier, newScore);
-        updateSinglePlayerScore(dbRec.username, newScore, function(userObj) {
-          //send socket update userobj
-          console.log('updated ', userObj);
-          room.socketBank[key].emit('updateUsrObj', userObj);
-          // update the users array
-          users[usersIndex].handshake = userObj.handshake;
-          users[usersIndex].score = userObj.score;
+      if (username !== 'COMPUTER') {
+        var usersIndex = findWithAttr(users, 'username', username);
+        console.log('usersiNDEX', usersIndex);
+        if (usersIndex >= 0) {
+          var dbRec = users[usersIndex]; // from array index to user object
+          var origScore = dbRec.score;
+          var multiplier = (data.winName === username) ? 1 + data.winByPerc / 100 : 1 - data.winByPerc / 100;
+          var newScore = Math.ceil(origScore * multiplier);
+          console.log(dbRec.username, origScore, multiplier, newScore);
+          updateSinglePlayerScore(dbRec.username, newScore, function(userObj) {
+            //send socket update userobj
+            console.log('updated ', userObj);
+            room.socketBank[key].emit('updateUsrObj', userObj);
+            // update the users array
+            users[usersIndex].handshake = userObj.handshake;
+            users[usersIndex].score = userObj.score;
+            next();
+          });
+        } else {
+          console.log('eh');
           next();
-        });
+        }
       } else {
-        console.log('eh');
         next();
       }
+
 
     }, cb);
   };
