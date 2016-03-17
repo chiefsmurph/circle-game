@@ -519,6 +519,23 @@ var Room = function(options) {
         room.getAllBotsInRoom().forEach(function(bot) {
           bot.leaveRoom();
         });
+
+        if (room.inGame) {
+          // stop game if only one person in room
+          room.inGame = false;
+          room.finishedCalc = 0;
+          room.numWaitingForNewGame = 0;
+          room.RGBCounts = {};
+          clearTimeout(room.timerToStart);
+          room.timerToStart = null;
+          if (!botBool) {
+            room.getBots().forEach(function(bot) {
+              bot.stopGame();     // stop bots
+            });
+          }
+          room.sendAll('returnToWait');
+        }
+        
       }
     }
 

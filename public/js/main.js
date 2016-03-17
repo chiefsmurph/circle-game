@@ -560,6 +560,8 @@ socket.on('updateUsrObj', function(data) {
 });
 
 socket.on('returnToWait', function() {
+  console.debug('back to waiting');
+  activeGame = false;
   backToWaiting();
 });
 
