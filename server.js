@@ -977,6 +977,7 @@ io.sockets.on('connection', function (socket) {
       var myUserId = currentUserId;
       var myUsername;
       var myRoom = null;
+      var myScore;
 
       currentUserId++;
 
@@ -1077,6 +1078,7 @@ io.sockets.on('connection', function (socket) {
                   handshake: handshake,
                   username: data.username
                 });
+                myScore = 100;
 
               });
             });
@@ -1097,11 +1099,13 @@ io.sockets.on('connection', function (socket) {
             username: foundUsr.username,
             handshake: foundUsr.handshake
           });
+          myScore = foundUsr.score;
         } else {
           socket.emit('login-feedback', {
             res: false
           });
         }
+
 
       });
 
@@ -1147,9 +1151,9 @@ io.sockets.on('connection', function (socket) {
               myUsername = data.uid;
               sendAll('chatMsg', {
                 username: 'CB',
-                msg: '<b><i>' + myUsername + ' just joined the chat.</b></i>'
+                msg: '<b><i>' + myUsername + ' (' + myScore + ') just joined the chat.</b></i>'
               });
-              console.log(myUsername + ' just logged in (' + myUserId + ') with clientIp ' + clientIp );
+              console.log(myUsername + ' (' + myScore + ') just logged in (' + myUserId + ') with clientIp ' + clientIp );
             }
           }
           socket.join(myRoom);
