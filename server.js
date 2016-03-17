@@ -564,6 +564,8 @@ var Room = function(options) {
       checkAndHandleWinners(room.roomName);
     }
 
+    console.log(room.numPlayers, ' left');
+
     if (room.numPlayers < 2 || room.humans.length < 1) {
       // stop game if only one person in room
       room.inGame = false;
@@ -577,6 +579,10 @@ var Room = function(options) {
           bot.stopGame();     // stop bots
         });
       }
+      room.sendAll('winner', {
+        topColor: 'tie', // tie if tie or nothing on the board
+        winBy: 0
+      });
     }
 
   };
