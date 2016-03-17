@@ -782,8 +782,10 @@ var Room = function(options) {
             console.log('updated ', userObj);
             room.socketBank[key].emit('updateUsrObj', userObj);
             // update the users array
+            console.log('current users obj', users[usersIndex]);
             users[usersIndex].handshake = userObj.handshake;
             users[usersIndex].score = userObj.score;
+            console.log('after users obj', users[usersIndex]);
             next();
           });
         } else {
@@ -908,8 +910,11 @@ var verifyUser = function(userObj) {
   console.log('verifying...' + JSON.stringify(userObj));
 
   for (var i = 0; i < users.length; i++) {
-    if (users[i].username === userObj.username && users[i].handshake === userObj.handshake) {
-      return users[i];
+    if (users[i].username === userObj.username) {
+      console.log('found ', users[i]);
+      if (users[i].handshake === userObj.handshake) {
+        return users[i];
+      }
     }
   }
 
