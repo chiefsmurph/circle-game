@@ -454,7 +454,7 @@ var renderHStables = function(data) {
     }
     $('#highScorePanel tbody').empty();
     for (var i = 0; i < data.length; i++) {
-      var rowClass = (userObj.username && data[i].username && data[i].username === userObj.username) ? 'selected-hs' : '';
+      var rowClass = (userObj && userObj.username && data[i].username && data[i].username === userObj.username) ? 'selected-hs' : '';
       var newRow = $('<tr class="' + rowClass + '"></tr>');
       newRow.append('<td>' + (i+1) + '</td>');
       for (var field in data[i]) {
