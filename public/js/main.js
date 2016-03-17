@@ -781,18 +781,22 @@ var start = function() {
              socket.emit('verifyLogin', userObj);
              console.log('verify', userObj);
 
+           } else {
+             
+             changeAudio('contemplative');
+             showUserScreen(function() {
+
+               moveToLobby();
+
+               setTimeout(function() {
+                 saySomething('last week\'s winners - tie!...dikfuk & ggrff');
+               }, 10000);
+
+             });
+
            }
 
-          changeAudio('contemplative');
-          showUserScreen(function() {
 
-            moveToLobby();
-
-            setTimeout(function() {
-              saySomething('last week\'s winners - tie!...dikfuk & ggrff');
-            }, 10000);
-
-          });
 
         });
 
