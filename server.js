@@ -906,24 +906,27 @@ var findUnusedBot = function() {  // returns a Bot
 };
 
 
-var verifyUser = function(userObj) {
+
+
+var verifyUser = function(userObj, cb) {
   console.log('verifying...' + JSON.stringify(userObj));
+  pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
+    var queryText = 'SELECT * FROM highscores WHERE username = \'' + userObj.username + '\' AND handshake = \'' + userObj.handshake + '\'';
+    client.query(queryText, function(err, result) {
 
-  for (var i = 0; i < users.length; i++) {
-    if (users[i].username === userObj.username) {
-      console.log('found ', users[i]);
-      if (users[i].handshake === userObj.handshake) {
-        return users[i];
+      done();
+      if (err)  console.error(err);
+      var authorized = (result.rows.length);
+      console.log('checking user ' + userObj.username + ' ' + authorized);
+      if (authorized) {
+        cb(result.rows[0]);
       } else {
-        console.log('handshake found ', users[i].handshake, userObj.handshake);
+        cb(null);
       }
-    }
-  }
 
-  return false;
-
+    });
+  });
 };
-
 
 var sendAll = function(evt, obj) {
   io.sockets.emit(evt, obj);
@@ -1105,23 +1108,22 @@ io.sockets.on('connection', function (socket) {
       });
 
       socket.on('verifyLogin', function(userObj) {
-        var foundUsr = verifyUser(userObj);
-        if (foundUsr) {
-          socket.emit('login-feedback', {
-            res: true,
-            score: foundUsr.score,
-            username: foundUsr.username,
-            handshake: foundUsr.handshake
-          });
-          myScore = foundUsr.score;
-        } else {
-          console.log('NOT FOUND ', userObj);
-          socket.emit('login-feedback', {
-            res: false
-          });
-        }
-
-
+        verifyUser(userObj, function(foundUsr) {
+          if (foundUsr) {
+            socket.emit('login-feedback', {
+              res: true,
+              score: foundUsr.score,
+              username: foundUsr.username,
+              handshake: foundUsr.handshake
+            });
+            myScore = foundUsr.score;
+          } else {
+            console.log('NOT FOUND ', userObj);
+            socket.emit('login-feedback', {
+              res: false
+            });
+          }
+        });
       });
 
       socket.on('addToRound', function(data) {
