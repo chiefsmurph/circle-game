@@ -579,10 +579,7 @@ var Room = function(options) {
           bot.stopGame();     // stop bots
         });
       }
-      room.sendAll('winner', {
-        topColor: 'tie', // tie if tie or nothing on the board
-        winBy: 0
-      });
+      room.sendAll('returnToWait');
     }
 
   };

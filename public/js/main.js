@@ -468,6 +468,10 @@ socket.on('alreadyInGame', function() {
 
 });
 
+socket.on('returnToWait', function() {
+  backToWaiting();
+});
+
 socket.on('startGame', function(data) {
 
   if (!activeGame) {
