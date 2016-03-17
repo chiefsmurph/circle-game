@@ -1234,7 +1234,7 @@ io.sockets.on('connection', function (socket) {
           pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
             //console.log('about to insert');
             var textDate = getCurDate();
-            var queryText = 'UPDATE "highscores" SET "dateset"=\'' + textDate + '\' "games"=' + data.games + ', "points"=' + data.pts + ' WHERE "username"=\'' + data.username + '\' AND "games"<' + data.games;
+            var queryText = 'UPDATE "highscores" SET "dateset"=\'' + textDate + '\' "games"=' + data.games + ', "points"=' + data.pts + ' WHERE "username"=\'' + data.username + '\'';
 
             //console.log(queryText);
 
@@ -1243,52 +1243,54 @@ io.sockets.on('connection', function (socket) {
               //console.log( err, result);
               done();
 
-              if (err || result.rowCount === 0) {
+              // if (err || result.rowCount === 0) {
+              //
+              //   // okay so we couldnt update when username sent in a record today...
+              //   // but dont go ahead and insert if they already sent in a better record today
+              //   client.query('SELECT * FROM "highscores" WHERE "username"=\'' + data.username + '\' AND "dateset"=\'' + textDate + '\'', function(err, result) {
+              //
+              //     //console.log('select from highscores where username and dateset');
+              //     //console.log('err for this ' + err);
+              //     //console.log('result here ' + JSON.stringify(result));
+              //
+              //     // if (result.rowCount === 0) {
+              //     //   // only go ahead with the insert if they havent had any records from the same day that are less than data.games
+              //     //
+              //     //       var queryText = 'INSERT INTO "highscores" ("username", "dateset", "games", "points") VALUES ($1, $2, $3, $4)';
+              //     //
+              //     //       //console.log(queryText);
+              //     //
+              //     //       client.query(queryText, [data.username, textDate, data.games, data.pts], function(err, result) {
+              //     //         //console.log('here' + JSON.stringify(result) + ' ' + err);
+              //     //         if (!err) {
+              //     //           //console.log('no error');
+              //     //           done();
+              //     //
+              //     //           socket.emit('congrats');
+              //     //           updateScoresAndEmit(client, done);
+              //     //
+              //     //
+              //     //         } else {
+              //     //           //console.log('err ' + err);
+              //     //         }
+              //     //         //console.log('now here');
+              //     //
+              //     //       });
+              //     //
+              //     // }
+              //
+              //   });
+              //
+              //
+              // } else {
+              //
+              //
+              //
+              // }
 
-                // okay so we couldnt update when username sent in a record today...
-                // but dont go ahead and insert if they already sent in a better record today
-                client.query('SELECT * FROM "highscores" WHERE "username"=\'' + data.username + '\' AND "dateset"=\'' + textDate + '\'', function(err, result) {
-
-                  //console.log('select from highscores where username and dateset');
-                  //console.log('err for this ' + err);
-                  //console.log('result here ' + JSON.stringify(result));
-
-                  if (result.rowCount === 0) {
-                    // only go ahead with the insert if they havent had any records from the same day that are less than data.games
-
-                        var queryText = 'INSERT INTO "highscores" ("username", "dateset", "games", "points") VALUES ($1, $2, $3, $4)';
-
-                        //console.log(queryText);
-
-                        client.query(queryText, [data.username, textDate, data.games, data.pts], function(err, result) {
-                          //console.log('here' + JSON.stringify(result) + ' ' + err);
-                          if (!err) {
-                            //console.log('no error');
-                            done();
-
-                            socket.emit('congrats');
-                            updateScoresAndEmit(client, done);
-
-
-                          } else {
-                            //console.log('err ' + err);
-                          }
-                          //console.log('now here');
-
-                        });
-
-                  }
-
-                });
-
-
-              } else {
-
-                // update worked
-                socket.emit('congrats');
-                updateScoresAndEmit(client, done);
-
-              }
+              // update worked
+              socket.emit('congrats');
+              updateScoresAndEmit(client, done);
 
             });
 
@@ -1343,7 +1345,7 @@ io.sockets.on('connection', function (socket) {
             done();
             users = result.rows;
             socket.emit('sentTopPlayers', {topPlayers: users, force: true});
-            console.log(users)
+            //console.log(users)
 
           });
         });
