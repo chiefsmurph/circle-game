@@ -763,11 +763,13 @@ var Room = function(options) {
   };
 
   room.updatePlayersScores = function(data, cb) {
-    console.log(data, room.userBank);
+    console.log('updatePlayersScores', data, room.userBank);
     async.forEach(Object.keys(room.userBank), function(key, next) {
-      console.log(key);
+      console.log('key', key);
       var username = room.userBank[key].username;
+      console.log('username', username)
       var usersIndex = findWithAttr(users, 'username', username);
+      console.log('usersiNDEX', usersIndex);
       if (usersIndex !== null) {
         var dbRec = users[usersIndex]; // from array index to user object
         var origScore = dbRec.score;
