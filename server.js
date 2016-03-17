@@ -1103,6 +1103,7 @@ io.sockets.on('connection', function (socket) {
           });
           myScore = foundUsr.score;
         } else {
+          console.log('NOT FOUND ', userObj);
           socket.emit('login-feedback', {
             res: false
           });
