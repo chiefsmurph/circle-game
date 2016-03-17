@@ -421,19 +421,13 @@ var Room = function(options) {
 
   };
 
-  room.getBots = function() {   // array of Bots
-    return bots.filter(function(bot) {
-      return (bot.roomName === room.roomName);
-    });
-  };
-
   room.checkAndStart = function() {  // void
 
     if (room.humans.length > 0 && room.numPlayers > 1) {
 
       io.sockets.in(room.roomName).emit('startGame');
 
-      room.getBots().forEach(function(bot) {
+      room.getAllBotsInRoom().forEach(function(bot) {
         bot.startingGame();
       });
 
@@ -528,14 +522,12 @@ var Room = function(options) {
           room.RGBCounts = {};
           clearTimeout(room.timerToStart);
           room.timerToStart = null;
-          if (!botBool) {
-            room.getBots().forEach(function(bot) {
-              bot.stopGame();     // stop bots
-            });
-          }
+          room.getAllBotsInRoom().forEach(function(bot) {
+            bot.stopGame();     // stop bots
+          });
           room.sendAll('returnToWait');
         }
-        
+
       }
     }
 
@@ -612,7 +604,7 @@ var Room = function(options) {
       clearTimeout(room.timerToStart);
       room.timerToStart = null;
       if (!botBool) {
-        room.getBots().forEach(function(bot) {
+        room.getAllBotsInRoom().forEach(function(bot) {
           bot.stopGame();     // stop bots
         });
       }
