@@ -775,7 +775,7 @@ var Room = function(options) {
         if (usersIndex >= 0) {
           var dbRec = users[usersIndex]; // from array index to user object
           var origScore = dbRec.score;
-          var multiplier = (data.winName === username) ? 1 + (data.winByPerc*(data.numHumans+1/2)) / 100 : 1 - (data.winByPerc / 100);
+          var multiplier = (data.winName === username) ? 1 + (data.winByPerc*(data.numHumans+1)/2) / 100 : 1 - (data.winByPerc / 100);
           var newScore = Math.ceil(origScore * multiplier);
           console.log(dbRec.username, origScore, multiplier, newScore);
           updateSinglePlayerScore(dbRec.username, newScore, function(userObj) {
