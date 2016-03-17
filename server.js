@@ -739,7 +739,7 @@ var Room = function(options) {
 
       room.updatePlayersScores({
         winName: winName,
-        winByPerc: winByPerc
+        winByPerc: winByPerc,
         numHumans: room.humans.length
       }, function() {
 
