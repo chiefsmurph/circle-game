@@ -454,7 +454,8 @@ var renderHStables = function(data) {
     }
     $('#highScorePanel tbody').empty();
     for (var i = 0; i < data.length; i++) {
-      var newRow = $('<tr></tr>');
+      var rowClass = (userObj.username && data[i].username && data[i].username === userObj.username) ? 'selected-hs' : '';
+      var newRow = $('<tr class="' + rowClass + '"></tr>');
       newRow.append('<td>' + (i+1) + '</td>');
       for (var field in data[i]) {
         //console.log('this field ' + field + ' and ' + highScoreData[i][field]);
@@ -780,7 +781,7 @@ var start = function() {
 
 
              userObj = JSON.parse(docCookies.getItem('userStatus'));
-             setStatus('hi ' + userObj.username + '<br>authorizing your account')
+             setStatus('authorizing...')
              socket.emit('verifyLogin', userObj);
              console.log('verify', userObj);
 

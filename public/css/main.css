@@ -137,6 +137,9 @@ hr {
   border: 1px solid black;
   height: 29px;
 }
+#highScorePanel tr.selected-hs td {
+  background-color: lightblue;
+}
 #highScorePanel tbody td:nth-child(5) {
   color: grey;
   font-style: italic;
