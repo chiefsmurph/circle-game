@@ -1002,7 +1002,7 @@ $(function() {
     toggleMute();
   }
 
-  if (!isMuted && (urlParams[muted] === '1' || urlParams[muted] === 'true' )) {
+  if (!isMuted && (urlParams['muted'] === '1' || urlParams['muted'] === 'true' )) {
     toggleMute();
   }
 
