@@ -504,7 +504,7 @@ var Room = function(options) {
       room.humans.push(id);
 
       // check if any other people are in the room
-      if (room.numPlayers === 1) {
+      if (room.numPlayers === 1 && roomSettings.hasOwnProperty(room.roomName)) {
         // if not then send a bot!
         setTimeout(function() {
           var newBot = findUnusedBot();
