@@ -117,6 +117,14 @@ hr {
 #highScorePanel h2 {
   margin-bottom: 0;
 }
+#highScorePanel select {
+  display: block;
+  text-align: center;
+  margin: auto;
+  font-variant: small-caps;
+  text-transform: uppercase;
+  font-weight: bold;
+}
 #highScorePanel i {
   text-align: center;
   font-size: 10px;

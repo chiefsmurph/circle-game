@@ -437,6 +437,35 @@ var setUserObj = function(data) {
 
   $('#userPanel').html(data.username + '<hr><b>' + data.score + '</b>');
 }
+
+var renderHStables = function(data) {
+
+  console.log(data);
+  var renderHSheaders = function(headers) {
+    $('#highScorePanel thead').html(headers.map(function(head) {
+      return '<th>' + head + '</th>'
+    }).join(''));
+  }
+  if (data.length) {
+    if (Object.keys(data[0]).length === 4) {
+      renderHSheaders(['num', 'name', 'date', 'games', 'points']);
+    } else {
+      renderHSheaders(['num', 'name', 'score']);
+    }
+    $('#highScorePanel tbody').empty();
+    for (var i = 0; i < data.length; i++) {
+      var newRow = $('<tr></tr>');
+      newRow.append('<td>' + (i+1) + '</td>');
+      for (var field in data[i]) {
+        //console.log('this field ' + field + ' and ' + highScoreData[i][field]);
+        var newTD = $('<td>' + data[i][field] + '</td>');
+        newRow.append(newTD);
+      }
+      $('#highScorePanel tbody').append(newRow);
+    }
+  }
+};
+
 socket.on('usersColors', function(data) {
   console.log('usercolors ' + JSON.stringify(data.usersColors));
 
@@ -456,12 +485,17 @@ socket.on('usersColors', function(data) {
 
 });
 
+socket.on('sentTopPlayers', function(data) {
+  console.log(data);
+  renderHStables(data.topPlayers);
+});
+
 socket.on('highScores', function(data) {
 
   //console.log(JSON.stringify(data));
 
   //console.log('received high scores' + JSON.stringify(data));
-  $('#highScorePanel tbody').empty();
+
   highScoreData = data.scoreArr;
 
   if (highScoreData[0]) {
@@ -470,16 +504,7 @@ socket.on('highScores', function(data) {
     }, 2000);
   }
 
-  for (var i = 0; i < highScoreData.length; i++) {
-    var newRow = $('<tr></tr>');
-    newRow.append('<td>' + (i+1) + '</td>');
-    for (var field in highScoreData[i]) {
-      //console.log('this field ' + field + ' and ' + highScoreData[i][field]);
-      var newTD = $('<td>' + highScoreData[i][field] + '</td>');
-      newRow.append(newTD);
-    }
-    $('#highScorePanel tbody').append(newRow);
-  }
+  renderHStables(data.scoreArr);
 
 });
 
@@ -1128,6 +1153,15 @@ $(function() {
           event.preventDefault();
           sendChat();
       }
+  });
+
+  $('#HSheader').on('change', function() {
+    if ($(this).val() === "overall") {
+      console.log('overall');
+      socket.emit('requestTopPlayers');
+    } else {
+      renderHStables(highScoreData);
+    }
   });
 
 

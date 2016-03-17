@@ -997,10 +997,10 @@ io.sockets.on('connection', function (socket) {
           });
         }
 
-        if (myUsername) {
+        if (myUsername && myScore) {
           sendAll('chatMsg', {
             username: 'CB',
-            msg: '<b><i>' + myUsername + ' just left the chat.</b></i>'
+            msg: '<b><i>' + myUsername + ' (' + myScore + ') just left the chat.</b></i>'
           });
         }
 
@@ -1317,6 +1317,21 @@ io.sockets.on('connection', function (socket) {
 
       socket.on('log', function(data) {
         console.log(JSON.stringify(data));
+      });
+
+      socket.on('requestTopPlayers', function() {
+        console.log('request')
+        pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
+          var queryText = 'SELECT username, score FROM highscores WHERE score > 100 ORDER BY score desc LIMIT 10';
+          client.query(queryText, function(err, result) {
+
+            done();
+            users = result.rows;
+            socket.emit('sentTopPlayers', {topPlayers: users, force: true});
+            console.log(users)
+
+          });
+        });
       });
 
   } else {
