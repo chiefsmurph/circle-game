@@ -940,12 +940,12 @@ var updateSinglePlayerScore = function(username, newScore, cb) {
 };
 
 function findWithAttr(array, attr, value) {
+  console.log('looking for ', value, ' ', attr, ' in ', array);
     for(var i = 0; i < array.length; i += 1) {
         if(array[i][attr] === value) {
             return i;
         }
     }
-    return null;
 }
 
 
