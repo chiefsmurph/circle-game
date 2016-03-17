@@ -539,7 +539,7 @@ socket.on('login-feedback', function(data) {
   } else {
     console.error('hackz0r');
     setTimeout(function() {
-      docCookies.removeItem('userStatus');
+      //docCookies.removeItem('userStatus');
       location.reload();
     }, 4000);
   }

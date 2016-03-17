@@ -781,8 +781,8 @@ var Room = function(options) {
           console.log('updated ', userObj);
           room.socketBank[key].emit('updateUsrObj', userObj);
           // update the users array
-          dbRec.handshake = userObj.handshake;
-          dbRec.score = userObj.score;
+          users[usersIndex].handshake = userObj.handshake;
+          users[usersIndex].score = userObj.score;
           next();
         });
       } else {
