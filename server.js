@@ -740,6 +740,7 @@ var Room = function(options) {
       room.updatePlayersScores({
         winName: winName,
         winByPerc: winByPerc
+        numHumans: room.humans.length
       }, function() {
 
           console.log('game over in ' + room.roomName + ' winningColor: ' + winColorName + ' winningName ' + winName);
@@ -768,13 +769,13 @@ var Room = function(options) {
       console.log('key', key);
       var username = room.userBank[key].username;
       console.log('username', username)
-      if (username !== 'COMPUTER') {
+      if (username !== 'COMPUTER' && room.waitingForSpaceQueue.indexOf(username) === -1) {
         var usersIndex = findWithAttr(users, 'username', username);
         console.log('usersiNDEX', usersIndex);
         if (usersIndex >= 0) {
           var dbRec = users[usersIndex]; // from array index to user object
           var origScore = dbRec.score;
-          var multiplier = (data.winName === username) ? 1 + data.winByPerc / 100 : 1 - data.winByPerc / 100;
+          var multiplier = (data.winName === username) ? 1 + (data.winByPerc*(data.numHumans+1/2)) / 100 : 1 - (data.winByPerc / 100);
           var newScore = Math.ceil(origScore * multiplier);
           console.log(dbRec.username, origScore, multiplier, newScore);
           updateSinglePlayerScore(dbRec.username, newScore, function(userObj) {
