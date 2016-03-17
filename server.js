@@ -914,6 +914,8 @@ var verifyUser = function(userObj) {
       console.log('found ', users[i]);
       if (users[i].handshake === userObj.handshake) {
         return users[i];
+      } else {
+        console.log('handshake found ', users[i].handshake, userObj.handshake);
       }
     }
   }
