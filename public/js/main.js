@@ -777,12 +777,15 @@ var start = function() {
 
           if (docCookies.hasItem('userStatus')) {
 
+
+
              userObj = JSON.parse(docCookies.getItem('userStatus'));
+             setStatus('hi ' + userObj.username + '<br>authorizing your account')
              socket.emit('verifyLogin', userObj);
              console.log('verify', userObj);
 
            } else {
-             
+
              changeAudio('contemplative');
              showUserScreen(function() {
 
