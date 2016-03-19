@@ -161,7 +161,7 @@ var preloadAudio = function() {
 
       audioBank['contemplative'] = loadAudio('audio/contemplative t1.mp3', true, true);
       audioBank['jovial'] = loadAudio('audio/jovial t1 mod.mp3', true, true);
-      audioBank['welcome'] = loadAudio('audio/welcome t1 mod vox.mp3', false, true);
+      audioBank['welcome'] = loadAudio('audio/welcome t1 mod vox ALT.mp3', false, true);
       audioBank['anthem'] = loadAudio('audio/30s anthem t1.mp3', false );
 
       audioBank['slower'] = loadAudio('audio/slow lobby.mp3', true );
