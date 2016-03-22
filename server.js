@@ -1241,7 +1241,7 @@ io.sockets.on('connection', function (socket) {
 
       socket.on('submitHS', function(data) {
 
-        //console.log('inserting score...' + JSON.stringify(data));
+        console.log('inserting score...' + JSON.stringify(data));
 
           pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
             //console.log('about to insert');
@@ -1252,7 +1252,7 @@ io.sockets.on('connection', function (socket) {
 
             client.query(queryText, function(err, result) {
 
-              //console.log( err, result);
+              console.log( err, result);
               done();
 
               // if (err || result.rowCount === 0) {
