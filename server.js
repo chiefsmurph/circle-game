@@ -1246,7 +1246,7 @@ io.sockets.on('connection', function (socket) {
           pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
             //console.log('about to insert');
             var textDate = getCurDate();
-            var queryText = 'UPDATE "highscores" SET "dateset"=\'' + textDate + '\' "games"=' + data.games + ', "points"=' + data.pts + ' WHERE "username"=\'' + data.username + '\'';
+            var queryText = 'UPDATE "highscores" SET "dateset"=\'' + textDate + '\', "games"=' + data.games + ', "points"=' + data.pts + ' WHERE "username"=\'' + data.username + '\'';
 
             //console.log(queryText);
 
