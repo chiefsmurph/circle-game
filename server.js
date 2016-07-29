@@ -148,17 +148,17 @@ var roomSettings = {
   },
   'smaller': {
     maxClickerSize: 60,
-    clickerSpeed: 0.05,
+    clickerSpeed: 0,
     maxPeople: 6
   },
   'middle': {
     maxClickerSize: 110,
-    clickerSpeed: 0.05,
+    clickerSpeed: 0,
     maxPeople: 6
   },
   'larger': {
     maxClickerSize: 180,
-    clickerSpeed: 0.05,
+    clickerSpeed: 0,
     maxPeople: 6
   }
 };
