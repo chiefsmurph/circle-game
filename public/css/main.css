@@ -3,6 +3,7 @@ html, body {
   background-image: url('../img/back-pattern.png');
   text-align: center;
   height: 110%;
+  /*transform: scale(1.3);*/
 }
 hr {
   margin: 0;
@@ -270,7 +271,11 @@ hr {
   background-color: white;
   width: 190px;
   color: black;
-  font-size: 90%;
+  font-size: 0px;
+}
+#roomChooser button div {
+  font-size: 24px;
+  margin: 4px 7px;
 }
 #roomChooser tr:nth-child(4) button {
   width: auto;
@@ -305,8 +310,8 @@ button:focus, input[type='button']:focus {outline:0;}
 #roomChooser span {
   font-size: 20px;
   margin-left: 9px;
-  position: relative;
-  bottom: 3px;
+  /*position: relative;*/
+  /*bottom: 3px;*/
 }
 #bottomStatus {
   position: absolute;

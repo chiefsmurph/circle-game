@@ -46,6 +46,7 @@ var curRoom;
 var highPanelShowing = false;
 var highScoreData = [];
 var clickEquality = 0;
+var clickerTimeout;
 
 var audioBank = {};
 var audioLoaded = false;   // turns true when all audio loaded
@@ -1041,39 +1042,56 @@ $(function() {
 
   $('#gamearea').on('mousedown touchstart', function (e) {
 
-    if (activeGame && myColor !== null && !activeClick && clickEquality < 5) {
+    if (!activeGame || !myColor || activeClick || clickEquality >= 5) {
+      return;
+    }
 
-      activeClick = true;
-      clickEquality++;
+    console.log('yes')
+    activeClick = true;
+    clickEquality++;
 
-      var elm = $(this);
-      xPos = (e.type.toLowerCase() === 'mousedown')
-                    ? e.pageX
-                    : e.originalEvent.touches[0].pageX;
+    var elm = $(this);
+    xPos = (e.type.toLowerCase() === 'mousedown')
+                  ? e.originalEvent.pageX
+                  : e.originalEvent.touches[0].pageX;
 
-      yPos = (e.type.toLowerCase() === 'mousedown')
-                    ? e.pageY
-                    : e.originalEvent.touches[0].pageY;
+    yPos = (e.type.toLowerCase() === 'mousedown')
+                  ? e.originalEvent.pageY
+                  : e.originalEvent.touches[0].pageY;
 
-      // socket.emit('log', {
-      //   offsetLeft: elm.offset().left,
-      //   offsetTop: elm.offset().top,
-      //   boundingLeft: elm[0].getBoundingClientRect().left,
-      //   boundingTop: elm[0].getBoundingClientRect().top,
-      //   xPos: xPos,
-      //   yPos: yPos,
-      //   finX: xPos - elm[0].getBoundingClientRect().left,
-      //   finY: yPos - elm.offset().top,
-      // });
+    // socket.emit('log', {
+    //   offsetLeft: elm.offset().left,
+    //   offsetTop: elm.offset().top,
+    //   boundingLeft: elm[0].getBoundingClientRect().left,
+    //   boundingTop: elm[0].getBoundingClientRect().top,
+    //   xPos: xPos,
+    //   yPos: yPos,
+    //   finX: xPos - elm[0].getBoundingClientRect().left,
+    //   finY: yPos - elm.offset().top,
+    // });
+    console.log(xPos, yPos)
+    // what the heck world??!
+    xPos -= elm[0].getBoundingClientRect().left;
+    yPos -= elm.offset().top;
 
-      // what the heck world??!
-      xPos -= elm[0].getBoundingClientRect().left;
-      yPos -= elm.offset().top;
 
-      var endPt = {
-        x: xPos - (maxClickerSize / 2),
-        y: yPos - (maxClickerSize / 2),
-      };
+    var endPt = {
+      x: xPos - (maxClickerSize / 2),
+      y: yPos - (maxClickerSize / 2),
+    };
+
+    var sendCoords = function() {
+      socket.emit('addCircle', {x: xPos, y: yPos, rad: maxClickerSize, col: myColor});
+      console.debug('sending circle', xPos, yPos, ' ANIMATEOVER');
+      lastClickCoords.xPos = xPos;
+      lastClickCoords.yPos = yPos;
+    };
+
+    if (lastClickCoords.xPos === xPos && lastClickCoords.yPos === yPos) {
+      return;
+    }
+
+    if (clickerSpeed) {
 
       var startRad = maxClickerSize / 6;
 
@@ -1082,8 +1100,8 @@ $(function() {
       $('#yourClicker').css('borderRadius', startRad);
       $('#yourClicker').css('top', yPos - (startRad / 2));
       $('#yourClicker').css('left', xPos - (startRad / 2));
-
       $('#yourClicker').show();
+
       $('#yourClicker').animate({
         top: endPt.y,
         left: endPt.x,
@@ -1095,28 +1113,38 @@ $(function() {
         borderBottomRightRadius: maxClickerSize
       }, maxClickerSize * clickerSpeed, 'linear', function() {
 
-        if (lastClickCoords.xPos !== xPos || lastClickCoords.yPos !== yPos) {
-          console.debug('lastClickCoords, ', lastClickCoords.xPos, lastClickCoords.yPos );
-          console.debug('now,', xPos, yPos)
-
           // if user holds down for full length of clickerSpeed
+          sendCoords();
           $('#yourClicker').hide();
-          console.log('here');
-          socket.emit('addCircle', {x: xPos, y: yPos, rad: maxClickerSize, col: myColor});
-          console.debug('sending circle', xPos, yPos, ' ANIMATEOVER');
-          lastClickCoords.xPos = xPos;
-          lastClickCoords.yPos = yPos;
           activeClick = false;
           clickEquality--;
-        }
 
       });
 
-      console.log(xPos, yPos);
-      e.preventDefault();
+    } else {
+
+      $('#yourClicker').css({
+        top: endPt.y,
+        left: endPt.x,
+        width: maxClickerSize,
+        height: maxClickerSize,
+        borderTopLeftRadius: maxClickerSize,
+        borderTopRightRadius: maxClickerSize,
+        borderBottomLeftRadius: maxClickerSize,
+        borderBottomRightRadius: maxClickerSize
+      });
+      $('#yourClicker').show();
+
+      clickerTimeout = setTimeout(function() {
+        $('#yourClicker').hide();
+      }, 500);
+
+      sendCoords();
 
     }
 
+
+    e.preventDefault();
 
   });
 

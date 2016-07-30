@@ -1172,7 +1172,7 @@ io.sockets.on('connection', function (socket) {
         if (myRoom !== data.room) {  // ignore duplicate requests to join room
 
           myRoom = data.room;
-          if (!myUsername) {
+          if (!myUsername && myScore) {
             console.log(JSON.stringify(data));
             if (data.uid) {
               myUsername = data.uid;
