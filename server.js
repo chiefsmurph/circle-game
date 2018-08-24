@@ -1089,6 +1089,8 @@ io.sockets.on('connection', function (socket) {
               var queryText = 'INSERT INTO highscores (username, dateset, games, points, score, handshake) VALUES($1, $2, $3, $4, $5, $6) RETURNING *';
               client.query(queryText, [data.username, 'today', 0, 0, 100, handshake], function(err, result) {
 
+                console.log('error', err);
+                console.log('result', result);
                 username = data.username;
                 users.push(result.rows[0]);
 
