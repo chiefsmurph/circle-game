@@ -101,13 +101,13 @@ app.get('/clearScores', function(req, res, next) {
 
 // INIT HIGH SCORE TABLE
 
-pg.connect(process.env.DATABASE_URL, function(err, client) {
-  var query = client.query('CREATE TABLE highscores (scoreId serial primary key, username VARCHAR(20) not null, handshake VARCHAR(20), dateset DATE, games INT, points INT)');
-  console.log('adding pledge col');
-  query.on('row', function(row) {
-    console.log('row: ' + JSON.stringify(row));
-  });
-});
+// pg.connect(process.env.DATABASE_URL, function(err, client) {
+//   var query = client.query('CREATE TABLE highscores (scoreId serial primary key, username VARCHAR(20) not null, handshake VARCHAR(20), dateset DATE, games INT, points INT)');
+//   console.log('created highscores table');
+//   query.on('row', function(row) {
+//     console.log('row: ' + JSON.stringify(row));
+//   });
+// });
 
 // CREATE TABLE players (playerId serial primary key, username VARCHAR(20) not null, dateset VARCHAR(20) not null, starscaught INT)
 
