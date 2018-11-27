@@ -7,7 +7,7 @@ var io = require('socket.io')(server);
 var uuid = require('node-uuid');
 var async = require('async');
 
-var connectionString = "postgres://mbxlvabrzzicaj:*PASSWORD*@*HOST*:*PORT:/*DATABASE*"
+const { pgString } = require('./config.js');
 
 var port = process.env.PORT || 5000; // Use the port that Heroku
 server.listen(port);
@@ -37,10 +37,10 @@ var users = [];
 
 // read all users
 
-pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
+pg.connect(pgString, function(err, client, done) {
   var queryText = 'SELECT * FROM highscores';
   client.query(queryText, function(err, result) {
-
+    console.log(err, result)
     done();
     users = result.rows;
 
@@ -54,7 +54,7 @@ users.push({
 
 app.get('/removeScore', function(req, res, next) {
 
-  pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
+  pg.connect(pgString, function(err, client, done) {
     //console.log('deleting username ' + req.query.user + ' in table');
 
     client.query('DELETE from highscores WHERE username=\'' + req.query.user + '\'', function(err, result) {
@@ -73,7 +73,7 @@ app.get('/removeScore', function(req, res, next) {
 
 app.get('/showdb', function(req, res, next) {
 
-  pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
+  pg.connect(pgString, function(err, client, done) {
     client.query('SELECT * from highscores', function(err, result) {
 
       updateScoresAndEmit(client, done);
@@ -87,7 +87,7 @@ app.get('/showdb', function(req, res, next) {
 
 app.get('/clearScores', function(req, res, next) {
 
-  pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
+  pg.connect(pgString, function(err, client, done) {
     client.query('DELETE FROM highscores', function(err, result) {
 
       res.send(JSON.stringify(result.rows));
@@ -101,27 +101,19 @@ app.get('/clearScores', function(req, res, next) {
 
 // INIT HIGH SCORE TABLE
 
-// pg.connect(process.env.DATABASE_URL, function(err, client) {
-//   var query = client.query('CREATE TABLE highscores (scoreId serial primary key, username VARCHAR(20) not null, handshake VARCHAR(20), dateset DATE, games INT, points INT)');
+// pg.connect(pgString, function(err, client) {
+//   var query = client.query('CREATE TABLE highscores (scoreId serial primary key, username VARCHAR(20) not null, handshake VARCHAR(20), dateset DATE type varchar(40), games INT, points INT, score INT)');
 //   console.log('created highscores table');
 //   query.on('row', function(row) {
 //     console.log('row: ' + JSON.stringify(row));
 //   });
 // });
 
-// CREATE TABLE players (playerId serial primary key, username VARCHAR(20) not null, dateset VARCHAR(20) not null, starscaught INT)
 
-/*
-pg.connect(process.env.DATABASE_URL, function(err, client) {
-  var query = client.query('ALTER TABLE highscores ALTER COLUMN dateset type varchar(40)');
-  console.log('adding pledge col');
-  query.on('row', function(row) {
-    console.log('row: ' + JSON.stringify(row));
-  });
-});
-*/
+// CREATE TABLE highscores (scoreId serial primary key, username VARCHAR(20) not null, handshake VARCHAR(40), dateset varchar(40), games INT, points INT, score INT)
+// CREATE TABLE players (playerId serial primary key, username VARCHAR(20) not null, handshake VARCHAR(40), dateset VARCHAR(20) not null, starscaught INT)
 
-// ALTER TABLE players ALTER COLUMN handshake VARCHAR(20);
+
 
 // CONFIG
 
@@ -178,7 +170,7 @@ var updateHighScores = function(client, cb) {       // void
   }
 
   if (!client) {
-      pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
+      pg.connect(pgString, function(err, client, done) {
         //console.log(err);
         client.query('SELECT username, dateset, games, points FROM highscores ORDER BY games DESC, points DESC LIMIT 10', function(err, result) {
 
@@ -919,7 +911,7 @@ var findUnusedBot = function() {  // returns a Bot
 
 var verifyUser = function(userObj, cb) {
   console.log('verifying...' + JSON.stringify(userObj));
-  pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
+  pg.connect(pgString, function(err, client, done) {
     var queryText = 'SELECT * FROM highscores WHERE username = \'' + userObj.username + '\' AND handshake = \'' + userObj.handshake + '\'';
     client.query(queryText, function(err, result) {
 
@@ -943,7 +935,7 @@ var sendAll = function(evt, obj) {
 
 var updateSinglePlayerScore = function(username, newScore, cb) {
   var handshake = uuid.v1();
-  pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
+  pg.connect(pgString, function(err, client, done) {
     //console.log('about to insert');
     var queryText = 'UPDATE "highscores" SET "score"=' + newScore + ', "handshake"=\'' + handshake + '\' WHERE "username"=\'' + username + '\'';
 
@@ -1085,7 +1077,8 @@ io.sockets.on('connection', function (socket) {
 
             var handshake = uuid.v1();
 
-            pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
+            pg.connect(pgString, function(err, client, done) {
+              console.log('inserting', queryText, [data.username, 'today', 0, 0, 100, handshake]);
               var queryText = 'INSERT INTO highscores (username, dateset, games, points, score, handshake) VALUES($1, $2, $3, $4, $5, $6) RETURNING *';
               client.query(queryText, [data.username, 'today', 0, 0, 100, handshake], function(err, result) {
 
@@ -1244,7 +1237,7 @@ io.sockets.on('connection', function (socket) {
 
         console.log('inserting score...' + JSON.stringify(data));
 
-          pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
+          pg.connect(pgString, function(err, client, done) {
             //console.log('about to insert');
             var textDate = getCurDate();
             var queryText = 'UPDATE "highscores" SET "dateset"=\'' + textDate + '\', "games"=' + data.games + ', "points"=' + data.pts + ' WHERE "username"=\'' + data.username + '\'';
@@ -1351,7 +1344,7 @@ io.sockets.on('connection', function (socket) {
 
       socket.on('requestTopPlayers', function() {
         console.log('request')
-        pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
+        pg.connect(pgString, function(err, client, done) {
           var queryText = 'SELECT username, score FROM highscores WHERE score > 100 ORDER BY score desc LIMIT 10';
           client.query(queryText, function(err, result) {
 
