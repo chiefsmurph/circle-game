@@ -8,6 +8,7 @@ var uuid = require('node-uuid');
 var async = require('async');
 
 const { pgString } = require('./config.js');
+console.log({ pgString });
 
 var port = process.env.PORT || 5000; // Use the port that Heroku
 server.listen(port);
@@ -38,6 +39,7 @@ var users = [];
 // read all users
 
 pg.connect(pgString, function(err, client, done) {
+  console.log({ err })
   var queryText = 'SELECT * FROM highscores';
   client.query(queryText, function(err, result) {
     console.log(err, result)
@@ -123,7 +125,7 @@ var lobbyCount = 0;
 var possibleColors = ['orange', 'green', 'blue', 'red', 'yellow', 'purple'];
 var roomSettings = {
   'slower': {
-    maxClickerSize: 180,
+    maxClickerSize: 110,
     clickerSpeed: 12,
     maxPeople: 6
   },
@@ -133,7 +135,7 @@ var roomSettings = {
     maxPeople: 6
   },
   'faster': {
-    maxClickerSize: 60,
+    maxClickerSize: 110,
     clickerSpeed: 3,
     maxPeople: 6
   },
