@@ -2,8 +2,8 @@ var pg = require('pg');
 var express = require('express');
 var util = require('util');
 var app = express();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
+
+
 var uuid = require('node-uuid');
 var async = require('async');
 
@@ -11,7 +11,8 @@ const { pgString } = require('./config.js');
 console.log({ pgString });
 
 var port = process.env.PORT || 5000; // Use the port that Heroku
-server.listen(port);
+const server = app.listen(port);
+const io = require('socket.io')(server);
 
 console.log('listening for http and socket requests on port ' + port);
 

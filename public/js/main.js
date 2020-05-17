@@ -1,5 +1,8 @@
 // establish socket connection
-var socket = io.connect("http://23.237.87.144:5000");
+var socket = io.connect("https://chiefsmurph.com", {
+  path: '/circlebattle/socket.io',
+  secure: true
+});
 //var socket = io.connect('http://www.circlebattle.com');
 
 var maxClickerSize = 170; // bigger = easier, smaller = harder
