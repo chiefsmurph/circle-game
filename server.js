@@ -11,7 +11,7 @@ var app = express();
 var uuid = require('node-uuid');
 var async = require('async');
 
-const { pgString } = require('./config.js');
+const { pgString, pgConfig } = require('./config.js');
 console.log({ pgString });
 
 var port = process.env.PORT || 5000; // Use the port that Heroku
