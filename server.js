@@ -1,4 +1,8 @@
-var pg = require('pg');
+const { Pool } = require('pg');
+const pool = new Pool(pgConfig)
+
+
+
 var express = require('express');
 var util = require('util');
 var app = express();
@@ -39,15 +43,10 @@ var users = [];
 
 // read all users
 
-pg.connect(pgString, function(err, client, done) {
-  console.log({ err })
-  var queryText = 'SELECT * FROM highscores';
-  client.query(queryText, function(err, result) {
-    console.log(err, result)
-    done();
-    users = result.rows;
-
-  });
+pool.query(queryText, function(err, result) {
+  console.log(err, result)
+  done();
+  users = result.rows;
 });
 
 users.push({
@@ -57,32 +56,24 @@ users.push({
 
 app.get('/removeScore', function(req, res, next) {
 
-  pg.connect(pgString, function(err, client, done) {
-    //console.log('deleting username ' + req.query.user + ' in table');
+  //console.log('deleting username ' + req.query.user + ' in table');
 
-    client.query('DELETE from highscores WHERE username=\'' + req.query.user + '\'', function(err, result) {
+  pool.query('DELETE from highscores WHERE username=\'' + req.query.user + '\'', function(err, result) {
 
-      //console.log('err ' + err + ' and result ' + result);
-      done();
-      updateScoresAndEmit(client, done);
-      res.send(JSON.stringify(result));
-
-
-    });
-
+    //console.log('err ' + err + ' and result ' + result);
+    done();
+    updateScoresAndEmit(client, done);
+    res.send(JSON.stringify(result));
   });
 
 });
 
 app.get('/showdb', function(req, res, next) {
 
-  pg.connect(pgString, function(err, client, done) {
-    client.query('SELECT * from highscores', function(err, result) {
+  pool.query('SELECT * from highscores', function(err, result) {
 
-      updateScoresAndEmit(client, done);
-      res.send(JSON.stringify(result.rows));
-
-    });
+    updateScoresAndEmit(client, done);
+    res.send(JSON.stringify(result.rows));
 
   });
 
@@ -90,12 +81,9 @@ app.get('/showdb', function(req, res, next) {
 
 app.get('/clearScores', function(req, res, next) {
 
-  pg.connect(pgString, function(err, client, done) {
-    client.query('DELETE FROM highscores', function(err, result) {
+  pool.query('DELETE FROM highscores', function(err, result) {
 
-      res.send(JSON.stringify(result.rows));
-
-    });
+    res.send(JSON.stringify(result.rows));
 
   });
 
@@ -173,20 +161,16 @@ var updateHighScores = function(client, cb) {       // void
   }
 
   if (!client) {
-      pg.connect(pgString, function(err, client, done) {
-        //console.log(err);
-        client.query('SELECT username, dateset, games, points FROM highscores ORDER BY games DESC, points DESC LIMIT 10', function(err, result) {
+      pool.query('SELECT username, dateset, games, points FROM highscores ORDER BY games DESC, points DESC LIMIT 10', function(err, result) {
 
-          console.log(' err ' + err);
-          handleResult(result);
-          done()
-
-        });
+        console.log(' err ' + err);
+        handleResult(result);
+        done();
 
       });
   } else {
 
-    client.query('SELECT username, dateset, games, points FROM highscores ORDER BY games DESC, points DESC LIMIT 10', function(err, result) {
+    pool.query('SELECT username, dateset, games, points FROM highscores ORDER BY games DESC, points DESC LIMIT 10', function(err, result) {
 
       //console.log(' err ' + err);
       handleResult(result);
@@ -914,9 +898,8 @@ var findUnusedBot = function() {  // returns a Bot
 
 var verifyUser = function(userObj, cb) {
   console.log('verifying...' + JSON.stringify(userObj));
-  pg.connect(pgString, function(err, client, done) {
     var queryText = 'SELECT * FROM highscores WHERE username = \'' + userObj.username + '\' AND handshake = \'' + userObj.handshake + '\'';
-    client.query(queryText, function(err, result) {
+    pool.query(queryText, function(err, result) {
 
       done();
       if (err)  console.error(err);
@@ -929,7 +912,6 @@ var verifyUser = function(userObj, cb) {
       }
 
     });
-  });
 };
 
 var sendAll = function(evt, obj) {
@@ -938,21 +920,19 @@ var sendAll = function(evt, obj) {
 
 var updateSinglePlayerScore = function(username, newScore, cb) {
   var handshake = uuid.v1();
-  pg.connect(pgString, function(err, client, done) {
-    //console.log('about to insert');
-    var queryText = 'UPDATE "highscores" SET "score"=' + newScore + ', "handshake"=\'' + handshake + '\' WHERE "username"=\'' + username + '\'';
+  //console.log('about to insert');
+  var queryText = 'UPDATE "highscores" SET "score"=' + newScore + ', "handshake"=\'' + handshake + '\' WHERE "username"=\'' + username + '\'';
 
-    //console.log(queryText);
+  //console.log(queryText);
 
-    client.query(queryText, function(err, result) {
+  pool.query(queryText, function(err, result) {
 
-      console.log( err, result);
-      done();
-      cb({
-        username: username,
-        handshake: handshake,
-        score: newScore
-      });
+    console.log( err, result);
+    done();
+    cb({
+      username: username,
+      handshake: handshake,
+      score: newScore
     });
   });
   // cb with new handshake
@@ -1080,31 +1060,29 @@ io.sockets.on('connection', function (socket) {
 
             var handshake = uuid.v1();
 
-            pg.connect(pgString, function(err, client, done) {
-              console.log('inserting', queryText, [data.username, 'today', 0, 0, 100, handshake]);
-              var queryText = 'INSERT INTO highscores (username, dateset, games, points, score, handshake) VALUES($1, $2, $3, $4, $5, $6) RETURNING *';
-              client.query(queryText, [data.username, 'today', 0, 0, 100, handshake], function(err, result) {
+            console.log('inserting', queryText, [data.username, 'today', 0, 0, 100, handshake]);
+            var queryText = 'INSERT INTO highscores (username, dateset, games, points, score, handshake) VALUES($1, $2, $3, $4, $5, $6) RETURNING *';
+            pool.query(queryText, [data.username, 'today', 0, 0, 100, handshake], function(err, result) {
 
-                console.log('error', err);
-                console.log('result', result);
-                username = data.username;
-                users.push(result.rows[0]);
+              console.log('error', err);
+              console.log('result', result);
+              username = data.username;
+              users.push(result.rows[0]);
 
-                if (err)  console.error(err);
+              if (err)  console.error(err);
 
-                done();
-                console.log(JSON.stringify(result));
-                console.log('created new user ' + data.username);
-                socket.emit('username-feedback', {
-                  res: 'good',
-                  msg: 'congratulations, you are good to go',
-                  score: 100,
-                  handshake: handshake,
-                  username: data.username
-                });
-                myScore = 100;
-
+              done();
+              console.log(JSON.stringify(result));
+              console.log('created new user ' + data.username);
+              socket.emit('username-feedback', {
+                res: 'good',
+                msg: 'congratulations, you are good to go',
+                score: 100,
+                handshake: handshake,
+                username: data.username
               });
+              myScore = 100;
+
             });
 
 
@@ -1240,71 +1218,67 @@ io.sockets.on('connection', function (socket) {
 
         console.log('inserting score...' + JSON.stringify(data));
 
-          pg.connect(pgString, function(err, client, done) {
-            //console.log('about to insert');
-            var textDate = getCurDate();
-            var queryText = 'UPDATE "highscores" SET "dateset"=\'' + textDate + '\', "games"=' + data.games + ', "points"=' + data.pts + ' WHERE "username"=\'' + data.username + '\'';
+        //console.log('about to insert');
+        var textDate = getCurDate();
+        var queryText = 'UPDATE "highscores" SET "dateset"=\'' + textDate + '\', "games"=' + data.games + ', "points"=' + data.pts + ' WHERE "username"=\'' + data.username + '\'';
 
-            //console.log(queryText);
+        //console.log(queryText);
 
-            client.query(queryText, function(err, result) {
+        pool.query(queryText, function(err, result) {
 
-              console.log( err, result);
-              done();
+          console.log( err, result);
+          done();
 
-              // if (err || result.rowCount === 0) {
-              //
-              //   // okay so we couldnt update when username sent in a record today...
-              //   // but dont go ahead and insert if they already sent in a better record today
-              //   client.query('SELECT * FROM "highscores" WHERE "username"=\'' + data.username + '\' AND "dateset"=\'' + textDate + '\'', function(err, result) {
-              //
-              //     //console.log('select from highscores where username and dateset');
-              //     //console.log('err for this ' + err);
-              //     //console.log('result here ' + JSON.stringify(result));
-              //
-              //     // if (result.rowCount === 0) {
-              //     //   // only go ahead with the insert if they havent had any records from the same day that are less than data.games
-              //     //
-              //     //       var queryText = 'INSERT INTO "highscores" ("username", "dateset", "games", "points") VALUES ($1, $2, $3, $4)';
-              //     //
-              //     //       //console.log(queryText);
-              //     //
-              //     //       client.query(queryText, [data.username, textDate, data.games, data.pts], function(err, result) {
-              //     //         //console.log('here' + JSON.stringify(result) + ' ' + err);
-              //     //         if (!err) {
-              //     //           //console.log('no error');
-              //     //           done();
-              //     //
-              //     //           socket.emit('congrats');
-              //     //           updateScoresAndEmit(client, done);
-              //     //
-              //     //
-              //     //         } else {
-              //     //           //console.log('err ' + err);
-              //     //         }
-              //     //         //console.log('now here');
-              //     //
-              //     //       });
-              //     //
-              //     // }
-              //
-              //   });
-              //
-              //
-              // } else {
-              //
-              //
-              //
-              // }
+          // if (err || result.rowCount === 0) {
+          //
+          //   // okay so we couldnt update when username sent in a record today...
+          //   // but dont go ahead and insert if they already sent in a better record today
+          //   client.query('SELECT * FROM "highscores" WHERE "username"=\'' + data.username + '\' AND "dateset"=\'' + textDate + '\'', function(err, result) {
+          //
+          //     //console.log('select from highscores where username and dateset');
+          //     //console.log('err for this ' + err);
+          //     //console.log('result here ' + JSON.stringify(result));
+          //
+          //     // if (result.rowCount === 0) {
+          //     //   // only go ahead with the insert if they havent had any records from the same day that are less than data.games
+          //     //
+          //     //       var queryText = 'INSERT INTO "highscores" ("username", "dateset", "games", "points") VALUES ($1, $2, $3, $4)';
+          //     //
+          //     //       //console.log(queryText);
+          //     //
+          //     //       client.query(queryText, [data.username, textDate, data.games, data.pts], function(err, result) {
+          //     //         //console.log('here' + JSON.stringify(result) + ' ' + err);
+          //     //         if (!err) {
+          //     //           //console.log('no error');
+          //     //           done();
+          //     //
+          //     //           socket.emit('congrats');
+          //     //           updateScoresAndEmit(client, done);
+          //     //
+          //     //
+          //     //         } else {
+          //     //           //console.log('err ' + err);
+          //     //         }
+          //     //         //console.log('now here');
+          //     //
+          //     //       });
+          //     //
+          //     // }
+          //
+          //   });
+          //
+          //
+          // } else {
+          //
+          //
+          //
+          // }
 
-              // update worked
-              socket.emit('congrats');
-              updateScoresAndEmit(client, done);
+          // update worked
+          socket.emit('congrats');
+          updateScoresAndEmit(client, done);
 
-            });
-
-          });
-
+        });
       });
 
       socket.on('addCircle', function(circle) {
@@ -1346,19 +1320,17 @@ io.sockets.on('connection', function (socket) {
       });
 
       socket.on('requestTopPlayers', function() {
-        console.log('request')
-        pg.connect(pgString, function(err, client, done) {
-          var queryText = 'SELECT username, score FROM highscores WHERE score > 100 ORDER BY score desc LIMIT 10';
-          client.query(queryText, function(err, result) {
+      console.log('request');
+      var queryText = 'SELECT username, score FROM highscores WHERE score > 100 ORDER BY score desc LIMIT 10';
+      pool.query(queryText, function(err, result) {
 
-            done();
-            users = result.rows;
-            socket.emit('sentTopPlayers', {topPlayers: users, force: true});
-            //console.log(users)
+        done();
+        users = result.rows;
+        socket.emit('sentTopPlayers', {topPlayers: users, force: true});
+        //console.log(users)
 
-          });
-        });
       });
+    });
 
   } else {
     console.log("WARNING: BLOCKED ATTEMPT FROM " + clientIp);
