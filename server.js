@@ -44,8 +44,7 @@ var updateScoresAndEmit = function(client, done) {
 var users = [];
 
 // read all users
-
-pool.query(queryText, function(err, result) {
+pool.query('SELECT * FROM highscores', function(err, result) {
   console.log(err, result)
   done();
   users = result.rows;
