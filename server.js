@@ -1,6 +1,7 @@
+
+const { pgString, pgConfig } = require('./config.js');
 const { Pool } = require('pg');
 const pool = new Pool(pgConfig)
-
 
 
 var express = require('express');
@@ -11,7 +12,8 @@ var app = express();
 var uuid = require('node-uuid');
 var async = require('async');
 
-const { pgString, pgConfig } = require('./config.js');
+
+
 console.log({ pgString });
 
 var port = process.env.PORT || 5000; // Use the port that Heroku
