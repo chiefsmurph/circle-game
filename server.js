@@ -35,7 +35,6 @@ var updateScoresAndEmit = function(client, done) {
   updateHighScores(client, function() {
     //console.log('updated high scores');
     sendAll('highScores', {scoreArr: highScoreData});
-    done();
   });
 
 };
@@ -46,7 +45,6 @@ var users = [];
 // read all users
 pool.query('SELECT * FROM highscores', function(err, result) {
   console.log(err, result)
-  done();
   users = result.rows;
 });
 
@@ -62,7 +60,6 @@ app.get('/removeScore', function(req, res, next) {
   pool.query('DELETE from highscores WHERE username=\'' + req.query.user + '\'', function(err, result) {
 
     //console.log('err ' + err + ' and result ' + result);
-    done();
     updateScoresAndEmit(client, done);
     res.send(JSON.stringify(result));
   });
@@ -166,7 +163,6 @@ var updateHighScores = function(client, cb) {       // void
 
         console.log(' err ' + err);
         handleResult(result);
-        done();
 
       });
   } else {
@@ -902,7 +898,6 @@ var verifyUser = function(userObj, cb) {
     var queryText = 'SELECT * FROM highscores WHERE username = \'' + userObj.username + '\' AND handshake = \'' + userObj.handshake + '\'';
     pool.query(queryText, function(err, result) {
 
-      done();
       if (err)  console.error(err);
       var authorized = (result.rows.length);
       console.log('checking user ' + userObj.username + ' ' + authorized);
@@ -929,7 +924,6 @@ var updateSinglePlayerScore = function(username, newScore, cb) {
   pool.query(queryText, function(err, result) {
 
     console.log( err, result);
-    done();
     cb({
       username: username,
       handshake: handshake,
@@ -1072,7 +1066,6 @@ io.sockets.on('connection', function (socket) {
 
               if (err)  console.error(err);
 
-              done();
               console.log(JSON.stringify(result));
               console.log('created new user ' + data.username);
               socket.emit('username-feedback', {
@@ -1228,7 +1221,6 @@ io.sockets.on('connection', function (socket) {
         pool.query(queryText, function(err, result) {
 
           console.log( err, result);
-          done();
 
           // if (err || result.rowCount === 0) {
           //
@@ -1251,7 +1243,6 @@ io.sockets.on('connection', function (socket) {
           //     //         //console.log('here' + JSON.stringify(result) + ' ' + err);
           //     //         if (!err) {
           //     //           //console.log('no error');
-          //     //           done();
           //     //
           //     //           socket.emit('congrats');
           //     //           updateScoresAndEmit(client, done);
@@ -1325,7 +1316,6 @@ io.sockets.on('connection', function (socket) {
       var queryText = 'SELECT username, score FROM highscores WHERE score > 100 ORDER BY score desc LIMIT 10';
       pool.query(queryText, function(err, result) {
 
-        done();
         users = result.rows;
         socket.emit('sentTopPlayers', {topPlayers: users, force: true});
         //console.log(users)
