@@ -1,14 +1,22 @@
 var pg = require('pg');
 
-const { pgString } = require('./config.js');
+const { pgString, pgConfig } = require('./config.js');
+const { Pool, Client } = require('pg')
+const pool = new Pool(pgConfig)
 
-pg.connect(pgString, function(err, client, done) {
-  console.log({ err })
-  var queryText = 'SELECT * FROM highscores';
-  client.query(queryText, function(err, result) {
-    console.log(err, result)
-    done();
-    users = result.rows;
+const client = new Client({
+  connectionString: pgString,
+})
+client.connect();
+console.log('after client connect');
+client.query('SELECT NOW()', (err, res) => {
+  console.log(err, res)
+  client.end()
+});
 
-  });
+
+var queryText = 'SELECT * FROM highscores';
+console.log({ queryText });
+pool.query(queryText, (err, response) => {
+  console.log(err, result)
 });
