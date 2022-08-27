@@ -42,6 +42,8 @@ var updateScoresAndEmit = function(client, done) {
 
 var users = [];
 
+createTables();
+
 // read all users
 pool.query('SELECT * FROM highscores', function(err, result) {
   console.log(err, result)
@@ -89,20 +91,10 @@ app.get('/clearScores', function(req, res, next) {
 
 
 // INIT HIGH SCORE TABLE
-
-// pg.connect(pgString, function(err, client) {
-//   var query = client.query('CREATE TABLE highscores (scoreId serial primary key, username VARCHAR(20) not null, handshake VARCHAR(20), dateset DATE type varchar(40), games INT, points INT, score INT)');
-//   console.log('created highscores table');
-//   query.on('row', function(row) {
-//     console.log('row: ' + JSON.stringify(row));
-//   });
-// });
-
-
-// CREATE TABLE highscores (scoreId serial primary key, username VARCHAR(20) not null, handshake VARCHAR(40), dateset varchar(40), games INT, points INT, score INT)
-// CREATE TABLE players (playerId serial primary key, username VARCHAR(20) not null, handshake VARCHAR(40), dateset VARCHAR(20) not null, starscaught INT)
-
-
+async function createTables() {
+  await pool.query('CREATE TABLE highscores (scoreId serial primary key, username VARCHAR(20) not null, handshake VARCHAR(40), dateset varchar(40), games INT, points INT, score INT)');
+  await pool.query('CREATE TABLE players (playerId serial primary key, username VARCHAR(20) not null, handshake VARCHAR(40), dateset VARCHAR(20) not null, starscaught INT)');
+}
 
 // CONFIG
 
