@@ -42,7 +42,7 @@ var updateScoresAndEmit = function(client, done) {
 
 var users = [];
 
-createTables();
+// createTables();
 
 // read all users
 pool.query('SELECT * FROM highscores', function(err, result) {
