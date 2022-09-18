@@ -30,11 +30,12 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(express.static(__dirname + '/public'));
 
-var updateScoresAndEmit = function(client, done) {
+var updateScoresAndEmit = function(done) {
 
-  updateHighScores(client, function() {
+  updateHighScores(function() {
     //console.log('updated high scores');
     sendAll('highScores', {scoreArr: highScoreData});
+    done && done();
   });
 
 };
@@ -62,7 +63,7 @@ app.get('/removeScore', function(req, res, next) {
   pool.query('DELETE from highscores WHERE username=\'' + req.query.user + '\'', function(err, result) {
 
     //console.log('err ' + err + ' and result ' + result);
-    updateScoresAndEmit(client, done);
+    updateScoresAndEmit(done);
     res.send(JSON.stringify(result));
   });
 
@@ -72,7 +73,7 @@ app.get('/showdb', function(req, res, next) {
 
   pool.query('SELECT * from highscores', function(err, result) {
 
-    updateScoresAndEmit(client, done);
+    updateScoresAndEmit(done);
     res.send(JSON.stringify(result.rows));
 
   });
@@ -139,35 +140,14 @@ var roomSettings = {
 
 var highScoreData = [];
 
-var updateHighScores = function(client, cb) {       // void
+var updateHighScores = function(cb) {       // void
+    pool.query('SELECT username, dateset, games, points FROM highscores ORDER BY games DESC, points DESC LIMIT 10', function(err, result) {
 
-  var handleResult = function(result) {
-
-      //console.log('high score rows' + JSON.stringify(result));
       if (result) highScoreData = result.rows;
       //console.log('hs data ' + highScoreData);
       if (cb) cb();
 
-  }
-
-  if (!client) {
-      pool.query('SELECT username, dateset, games, points FROM highscores ORDER BY games DESC, points DESC LIMIT 10', function(err, result) {
-
-        console.log(' err ' + err);
-        handleResult(result);
-
-      });
-  } else {
-
-    pool.query('SELECT username, dateset, games, points FROM highscores ORDER BY games DESC, points DESC LIMIT 10', function(err, result) {
-
-      //console.log(' err ' + err);
-      handleResult(result);
-
     });
-
-  }
-
 }
 updateHighScores();
 
@@ -1260,7 +1240,7 @@ io.sockets.on('connection', function (socket) {
 
           // update worked
           socket.emit('congrats');
-          updateScoresAndEmit(client, done);
+          updateScoresAndEmit(done);
 
         });
       });
