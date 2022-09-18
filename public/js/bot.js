@@ -233,7 +233,7 @@ var startBot = function() {
 var showTitleScreen = function(cb) {
 
   setTimeout(function() {
-    $('#circle-battle-icon').fadeIn(3000);
+    $('#circle-clash-icon').fadeIn(3000);
   }, 500);
 
   setTimeout(function() {
@@ -241,7 +241,7 @@ var showTitleScreen = function(cb) {
   }, 2250);
 
   $('#circle-text').animate({top: '130px'}, 3500, 'easeOutQuart');
-  $('#battle-text').animate({bottom: '240px'}, 3500, 'easeOutQuart', function() {
+  $('#clash-text').animate({bottom: '240px'}, 3500, 'easeOutQuart', function() {
 
 
     setTimeout(function() {
@@ -279,7 +279,7 @@ var backToRoomChooser = function() {
 
   $('#rulesPanel').addClass('hider');
   $('#ticker').hide();
-  $('#bottomStatus').html("total # of battlers: <span id='numPlayers'></span>");
+  $('#bottomStatus').html("total # of clashers: <span id='numPlayers'></span>");
   $('#bottomStatus').show()
   $('#roomChooser').show();
   setStatus('Choose a room');
@@ -475,7 +475,7 @@ socket.on('roomTotals', function(data) {
   $('#slower-count').text("(" + data.slowerCount + ")");
   $('#medium-count').text("(" + data.mediumCount + ")");
   $('#faster-count').text("(" + data.fasterCount + ")");
-  $('#numPlayers').text( data.totalBattlers );
+  $('#numPlayers').text( data.totalClashers );
 
   // BOTLOGIC!
 
@@ -488,14 +488,14 @@ socket.on('roomTotals', function(data) {
       if (sentTo.indexOf(playersInTheRoom[otherId]) === -1) {
         sentTo.push(playersInTheRoom[otherId]);
         setTimeout(function() {
-          socket.emit('chat', { msg: 'hey im a computer, and thats cool and all, but id recommend you calling up a friend or two and challenging them to a game of circle battle' });
+          socket.emit('chat', { msg: 'hey im a computer, and thats cool and all, but id recommend you calling up a friend or two and challenging them to a game of circle clash' });
         }, 15000);
       }
 
     }, 300 + (Math.random() * 2000));
   };
 
-  if (data.totalBattlers < 4) {
+  if (data.totalClashers < 4) {
     if (data.slowerCount === 1) {
       followtoroom('slower');
     } else if (data.mediumCount === 1) {

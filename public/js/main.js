@@ -3,7 +3,7 @@ var socket = io.connect("https://chiefsmurph.com", {
   path: '/circlebattle/socket.io',
   secure: true
 });
-//var socket = io.connect('http://www.circlebattle.com');
+//var socket = io.connect('http://www.circleclash.com');
 
 var maxClickerSize = 170; // bigger = easier, smaller = harder
 var clickerSpeed = 9; // higher = longer, lower = fasterer
@@ -119,7 +119,7 @@ var moveToLobby = function() {
 
   changeAudio('jovial');
   setTimeout(function() {
-    saySomething( "Circle Battle Party every day at 6:30 PST" );
+    saySomething( "Circle Clash Party every day at 6:30 PST" );
   }, 500);
 
   slideOutChat();
@@ -245,7 +245,7 @@ var chooseRoom = function(roomToGo) {
       $('#curRoom').text(roomToGo);
 
       renderRulesPanel();
-      $('#rulesPanel').removeClass('hider');
+      // $('#rulesPanel').removeClass('hider');
       $('#backRoomButton').prop('disabled', false);
 
     }
@@ -256,7 +256,8 @@ var chooseRoom = function(roomToGo) {
 
 var renderRulesPanel = function() {
 
-  console.log('renderrulespanel')
+  console.log('renderrulespanel');
+  return;
 
   // generate the contents of the rulesPanel
   var rulesList;
@@ -330,7 +331,7 @@ var setStatus = function(text, length, cb) {
 var showTitleScreen = function(cb) {
 
   setTimeout(function() {
-    $('#circle-battle-icon').fadeIn(3000);
+    $('#circle-clash-icon').fadeIn(3000);
   }, 500);
 
   setTimeout(function() {
@@ -338,7 +339,7 @@ var showTitleScreen = function(cb) {
   }, 2250);
 
   $('#circle-text').animate({top: '130px'}, 3500, 'easeOutQuart');
-  $('#battle-text').animate({bottom: '240px'}, 3500, 'easeOutQuart', function() {
+  $('#clash-text').animate({bottom: '240px'}, 3500, 'easeOutQuart', function() {
 
 
     setTimeout(function() {
@@ -365,7 +366,7 @@ var saySomething = function(txt) {
 var backToRoomChooser = function() {
 
   setTimeout(function() {
-    saySomething( "Circle Battle Party every day at 6:30 PST" );
+    saySomething( "Circle Clash Party every day at 6:30 PST" );
   }, 500);
 
   socket.emit('leaveRoom');
@@ -388,7 +389,7 @@ var backToRoomChooser = function() {
   $('#muteunmute').show();
   $('#rulesPanel').addClass('hider');
   $('#ticker').hide();
-  $('#bottomStatus').html("total # of battlers: <span id='numPlayers'></span>");
+  $('#bottomStatus').html("total # of clashers: <span id='numPlayers'></span>");
   $('#bottomStatus').show()
   $('#roomChooser').show();
   setStatus('Choose a room');
@@ -683,7 +684,7 @@ socket.on('roomTotals', function(data) {
   $('#smaller-count').text("(" + data.smallerCount + ")");
   $('#middle-count').text("(" + data.middleCount + ")");
   $('#larger-count').text("(" + data.largerCount + ")");
-  $('#numPlayers').text( data.totalBattlers );
+  $('#numPlayers').text( data.totalClashers );
 
 });
 
@@ -700,7 +701,7 @@ var backToWaiting = function() {
   timer = null;
   $('#ticker').fadeOut();
   renderRulesPanel();
-  $('#rulesPanel').removeClass('hider');
+  // $('#rulesPanel').removeClass('hider');
   $('#backRoomButton').prop('disabled', false);
   clearCircles();
   setStatus('Waiting for other players');
@@ -889,12 +890,12 @@ socket.on('winner', function(data) {
           // back to the waiting for new game
           setStatus('Waiting for new<br>game to start');
           renderRulesPanel();
-          $('#rulesPanel').removeClass('hider');
+          // $('#rulesPanel').removeClass('hider');
           $('#bottomStatus').show();
 
           changeAudio(curRoom);
           setTimeout(function() {
-            saySomething( "Circle Battle Party every day at 6:30 PST" );
+            saySomething( "Circle Clash Party every day at 6:30 PST" );
           }, 500);
         }
 

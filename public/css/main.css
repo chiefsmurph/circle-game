@@ -274,6 +274,8 @@ hr {
   margin: 0;
   background-color: white;
   color: black;
+  width: 70vw;
+  margin: 10px auto;
 }
 #roomChooser button div {
   font-size: 36px;
@@ -372,15 +374,15 @@ button:focus, input[type='button']:focus {outline:0;}
   font-size: 80px;
   top: -80px;
 }
-#titleScreen #battle-text {
+#titleScreen #clash-text {
   font-size: 60px;
   bottom: -60px;
 }
-#titleScreen #battle-text {
+#titleScreen #clash-text {
   font-size: 60px;
   bottom: -60px;
 }
-#titleScreen #circle-battle-icon {
+#titleScreen #circle-clash-icon {
   display: none;
   top: 80px;
   z-index: 10000;
@@ -399,12 +401,8 @@ button:focus, input[type='button']:focus {outline:0;}
 }
 #userPanel {
   font-family: monospace;
-  margin: 0 auto 20px;
-  position: relative;
   background-color: lightyellow;
-  top: -31px;
-  left: 260px;
-  width: 120px;
+  font-size: 23px;
   box-shadow: 4px 4px 20px rgba(255,255,255,0.3);
   cursor: default;
   z-index: 0;
@@ -594,6 +592,7 @@ button:focus, input[type='button']:focus {outline:0;}
 
 .hider {
    visibility:hidden;
+   display: none;
 }
 .watch-mode {
   background-color: white;

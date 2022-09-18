@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>CircleBattle v1.2.2</title>
+    <title>CircleClash v2.0</title>
     <meta name="description" content="A real-time multiplayer game that combines old-school graphics with a refreshingly simple and responsive gameplay all with a modern spin">
     <meta name="author" content="John Murphy">
     <meta name="viewport" content="user-scalable=no, initial-scale=0.5, maximum-scale=0.5, minimum-scale=0.5, width=device-width, height=device-height, target-densitydpi=device-dpi" />
@@ -44,7 +44,7 @@
 
     <div id='splashscreen'>
 
-      <code><h2>Loading CircleBattle v1.2.2...</h2>
+      <code><h2>Loading CircleClash v2.0...</h2>
       <h4>(it's worth the wait)</h4></code>
 
       <div id="fountainG">
@@ -60,14 +60,14 @@
 
     </div>
 
-    <div id='topArea'>CircleBattle v1.2.2<span id='consoleMessage'></span></div>
+    <div id='topArea'>CircleClash v2.0<span id='consoleMessage'></span></div>
     <div id='hiddenGameArea'></div>
     <div id='gamearea'>
       <div id='titleScreen'>
         <div id='circle-text'>CIRCLE</div>
-        <div id='battle-text'>BATTLE</div>
-        <div id='beta'>v1.2.2</div>
-        <div id='circle-battle-icon'><img src='img/circle-battle-icon-sml.png'></div>
+        <div id='clash-text'>CLASH</div>
+        <div id='beta'>v2.0</div>
+        <div id='circle-clash-icon'><img src='img/circle-clash-icon-sml.png'></div>
       </div>
       <div id='loginScreen'>
         <h2>Choose your<br>username</h2>
@@ -77,7 +77,10 @@
       </div>
       <div id='statusPanel'></div>
       <div id='roomChooser'>
-        <table>
+        <button onclick='chooseRoom("smaller")'><div>small<span id='smaller-count'></span></div></button>
+        <button onclick='chooseRoom("middle")'><div>medium<span id='middle-count'></span></div></button>
+        <button onclick='chooseRoom("larger")'><div>large<span id='larger-count'></span></div></button>
+        <!-- <table>
           <thead>
             <tr>
               <th>original</th>
@@ -104,7 +107,7 @@
               </td>
             </tr>
           </tbody>
-        </table>
+        </table> -->
       </div>
       <div id='rulesPanel' class='hider'></div>
       <div id='ticker'></div>
@@ -112,7 +115,7 @@
 
       <div id='yourClicker'></div>
       <div id='yourCursor'></div>
-      <div id='bottomStatus'>total # of battlers: <span id='numPlayers'></span></div>
+      <div id='bottomStatus'>total # of clashers: <span id='numPlayers'></span></div>
       <div id='highScorePanel'>
         <div id='closeHS'>x</div>
         <select id="HSheader">
@@ -134,8 +137,10 @@
       </div>
       <table>
         <tr>
-          <td>your color:</td>
-          <td colspan='2'><div id='colorBox' class='hider'>green</div></td>
+          <td>your color: <div id='colorBox' class='hider'>green</div></td>
+          <td colspan='2'>
+            <div id="userPanel"></div>
+          </td>
         </tr>
         <tr>
           <td rowspan='2'>current streak:</td>
@@ -164,9 +169,8 @@
       </div>
     </div>
 
-    <!-- <div id="userPanel"></div>
 
-    <div id='chatPanel'>
+    <!-- <div id='chatPanel'>
       <div id='chatArea'></div>
       <input type='text' id='msgText' placeholder='chat message'>
       <input type='submit' value='send' onclick='sendChat()'>

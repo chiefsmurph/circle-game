@@ -205,7 +205,7 @@ var Bot = function(options) {
     var settings = roomSettings[bot.roomName];
     var maxClickerSize = settings.maxClickerSize;
     var clickerSpeed = settings.clickerSpeed;
-    var myskillspeed = (clickerSpeed>1) ? Math.round(Math.random() * 700) + 100 : Math.round(Math.random() * 550) + 200;
+    var myskillspeed = Math.round(Math.random() * ((clickerSpeed>1) ? 200 : 100));
 
     var shootCircle = function() {
 
@@ -833,7 +833,7 @@ var updateLobbyTotals = function() {    // void
     smallerCount: getRoomCount('smaller'),
     middleCount: getRoomCount('middle'),
     largerCount: getRoomCount('larger'),
-    totalBattlers: ['slower', 'medium', 'faster', 'smaller', 'middle', 'larger'].reduce(function(total, rname) {
+    totalClashers: ['slower', 'medium', 'faster', 'smaller', 'middle', 'larger'].reduce(function(total, rname) {
       return total + getRoomCount(rname);
     }, 0) + lobbyCount
 
