@@ -30,12 +30,11 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(express.static(__dirname + '/public'));
 
-var updateScoresAndEmit = function(done) {
+var updateScoresAndEmit = function() {
 
   updateHighScores(function() {
     //console.log('updated high scores');
     sendAll('highScores', {scoreArr: highScoreData});
-    done && done();
   });
 
 };
@@ -63,7 +62,7 @@ app.get('/removeScore', function(req, res, next) {
   pool.query('DELETE from highscores WHERE username=\'' + req.query.user + '\'', function(err, result) {
 
     //console.log('err ' + err + ' and result ' + result);
-    updateScoresAndEmit(done);
+    updateScoresAndEmit();
     res.send(JSON.stringify(result));
   });
 
@@ -1240,7 +1239,7 @@ io.sockets.on('connection', function (socket) {
 
           // update worked
           socket.emit('congrats');
-          updateScoresAndEmit(done);
+          updateScoresAndEmit();
 
         });
       });

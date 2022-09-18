@@ -105,8 +105,8 @@ hr {
 #highScorePanel {
   position: absolute;
   top: 100vw;
-  left: 15vw;
-  width: 70vw;
+  left: 8vw;
+  width: 84vw;
   height: 70vw;
   z-index: 10000000;
   text-align: center;
@@ -149,12 +149,12 @@ hr {
 }
 #highScorePanel #closeHS {
   position: absolute;
-  right: 20px;
-  top: 20px;
+  right: 10px;
+  top: 10px;
   border: 1px solid black;
   color: black;
-  padding: 0px 5px;
-  font-size: 20px;
+  padding: 0px 8px;
+  font-size: 36px;
   background-color: white;
   cursor: pointer;
 }
@@ -215,7 +215,6 @@ hr {
   height: 180px; */
   z-index: 10000;
   text-align: center;
-  padding-top: 50px;
   color: white;
   font-size: 56px;
   margin: 10vw 0 3vw;
