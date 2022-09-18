@@ -4,7 +4,7 @@ var socket = DEVMODE ? io.connect("http://localhost:5000", {
   path: '/socket.io',
   // secure: true
 }) : io.connect("https://chiefsmurph.com", {
-  path: '/circlebattle/socket.io',
+  path: '/circleclash/socket.io',
   secure: true
 });
 //var socket = io.connect('http://www.circleclash.com');
