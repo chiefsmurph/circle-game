@@ -1,5 +1,9 @@
 // establish socket connection
-var socket = io.connect("https://chiefsmurph.com", {
+const DEVMODE = true;
+var socket = DEVMODE ? io.connect("http://localhost:5000", {
+  path: '/socket.io',
+  // secure: true
+}) : io.connect("https://chiefsmurph.com", {
   path: '/circlebattle/socket.io',
   secure: true
 });
@@ -1200,12 +1204,12 @@ $(function() {
 
   });
 
-  // $(window).blur(function() {
-  //   console.log('blur');
-  //   if (curRoom && curRoom !== 'lobby') {
-  //     backToRoomChooser();
-  //   }
-  // });
+  $(window).blur(function() {
+    console.log('blur');
+    if (curRoom && curRoom !== 'lobby') {
+      backToRoomChooser();
+    }
+  });
 
   $(window).load(function() {
     // nevermind
