@@ -564,6 +564,9 @@ button:focus, input[type='button']:focus {outline:0;}
 #infoPanel table button:hover:enabled {
   background-color: yellow;
 }
+#infoPanel table:nth-child(2) tr:last-of-type {
+  border-bottom: 1px solid black;
+}
 #infoPanel #colorBox {
   border: 1px solid black;
   margin: 4px auto;

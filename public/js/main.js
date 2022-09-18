@@ -945,10 +945,30 @@ socket.on('setColor', function(data) {
 
 });
 
+function getWidth() {
+  return Math.max(
+    document.body.scrollWidth,
+    document.documentElement.scrollWidth,
+    document.body.offsetWidth,
+    document.documentElement.offsetWidth,
+    document.documentElement.clientWidth
+  );
+}
+
+const width = getWidth();
+const covertObjToWidth = obj => ({
+  ...obj,
+  x: obj.x / width * 500,
+  y: obj.y / width * 500,
+});
+
 // setup counter watching socket
 socket.on('newCircle', function (data) {
-
+  
   if (activeGame) {
+
+    data.x = data.x / 500 * width;
+    data.y = data.y / 500 * width;
 
       console.log('stat');
 
@@ -1084,8 +1104,9 @@ $(function() {
     };
 
     var sendCoords = function() {
-      socket.emit('addCircle', {x: xPos, y: yPos, rad: maxClickerSize, col: myColor});
-      console.debug('sending circle', xPos, yPos, ' ANIMATEOVER');
+      const sendObj = covertObjToWidth({x: xPos, y: yPos, rad: maxClickerSize, col: myColor});
+      socket.emit('addCircle', sendObj);
+      console.debug('sending circle', sendObj);
       lastClickCoords.xPos = xPos;
       lastClickCoords.yPos = yPos;
     };
@@ -1156,9 +1177,9 @@ $(function() {
     if (activeGame && myColor !== null) {
 
       if ((lastClickCoords.xPos !== xPos || lastClickCoords.yPos !== yPos) || clickEquality !== 0) {
-
-        socket.emit('addCircle', {x: xPos, y: yPos, rad: $('#yourClicker').width(), col: myColor});
-        console.debug('sending circle', xPos, yPos);
+        const sendObj = covertObjToWidth({x: xPos, y: yPos, rad: $('#yourClicker').width(), col: myColor});
+        socket.emit('addCircle', sendObj);
+        console.debug('sending circle', sendObj);
         $('#yourClicker').stop(true, false);
         $('#yourClicker').hide();
         $('#yourClicker').css('width', 0);
