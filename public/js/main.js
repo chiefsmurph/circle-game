@@ -1,5 +1,5 @@
 // establish socket connection
-const DEVMODE = true;
+const DEVMODE = false;
 var socket = DEVMODE ? io.connect("http://localhost:5000", {
   path: '/socket.io',
   // secure: true
