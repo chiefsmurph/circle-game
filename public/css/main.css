@@ -2,7 +2,6 @@ html, body {
   background-color: rgba(100,0,0,0.5);
   background-image: url('../img/back-pattern.png');
   text-align: center;
-  height: 110%;
   /*transform: scale(1.3);*/
 }
 hr {
@@ -15,9 +14,9 @@ hr {
   box-sizing: border-box;
 }
 #splashscreen {
-  position: fixed;
+  /* position: fixed;
   top: 0;
-  left: 0;
+  left: 0; */
   width: 100%;
   height: 100%;
   margin-top: 10%;
@@ -53,12 +52,13 @@ hr {
 }
 #gamearea, #hiddenGameArea {
   font-family: monospace;
-  margin: 0 auto -500px;
-  position: relative;
-  top: 100px;
-  left: -50px;
-  width: 500px;
-  height: 500px;
+  margin: 0;
+  position: absolute;
+  /* top: 100px; */
+  /* left: -50px; */
+  top: 3vw;
+  width: 100vw;
+  height: 100vw;
   background-color: black;
   overflow: hidden;
   /*box-shadow: 4px 4px 20px rgba(255,255,255,0.3);*/
@@ -74,6 +74,8 @@ hr {
 #gamearea {
   background-image: url('../img/asfalt-light.png');
   z-index: 2;
+  display: flex;
+  flex-direction: column;
 }
 .circle {
   background-color: orange;
@@ -102,14 +104,14 @@ hr {
 }
 #highScorePanel {
   position: absolute;
-  top: 500px;
-  left: 50px;
-  width: 400px;
-  height: 450px;
+  top: 100vw;
+  left: 15vw;
+  width: 70vw;
+  height: 70vw;
   z-index: 10000000;
   text-align: center;
   padding: 40px 10px 0px;
-  font-size: 18px;
+  font-size: 25px;
   color: black;
   border-radius: 10px 10px 0 0;
   background-color: rgba(255,255,255,0.9);
@@ -161,21 +163,22 @@ hr {
   border: 1px solid red;
 }
 #loginScreen {
-  position: absolute;
+  /* position: absolute;
   top: 50px;
   left: 50px;
   width: 400px;
-  height: 350px;
+  height: 350px; */
   z-index: 10000000;
   text-align: center;
   padding: 0px;
-  font-size: 33px;
+  font-size: 36px;
   display: none;
   color: white;
+  margin-top: 15vw;
 }
 #loginScreen #setUserBtn {
   position: relative;
-  bottom: 1px;
+  bottom: -2px;
 }
 #loginScreen #userfield {
   height: 45px;
@@ -183,16 +186,16 @@ hr {
 }
 #loginScreen #username {
   height: 45px;
-  width: 150px;
+  width: 46vw;
   border: 1px solid navy;
   text-align: center;
 }
 #loginScreen div {
-  font-size: 18px;
+  /* font-size: 2em; */
   margin-top: 15px;
 }
 #loginScreen #username-response {
-  font-size: 55%;
+  /* font-size: 55%; */
   padding: 10px 10px;
 }
 #loginScreen #username-response.good {
@@ -205,42 +208,44 @@ hr {
 }
 
 #statusPanel {
-  position: absolute;
+  /* position: absolute;
   top: 0;
   left: 25px;
   width: 450px;
-  height: 180px;
+  height: 180px; */
   z-index: 10000;
   text-align: center;
   padding-top: 50px;
   color: white;
-  font-size: 45px;
+  font-size: 56px;
+  margin: 10vw 0 3vw;
 }
 #rulesPanel {
-  position: absolute;
+  /* position: absolute;
   top: 180px;
   left: 50px;
-  width: 400px;
+  width: 400px; */
   z-index: 1000;
   text-align: left;
   padding: 0px;
   color: white;
-  font-size: 23px;
+  font-size: 30px;
   border: 3px solid white;
   border-radius: 20px;
+  margin: 0 20vw;
 }
 #rulesPanel li {
   margin: 0px 15px 20px 20px;
 }
 #roomChooser {
-  position: absolute;
+  /* position: absolute;
   top: 100px;
   left: 0px;
-  width: 500px;
+  width: 500px; */
   z-index: 1000000;
   text-align: center;
   padding: 0px;
-  font-size: 33px;
+  font-size: 38px;
   display: none;
   color: white;
 }
@@ -269,13 +274,12 @@ hr {
   border-radius: 8px;
   margin: 0;
   background-color: white;
-  width: 190px;
   color: black;
-  font-size: 0px;
 }
 #roomChooser button div {
-  font-size: 24px;
+  font-size: 36px;
   margin: 4px 7px;
+  padding: 1vw;
 }
 #roomChooser tr:nth-child(4) button {
   width: auto;
@@ -316,12 +320,12 @@ button:focus, input[type='button']:focus {outline:0;}
 #bottomStatus {
   position: absolute;
   bottom: 4px;
-  left: 0px;
-  height: 20px;
-  width: 500px;
+  /* left: 0px; */
+  /* height: 20px; */
+  width: 100%;
   z-index: 10000;
   text-align: center;
-  font-size: 14px;
+  font-size: 25px;
   color: white;
   font-style: italic;
   letter-spacing: 3px;
@@ -331,7 +335,7 @@ button:focus, input[type='button']:focus {outline:0;}
   position: absolute;
   top: 10px;
   right: 20px;
-  font-size: 15px;
+  font-size: 28px;
   color: white;
   z-index: 10000000;
 }
@@ -355,11 +359,12 @@ button:focus, input[type='button']:focus {outline:0;}
 
 #titleScreen {
   font-size: 40px;
+  top: 30vw;
 }
 #titleScreen > * {
   position: absolute;
   left: 25px;
-  width: 450px;
+  width: 90vw;
   text-align: center;
   z-index: 10000000;
   color: white;
@@ -461,9 +466,9 @@ button:focus, input[type='button']:focus {outline:0;}
   font-family: monospace;
   margin: 0 auto 20px;
   position: relative;
-  top: 0px;
+  /* top: 0px;
   left: 259px;
-  width: 120px;
+  width: 120px; */
   background-color: grey;
   overflow: hidden;
   /*box-shadow: 4px 4px 20px rgba(255,255,255,0.3);*/
@@ -471,6 +476,10 @@ button:focus, input[type='button']:focus {outline:0;}
   border-top: 1px solid black;
   z-index: 1;
   display: none;
+}
+#usersAndColors table {
+  border-top: 0 !important;
+  background-color: #eee;
 }
 #usersAndColors > div {
   display: none;
@@ -497,48 +506,55 @@ button:focus, input[type='button']:focus {outline:0;}
 
 #infoPanel {
   font-family: monospace;
-  margin: 0 auto 20px;
-  position: relative;
-  top: 600px;
-  left: -50px;
-  width: 500px;
+  position: absolute;
+  top: 103vw;
+  width: 100%;
   background-color: grey;
   overflow: hidden;
   /*box-shadow: 4px 4px 20px rgba(255,255,255,0.3);*/
   cursor: default;
-  border-radius: 0 0 10px 10px;
-  display: none;
+  display: flex;
+  flex-direction: column;
+  font-size: 30px;
+  border-bottom: 1px solid black;
+}
+#infoPanel .buttons {
+  font-size: 120%;
+  padding: 1vw;
+  display: flex;
+  justify-content: space-evenly;
+}
+#infoPanel .buttons button {
+  /* font-size: 15px; */
+  line-height: 1.2;
+  border: 0px;
+  text-decoration: underline;
+  padding: 0 20px;
 }
 #infoPanel table {
   width: 100%;
+  border-top: 1px solid black;
+  margin-left: -1px;
 }
-#infoPanel table table {
-  width: 300px;
-}
-#infoPanel table table td {
+#infoPanel table td {
   border-left: 1px solid black;
   border-bottom: 1px solid black;
 }
-#infoPanel table table tr:last-child td {
+#infoPanel table td:nth-child(2) {
+  border-left: 1px solid black;
+  min-width: 18vw;
+}
+#infoPanel table tr:last-child td {
   border-bottom-width: 0;
 }
-#infoPanel table table tr:last-child td {
+#infoPanel table tr:last-child td {
   border-bottom-width: 0;
 }
-#infoPanel table table tr:nth-child(4) td:first-child {
+#infoPanel table tr:nth-child(4) td:first-child {
   border-bottom-width: 0;
 }
 #streakGames, #streakPoints, #topGames, #topPoints {
   width: 70px;
-}
-#infoPanel table button {
-  font-size: 15px;
-  line-height: 1.2;
-  margin: 0 0;
-  width: 200px;
-  height: 50px;
-  border: 0px;
-  text-decoration: underline;
 }
 #infoPanel table tr td button:first-child {
   border-bottom: 1px solid black;

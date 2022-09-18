@@ -128,59 +128,50 @@
 
     </div>
     <div id='infoPanel'>
-
+      <div class="buttons">
+        <button disabled="true" onclick='backToRoomChooser()' id='backRoomButton'>back to LOBBY</button>
+        <button onclick='toggleHighs()' id='togHSbtn'>view high scores</button>
+      </div>
       <table>
         <tr>
-          <td>
-            <button disabled="true" onclick='backToRoomChooser()' id='backRoomButton'>back to LOBBY</button>
-            <button onclick='toggleHighs()' id='togHSbtn'>view high scores</button>
-          </td>
-          <td>
-            <table>
-              <tr>
-                <td>your color:</td>
-                <td colspan='2'><div id='colorBox' class='hider'>green</div></td>
-              </tr>
-              <tr>
-                <td rowspan='2'>current streak:</td>
-                <td>games</td>
-                <td id='streakGames'><span>00</span></td>
-              </tr>
-              <tr>
-                <td>points</td>
-                <td id='streakPoints'><span>0000</span></td>
-              </tr>
-              <tr>
-                <td rowspan='2'>top streak:</td>
-                <td>games</td>
-                <td id='topGames'><span>00</span></td>
-              </tr>
-              <tr>
-                <td>points</td>
-                <td id='topPoints'><span>0000</span></td>
-              </tr>
-            </table>
-          </td>
+          <td>your color:</td>
+          <td colspan='2'><div id='colorBox' class='hider'>green</div></td>
+        </tr>
+        <tr>
+          <td rowspan='2'>current streak:</td>
+          <td>games</td>
+          <td id='streakGames'><span>00</span></td>
+        </tr>
+        <tr>
+          <td>points</td>
+          <td id='streakPoints'><span>0000</span></td>
+        </tr>
+        <tr>
+          <td rowspan='2'>top streak:</td>
+          <td>games</td>
+          <td id='topGames'><span>00</span></td>
+        </tr>
+        <tr>
+          <td>points</td>
+          <td id='topPoints'><span>0000</span></td>
         </tr>
       </table>
-
+      <div id='usersAndColors'>
+        <div>
+          <table>
+          </table>
+        </div>
+      </div>
     </div>
 
-    <div id="userPanel"></div>
+    <!-- <div id="userPanel"></div>
 
     <div id='chatPanel'>
       <div id='chatArea'></div>
       <input type='text' id='msgText' placeholder='chat message'>
       <input type='submit' value='send' onclick='sendChat()'>
-    </div>
+    </div> -->
 
-
-    <div id='usersAndColors'>
-      <div>
-        <table>
-        </table>
-      </div>
-    </div>
 
 
     <div id='below'>

@@ -158,7 +158,7 @@ var toggleHighs = function() {
     $('#highScorePanel').animate({'top': '50px'}, 700, 'easeOutCubic');
     $('#togHSbtn').text('hide high scores');
   } else {
-    $('#highScorePanel').animate({'top': '500px'}, 700, 'easeOutCubic');
+    $('#highScorePanel').animate({'top': '100vw'}, 700, 'easeOutCubic');
     $('#togHSbtn').text('view high scores');
   }
 

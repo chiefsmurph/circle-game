@@ -285,10 +285,10 @@ var renderRulesPanel = function() {
 var toggleHighs = function() {
 
   if (!highPanelShowing) {
-    $('#highScorePanel').animate({'top': '50px'}, 700, 'easeOutCubic');
+    $('#highScorePanel').animate({'top': '30vw'}, 700, 'easeOutCubic');
     $('#togHSbtn').text('hide high scores');
   } else {
-    $('#highScorePanel').animate({'top': '500px'}, 700, 'easeOutCubic');
+    $('#highScorePanel').animate({'top': '100vw'}, 700, 'easeOutCubic');
     $('#togHSbtn').text('view high scores');
   }
 
@@ -1178,12 +1178,12 @@ $(function() {
 
   });
 
-  $(window).blur(function() {
-    console.log('blur');
-    if (curRoom && curRoom !== 'lobby') {
-      backToRoomChooser();
-    }
-  });
+  // $(window).blur(function() {
+  //   console.log('blur');
+  //   if (curRoom && curRoom !== 'lobby') {
+  //     backToRoomChooser();
+  //   }
+  // });
 
   $(window).load(function() {
     // nevermind
