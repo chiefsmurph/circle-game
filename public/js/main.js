@@ -888,7 +888,7 @@ socket.on('winner', function(data) {
 
 
     // display winner and winBy
-    setStatus('winner: ' + ((topName != "tie") ? '<u style="color: rgb(' + topColor + ') !important">' + topName + '</u><br><br>and won by...<br><i>' + data.winByPerc + '%</i>'  : 'tie'), 6500, function() {
+    setStatus('winner: ' + ((topName != "tie") ? '<u style="color: rgb(' + topColor + ') !important; background-color: #000">' + topName + '</u><br><br>and won by...<br><i>' + data.winByPerc + '%</i>'  : 'tie'), 6500, function() {
 
         if (curRoom !== 'lobby') {
           // back to the waiting for new game
