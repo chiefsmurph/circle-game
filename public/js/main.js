@@ -1,5 +1,5 @@
 // establish socket connection
-const DEVMODE = false;
+const DEVMODE = true;
 var socket = DEVMODE ? io.connect("http://localhost:5000", {
   path: '/socket.io',
   // secure: true
@@ -144,7 +144,7 @@ var showUserScreen = function(cb) {
 var preloadAudio = function() {
 
   var audioLoaded = 0;
-  var audioToLoad = 3;
+  var audioToLoad = 7;
 
   var loadAudio = function(url, loop, necessary) {
     var audio = new Howl({
@@ -172,13 +172,13 @@ var preloadAudio = function() {
       audioBank['welcome'] = loadAudio('audio/welcome t1 mod vox ALT.mp3', false, true);
       audioBank['anthem'] = loadAudio('audio/30s anthem t1.mp3', false );
 
-      audioBank['slower'] = loadAudio('audio/slow lobby.mp3', true );
+      audioBank['slower'] = loadAudio('audio/medium lobby.mp3', true );
       audioBank['medium'] = loadAudio('audio/medium lobby mod.mp3', true );
       audioBank['faster'] = loadAudio('audio/fast lobby.mp3', true );
 
-      audioBank['smaller'] = audioBank['slower'];
-      audioBank['middle'] = audioBank['medium'];
-      audioBank['larger'] = audioBank['faster'];
+      // audioBank['smaller'] = audioBank['slower'];
+      // audioBank['middle'] = audioBank['medium'];
+      // audioBank['larger'] = audioBank['faster'];
 
   } else {
     console.debug('nah')
@@ -682,12 +682,10 @@ socket.on('chatMsg', function(data) {
 
 socket.on('roomTotals', function(data) {
 
-  $('#slower-count').text("(" + data.slowerCount + ")");
+
+  $('#small-count').text("(" + data.smallCount + ")");
   $('#medium-count').text("(" + data.mediumCount + ")");
-  $('#faster-count').text("(" + data.fasterCount + ")");
-  $('#smaller-count').text("(" + data.smallerCount + ")");
-  $('#middle-count').text("(" + data.middleCount + ")");
-  $('#larger-count').text("(" + data.largerCount + ")");
+  $('#large-count').text("(" + data.largeCount + ")");
   $('#numPlayers').text( data.totalClashers );
 
 });

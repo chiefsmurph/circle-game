@@ -103,32 +103,32 @@ var lobbyCount = 0;
 //var possibleColors = ['orange', 'green', 'blue', 'red', 'yellow', 'purple', 'tomato', 'tan', 'salmon', 'slateblue', 'saddlebrown', 'plum', 'PaleVioletRed', 'Navy', 'OliveDrab'];
 var possibleColors = ['orange', 'green', 'blue', 'red', 'yellow', 'purple'];
 var roomSettings = {
-  'slower': {
-    maxClickerSize: 110,
-    clickerSpeed: 12,
-    maxPeople: 6
-  },
-  'medium': {
-    maxClickerSize: 110,
-    clickerSpeed: 5,
-    maxPeople: 6
-  },
-  'faster': {
-    maxClickerSize: 110,
-    clickerSpeed: 3,
-    maxPeople: 6
-  },
-  'smaller': {
+  // 'slower': {
+  //   maxClickerSize: 110,
+  //   clickerSpeed: 12,
+  //   maxPeople: 6
+  // },
+  // 'medium': {
+  //   maxClickerSize: 110,
+  //   clickerSpeed: 5,
+  //   maxPeople: 6
+  // },
+  // 'faster': {
+  //   maxClickerSize: 110,
+  //   clickerSpeed: 3,
+  //   maxPeople: 6
+  // },
+  'small': {
     maxClickerSize: 60,
     clickerSpeed: 0,
     maxPeople: 6
   },
-  'middle': {
+  'medium': {
     maxClickerSize: 110,
     clickerSpeed: 0,
     maxPeople: 6
   },
-  'larger': {
+  'large': {
     maxClickerSize: 180,
     clickerSpeed: 0,
     maxPeople: 6
@@ -209,7 +209,7 @@ var Bot = function(options) {
 
     var shootCircle = function() {
 
-      var shootRad = (Math.random() > 0.6) ? maxClickerSize : Math.round((maxClickerSize/2)+Math.floor(Math.random() * (maxClickerSize /2) ));
+      var shootRad = maxClickerSize;//(Math.random() > 0.6) ? maxClickerSize : Math.round((maxClickerSize/2)+Math.floor(Math.random() * (maxClickerSize /2) ));
       var variationSpeed = (Math.random() > 0.5) ? Math.round(Math.random() * 300) : Math.round(Math.random() * 200) * -1;
       var randCoefficient = Math.round(Math.random() * 60) / 10;
 
@@ -238,7 +238,7 @@ var Bot = function(options) {
           shootCircle();
         }
 
-      }, (shootRad*clickerSpeed) + myskillspeed + variationSpeed);
+      }, myskillspeed + randCoefficient);
 
     }
 
@@ -827,13 +827,10 @@ var updateLobbyTotals = function() {    // void
 
   io.sockets.in('lobby').emit('roomTotals', {
 
-    slowerCount: getRoomCount('slower'),
+    smallCount: getRoomCount('small'),
     mediumCount: getRoomCount('medium'),
-    fasterCount: getRoomCount('faster'),
-    smallerCount: getRoomCount('smaller'),
-    middleCount: getRoomCount('middle'),
-    largerCount: getRoomCount('larger'),
-    totalClashers: ['slower', 'medium', 'faster', 'smaller', 'middle', 'larger'].reduce(function(total, rname) {
+    largeCount: getRoomCount('large'),
+    totalClashers: ['small', 'medium', 'large'].reduce(function(total, rname) {
       return total + getRoomCount(rname);
     }, 0) + lobbyCount
 

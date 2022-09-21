@@ -2,6 +2,7 @@ html, body {
   background-color: rgba(100,0,0,0.5);
   background-image: url('../img/back-pattern.png');
   text-align: center;
+  color: #000;
   /*transform: scale(1.3);*/
 }
 hr {
@@ -154,7 +155,7 @@ hr {
   border: 1px solid black;
   color: black;
   padding: 0px 8px;
-  font-size: 36px;
+  font-size: 14px !important;
   background-color: white;
   cursor: pointer;
 }
@@ -171,7 +172,7 @@ hr {
   z-index: 10000000;
   text-align: center;
   padding: 0px;
-  font-size: 36px;
+  font-size: 12px;
   display: none;
   color: white;
   margin-top: 15vw;
@@ -506,7 +507,7 @@ button:focus, input[type='button']:focus {outline:0;}
   position: absolute;
   top: 103vw;
   width: 100%;
-  background-color: grey;
+  background-color: #c0bbbb;
   overflow: hidden;
   /*box-shadow: 4px 4px 20px rgba(255,255,255,0.3);*/
   cursor: default;
@@ -514,6 +515,7 @@ button:focus, input[type='button']:focus {outline:0;}
   flex-direction: column;
   font-size: 30px;
   border-bottom: 1px solid black;
+  color: #000;
 }
 #infoPanel .buttons {
   font-size: 120%;
