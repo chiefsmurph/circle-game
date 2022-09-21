@@ -172,9 +172,9 @@ var preloadAudio = function() {
       audioBank['welcome'] = loadAudio('audio/welcome t1 mod vox ALT.mp3', false, true);
       audioBank['anthem'] = loadAudio('audio/30s anthem t1.mp3', false );
 
-      audioBank['slower'] = loadAudio('audio/medium lobby.mp3', true );
+      audioBank['small'] = loadAudio('audio/medium lobby.mp3', true );
       audioBank['medium'] = loadAudio('audio/medium lobby mod.mp3', true );
-      audioBank['faster'] = loadAudio('audio/fast lobby.mp3', true );
+      audioBank['large'] = loadAudio('audio/fast lobby.mp3', true );
 
       // audioBank['smaller'] = audioBank['slower'];
       // audioBank['middle'] = audioBank['medium'];
@@ -235,7 +235,7 @@ var chooseRoom = function(roomToGo) {
   $('#roomChooser').fadeOut(950);
   curRoom = roomToGo;
 
-  if (['slower','medium','faster', 'smaller','middle','larger'].indexOf(curRoom) !== -1) {
+  if (['small','medium','large'].indexOf(curRoom) !== -1) {
     changeAudio(curRoom);
   }
 
