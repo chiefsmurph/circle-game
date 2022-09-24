@@ -144,7 +144,7 @@ var showUserScreen = function(cb) {
 var preloadAudio = function() {
 
   var audioLoaded = 0;
-  var audioToLoad = 7;
+  var audioToLoad = 3;
 
   var loadAudio = function(url, loop, necessary) {
     var audio = new Howl({
@@ -176,9 +176,6 @@ var preloadAudio = function() {
       audioBank['medium'] = loadAudio('audio/medium lobby mod.mp3', true );
       audioBank['large'] = loadAudio('audio/fast lobby.mp3', true );
 
-      // audioBank['smaller'] = audioBank['slower'];
-      // audioBank['middle'] = audioBank['medium'];
-      // audioBank['larger'] = audioBank['faster'];
 
   } else {
     console.debug('nah')
@@ -207,17 +204,11 @@ var changeAudio = function(c) {
 
       if (curAudio) {
         var pastAudio = curAudio;
-        audioBank[pastAudio].fadeOut(0, 500, function() {
-          audioBank[pastAudio].stop();
-        });
+        audioBank[pastAudio].stop();
       }
 
       console.log('now playing ' + c);
-
-      if (!isMuted) {
-        audioBank[c].pos(0, 0);
-        audioBank[c].volume(1.0);
-      }
+      
       audioBank[c].play();
       curAudio = c;
 
@@ -290,7 +281,7 @@ var renderRulesPanel = function() {
 var toggleHighs = function() {
 
   if (!highPanelShowing) {
-    $('#highScorePanel').animate({'top': '30vw'}, 700, 'easeOutCubic');
+    $('#highScorePanel').animate({'top': '10vw'}, 700, 'easeOutCubic');
     $('#togHSbtn').text('hide high scores');
   } else {
     $('#highScorePanel').animate({'top': '100vw'}, 700, 'easeOutCubic');
@@ -692,7 +683,7 @@ socket.on('roomTotals', function(data) {
 
 socket.on('setSettings', function(data) {
 
-    maxClickerSize = data.maxClickerSize / width * 500;
+    maxClickerSize = data.maxClickerSize * width / 500;
     clickerSpeed = data.clickerSpeed;
 
 });
@@ -963,10 +954,12 @@ const covertObjToWidth = obj => ({
   ...obj,
   x: obj.x * 500 / width,
   y: obj.y * 500 / width,
+  rad: obj.rad * 500 / width,
 });
 
 // setup counter watching socket
 socket.on('newCircle', function (data) {
+  console.log('new circle', data);
   
   if (activeGame) {
 
@@ -1108,9 +1101,10 @@ $(function() {
     };
 
     var sendCoords = function() {
-      const sendObj = covertObjToWidth({x: xPos, y: yPos, rad: maxClickerSize, col: myColor});
+      const orig = {x: xPos, y: yPos, rad: maxClickerSize, col: myColor};
+      const sendObj = covertObjToWidth(orig);
       socket.emit('addCircle', sendObj);
-      console.debug('sending circle', sendObj);
+      console.debug('sendCoords sending circle', { orig, sendObj });
       lastClickCoords.xPos = xPos;
       lastClickCoords.yPos = yPos;
     };
@@ -1181,9 +1175,10 @@ $(function() {
     if (activeGame && myColor !== null) {
 
       if ((lastClickCoords.xPos !== xPos || lastClickCoords.yPos !== yPos) || clickEquality !== 0) {
-        const sendObj = covertObjToWidth({x: xPos, y: yPos, rad: $('#yourClicker').width(), col: myColor});
+        const orig = {x: xPos, y: yPos, rad: $('#yourClicker').width(), col: myColor};
+        const sendObj = covertObjToWidth(orig);
         socket.emit('addCircle', sendObj);
-        console.debug('sending circle', sendObj);
+        console.debug('gamearea sending circle', { orig, sendObj });
         $('#yourClicker').stop(true, false);
         $('#yourClicker').hide();
         $('#yourClicker').css('width', 0);
@@ -1203,12 +1198,12 @@ $(function() {
 
   });
 
-  $(window).blur(function() {
-    console.log('blur');
-    if (curRoom && curRoom !== 'lobby') {
-      backToRoomChooser();
-    }
-  });
+  // $(window).blur(function() {
+  //   console.log('blur');
+  //   if (curRoom && curRoom !== 'lobby') {
+  //     backToRoomChooser();
+  //   }
+  // });
 
   $(window).load(function() {
     // nevermind
@@ -1257,3 +1252,27 @@ $(function() {
 
 
 });
+
+
+
+const AndroidFullScreen = require('cordova-plugin-fullscreen');
+function successFunction()
+{
+    console.info("It worked!");
+}
+
+function errorFunction(error)
+{
+    console.error(error);
+}
+
+function trace(value)
+{
+    console.log(value);
+}
+
+// Is this plugin supported?
+AndroidFullScreen.isSupported(successFunction, errorFunction);
+
+// Hide system UI and keep it hidden (Android 4.4+ only)
+AndroidFullScreen.immersiveMode(successFunction, errorFunction);

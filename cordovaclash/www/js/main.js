@@ -947,6 +947,7 @@ const covertObjToWidth = obj => ({
   ...obj,
   x: obj.x * 500 / width,
   y: obj.y * 500 / width,
+  rad: obj.rad * 500 / width,
 });
 
 // setup counter watching socket
@@ -1093,9 +1094,10 @@ $(function() {
     };
 
     var sendCoords = function() {
-      const sendObj = covertObjToWidth({x: xPos, y: yPos, rad: maxClickerSize, col: myColor});
+      const orig = {x: xPos, y: yPos, rad: maxClickerSize, col: myColor};
+      const sendObj = covertObjToWidth(orig);
       socket.emit('addCircle', sendObj);
-      console.debug('sending circle', sendObj);
+      console.debug('sendCoords sending circle', { orig, sendObj });
       lastClickCoords.xPos = xPos;
       lastClickCoords.yPos = yPos;
     };
@@ -1166,9 +1168,10 @@ $(function() {
     if (activeGame && myColor !== null) {
 
       if ((lastClickCoords.xPos !== xPos || lastClickCoords.yPos !== yPos) || clickEquality !== 0) {
-        const sendObj = covertObjToWidth({x: xPos, y: yPos, rad: $('#yourClicker').width(), col: myColor});
+        const orig = {x: xPos, y: yPos, rad: $('#yourClicker').width(), col: myColor};
+        const sendObj = covertObjToWidth(orig);
         socket.emit('addCircle', sendObj);
-        console.debug('sending circle', sendObj);
+        console.debug('gamearea sending circle', { orig, sendObj });
         $('#yourClicker').stop(true, false);
         $('#yourClicker').hide();
         $('#yourClicker').css('width', 0);
@@ -1188,12 +1191,12 @@ $(function() {
 
   });
 
-  $(window).blur(function() {
-    console.log('blur');
-    if (curRoom && curRoom !== 'lobby') {
-      backToRoomChooser();
-    }
-  });
+  // $(window).blur(function() {
+  //   console.log('blur');
+  //   if (curRoom && curRoom !== 'lobby') {
+  //     backToRoomChooser();
+  //   }
+  // });
 
   $(window).load(function() {
     // nevermind
