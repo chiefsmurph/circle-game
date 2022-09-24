@@ -279,7 +279,7 @@ var backToRoomChooser = function() {
 
   $('#rulesPanel').addClass('hider');
   $('#ticker').hide();
-  $('#bottomStatus').html("total # of clashers: <span id='numPlayers'></span>");
+  $('#bottomStatus').html("clashers online: <span id='numPlayers'></span>");
   $('#bottomStatus').show()
   $('#roomChooser').show();
   setStatus('Choose a room');

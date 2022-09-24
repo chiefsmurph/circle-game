@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">cap-circle-game</string>
+    <string name="title_activity_main">cap-circle-game</string>
+    <string name="package_name">com.circleclash.com.app</string>
+    <string name="custom_url_scheme">com.circleclash.com.app</string>
+</resources>

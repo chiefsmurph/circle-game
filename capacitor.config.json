@@ -1,0 +1,6 @@
+{
+  "appId": "com.circleclash.com.app",
+  "appName": "cap-circle-game",
+  "webDir": "cordovaclash/www",
+  "bundledWebRuntime": false
+}

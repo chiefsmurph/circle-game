@@ -393,7 +393,7 @@ var backToRoomChooser = function() {
   $('#muteunmute').show();
   $('#rulesPanel').addClass('hider');
   $('#ticker').hide();
-  $('#bottomStatus').html("total # of clashers: <span id='numPlayers'></span>");
+  $('#bottomStatus').html("clashers online: <span id='numPlayers'></span>");
   $('#bottomStatus').show()
   $('#roomChooser').show();
   setStatus('Choose a room');
@@ -692,7 +692,7 @@ socket.on('roomTotals', function(data) {
 
 socket.on('setSettings', function(data) {
 
-    maxClickerSize = data.maxClickerSize;
+    maxClickerSize = data.maxClickerSize / width * 500;
     clickerSpeed = data.clickerSpeed;
 
 });
@@ -961,8 +961,8 @@ function getWidth() {
 const width = getWidth();
 const covertObjToWidth = obj => ({
   ...obj,
-  x: obj.x / width * 500,
-  y: obj.y / width * 500,
+  x: obj.x * 500 / width,
+  y: obj.y * 500 / width,
 });
 
 // setup counter watching socket
@@ -970,8 +970,9 @@ socket.on('newCircle', function (data) {
   
   if (activeGame) {
 
-    data.x = data.x / 500 * width;
-    data.y = data.y / 500 * width;
+    data.x = data.x * width / 500;
+    data.y = data.y * width / 500;
+    data.rad = data.rad * width / 500;
 
       console.log('stat');
 

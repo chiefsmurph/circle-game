@@ -327,7 +327,7 @@ button:focus, input[type='button']:focus {outline:0;}
   width: 100%;
   z-index: 10000;
   text-align: center;
-  font-size: 25px;
+  font-size: 19px;
   color: white;
   font-style: italic;
   letter-spacing: 3px;
