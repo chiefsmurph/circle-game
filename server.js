@@ -1000,10 +1000,10 @@ io.sockets.on('connection', function (socket) {
           };
 
 
-          if (data.username.length < 3 || data.username.length > 8) {
+          if (data.username.length < 3 || data.username.length > 10) {
             socket.emit('username-feedback', {
               res: 'bad',
-              msg: 'must be between 3-8 characters long'
+              msg: 'must be between 3-10 characters long'
             });
           } else if (data.username.indexOf(' ') !== -1) {
             socket.emit('username-feedback', {

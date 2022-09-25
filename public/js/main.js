@@ -101,18 +101,18 @@ var validateText = function(min, max, el) { // boolean
 };
 
 var handleUsernameSubmit = function() {   //void
-  if (validateText(3,8,'#username')) {
+  // if (validateText(3,8,'#username')) {
 
-      socket.emit('usernameSubmit', {
-        username: $('#username').val()
-      });
+    socket.emit('usernameSubmit', {
+      username: $('#username').val()
+    });
 
-  } else {
-    // invalid username
-    $('#username').val('');
-    $('#username').focus();
+  // } else {
+  //   // invalid username
+  //   $('#username').val('');
+  //   $('#username').focus();
 
-  }
+  // }
 }
 
 var moveToLobby = function() {
@@ -520,30 +520,7 @@ socket.on('highScores', function(data) {
 
 });
 
-socket.on('username-feedback', function(data) {
-
-  $('#username-response').removeClass('good bad');
-  $('#username-response').addClass(data.res);
-  $('#username-response').text('response: ' + data.msg);
-
-  if (data.res === 'good') {
-
-    // $('#createuser').prop("disabled",true);
-    console.debug(data);
-    setUserObj(data);
-    setTimeout(function() {
-      $('#loginScreen').hide();
-      moveToLobby();
-    }, 1200);
-
-
-  } else {
-
-    $('input#username').focus();
-
-  }
-
-});
+socket.on('username-feedback', usernameFeedback);
 
 socket.on('login-feedback', function(data) {
 
