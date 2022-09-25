@@ -333,8 +333,8 @@ var showTitleScreen = function(cb) {
     $('#beta').fadeIn(900);
   }, 2250);
 
-  $('#circle-text').animate({top: '130px'}, 3500, 'easeOutQuart');
-  $('#clash-text').animate({bottom: '240px'}, 3500, 'easeOutQuart', function() {
+  $('#circle-text').animate({top: '15vw'}, 3500, 'easeOutQuart');
+  $('#clash-text').animate({bottom: '15vw'}, 3500, 'easeOutQuart', function() {
 
 
     setTimeout(function() {
