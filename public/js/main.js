@@ -141,6 +141,10 @@ var showUserScreen = function(cb) {
 
 };
 
+
+let isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) === true;
+
+
 var preloadAudio = function() {
 
   var audioLoaded = 0;
@@ -163,9 +167,9 @@ var preloadAudio = function() {
     return audio;
   }
 
-  if (!!(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) === false) {
+  // if (!!(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) === false) {
 
-    console.debug('yeah')
+    console.debug('yeah', navigator.userAgent)
 
       audioBank['contemplative'] = loadAudio('audio/contemplative t1.mp3', true, true);
       audioBank['jovial'] = loadAudio('audio/jovial t1 mod.mp3', true, true);
@@ -177,9 +181,9 @@ var preloadAudio = function() {
       audioBank['large'] = loadAudio('audio/fast lobby.mp3', true );
 
 
-  } else {
-    console.debug('nah')
-  }
+  // } else {
+  //   console.debug('nah')
+  // }
 
 };
 
@@ -361,7 +365,7 @@ var saySomething = function(txt) {
   $('#consoleMessage').css({ display: 'block' });
   setTimeout(function() {
     $('#consoleMessage').fadeOut(3000);
-  }, 4000);
+  }, 6000);
 };
 
 var backToRoomChooser = function() {
@@ -770,6 +774,11 @@ var calculateWinner = function() {
 var start = function() {
 
   $('#splashscreen').fadeOut(1000);
+
+  if (!isMobile) {
+    alert('Sorry Circle Clash is online available on mobile devices.  Go get your phone and join on there :-)');
+    return;
+  }
 
   $('#infoPanel').fadeIn(250);
   $('#hiddenGameArea').fadeIn(250);
@@ -1267,7 +1276,8 @@ $(function() {
 
 
 
-const AndroidFullScreen = require('cordova-plugin-fullscreen');
+
+
 function successFunction()
 {
     console.info("It worked!");
@@ -1286,5 +1296,32 @@ function trace(value)
 // Is this plugin supported?
 AndroidFullScreen.isSupported(successFunction, errorFunction);
 
+// Is immersive mode supported?
+AndroidFullScreen.isImmersiveModeSupported(successFunction, errorFunction);
+
+// The width of the screen in immersive mode
+AndroidFullScreen.immersiveWidth(trace, errorFunction);
+
+// The height of the screen in immersive mode
+AndroidFullScreen.immersiveHeight(trace, errorFunction);
+
+// Hide system UI until user interacts
+AndroidFullScreen.leanMode(successFunction, errorFunction);
+
+// Show system UI
+AndroidFullScreen.showSystemUI(successFunction, errorFunction);
+
+// Extend your app underneath the status bar (Android 4.4+ only)
+AndroidFullScreen.showUnderStatusBar(successFunction, errorFunction);
+
+// Extend your app underneath the system UI (Android 4.4+ only)
+AndroidFullScreen.showUnderSystemUI(successFunction, errorFunction);
+
 // Hide system UI and keep it hidden (Android 4.4+ only)
 AndroidFullScreen.immersiveMode(successFunction, errorFunction);
+
+// Custom full screen mode
+// See https://developer.android.com/reference/android/view/View.html#setSystemUiVisibility(int)
+AndroidFullScreen.setSystemUiVisibility(AndroidFullScreen.SYSTEM_UI_FLAG_FULLSCREEN | AndroidFullScreen.SYSTEM_UI_FLAG_LOW_PROFILE, successFunction, errorFunction);
+
+

@@ -24,7 +24,8 @@ hr {
   height: 100%;
   margin-top: 10%;
   padding: 10% 5%;
-  background-color: rgba(255,255,255,1);
+  background-color: rgba(0,0,0,1);
+  color: white;
   z-index: 1000;
 }
 #topArea {
@@ -36,7 +37,7 @@ hr {
   text-decoration: underline;
   text-align: left;
   font-family: monospace;
-  padding: 10px 6px 10px 5vw;
+  padding: 10px 6px 10px 9vw;
   /* font-size: 110%; */
   height: 10vw;
   z-index: 12121;
@@ -52,11 +53,11 @@ hr {
 #topArea img {
   position: absolute;
   top: 1vw;
-  left: 1vw;
+  left: 5vw;
   height: 8vw;
 }
 #topArea > span {
-  background-color: rgba(255,255,255,0.34);
+  background-color: rgba(255,255,255,0.64);
   padding: 5px 14px;
 }
 #consoleMessage {
@@ -126,8 +127,8 @@ hr {
 #highScorePanel {
   position: absolute;
   top: 100vw;
-  left: 8vw;
-  width: 91vw;
+  left: 5vw;
+  width: 90vw;
   height: 90vw;
   z-index: 10000000;
   text-align: center;
@@ -540,7 +541,6 @@ button:focus, input[type='button']:focus {outline:0;}
   display: flex;
   flex-direction: column;
   font-size: 15px;
-  border-bottom: 1px solid black;
 }
 #infoPanel .buttons {
   font-size: 120%;
@@ -568,15 +568,12 @@ button:focus, input[type='button']:focus {outline:0;}
   border-left: 1px solid black;
   min-width: 18vw;
 }
-#infoPanel table tr:last-child td {
+/* #infoPanel table tr:last-child td {
   border-bottom-width: 0;
-}
-#infoPanel table tr:last-child td {
+} */
+/* #infoPanel table tr:nth-child(4) td:first-child {
   border-bottom-width: 0;
-}
-#infoPanel table tr:nth-child(4) td:first-child {
-  border-bottom-width: 0;
-}
+} */
 #streakGames, #streakPoints, #topGames, #topPoints {
   width: 70px;
 }
@@ -597,6 +594,7 @@ button:focus, input[type='button']:focus {outline:0;}
   margin: 4px auto;
   padding: 4px auto;
   width: 130px;
+  height: 20px;
 }
 #below {
   font-family: monospace;
