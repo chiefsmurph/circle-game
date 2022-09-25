@@ -391,7 +391,7 @@ button:focus, input[type='button']:focus {outline:0;}
 }
 #titleScreen #beta {
   display: none;
-  top: 270px;
+  top: 55vw;
   left: 80px;
   z-index: 1000000;
   font-size: 35px;
