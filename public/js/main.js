@@ -920,7 +920,8 @@ socket.on('setColor', function(data) {
   if (myColor) {
 
     $('.circle').css('background-color', myColor);
-    $('#colorBox').text(myColor);
+    // $('#colorBox').text(myColor);
+    $('#colorBox').text('');
     $('#colorBox').css('background-color', myColor);
 
     /*

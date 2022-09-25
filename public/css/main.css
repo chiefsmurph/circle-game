@@ -519,7 +519,7 @@ button:focus, input[type='button']:focus {outline:0;}
   height: 20px;
   border-radius: 10px;
   border: 1px solid black;
-  margin-right: 4px;
+  margin-right: 8px;
 }
 
 #usersAndColors table tr td:first-child {
