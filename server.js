@@ -749,6 +749,7 @@ var Room = function(options) {
           return next();
         }
       } else {
+        console.log('here')
         return next();
       }
 
@@ -1280,16 +1281,16 @@ io.sockets.on('connection', function (socket) {
       });
 
       socket.on('requestTopPlayers', function() {
-      console.log('request');
-      var queryText = 'SELECT username, score FROM highscores WHERE score > 100 ORDER BY score desc';
-      pool.query(queryText, function(err, result) {
+        console.log('request');
+        var queryText = 'SELECT username, score FROM highscores ORDER BY score desc';
+        pool.query(queryText, function(err, result) {
 
-        users = result.rows;
-        socket.emit('sentTopPlayers', {topPlayers: users.slice(0, 10), force: true});
-        //console.log(users)
+          users = result.rows;
+          socket.emit('sentTopPlayers', {topPlayers: users.slice(0, 10), force: true});
+          //console.log(users)
 
+        });
       });
-    });
 
   } else {
     console.log("WARNING: BLOCKED ATTEMPT FROM " + clientIp);
