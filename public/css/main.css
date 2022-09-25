@@ -17,33 +17,47 @@ hr {
   box-sizing: border-box;
 }
 #splashscreen {
-  /* position: fixed;
+  position: fixed;
   top: 0;
-  left: 0; */
+  left: 0;
   width: 100%;
   height: 100%;
   margin-top: 10%;
   padding: 10% 5%;
-  background-color: rgba(255,255,255,0.6);
+  background-color: rgba(255,255,255,1);
   z-index: 1000;
 }
 #topArea {
   margin: 0 auto;
-  width: 500px;
   position: relative;
-  top: 100px;
-  left: -50px;
-  background-color: rgba(255,255,255,0.34);
-  border-radius: 10px 5px 0px 0px;
+  /* background-color: rgba(255,255,255,0.34); */
+  /* border-radius: 10px 5px 0px 0px; */
   color: black;
   text-decoration: underline;
   text-align: left;
   font-family: monospace;
-  padding: 10px 6px 10px 12px;
-  font-size: 110%;
-  height: 45px;
-  overflow: visible;
-  display: none;
+  padding: 10px 6px 10px 5vw;
+  /* font-size: 110%; */
+  height: 10vw;
+  z-index: 12121;
+  display: flex;
+  justify-content: space-between;
+  line-height: 0.8;
+}
+#topArea > span:not(#consoleMessage) {
+  line-break: strict;
+  display: block;
+  padding-left: 5vw;
+}
+#topArea img {
+  position: absolute;
+  top: 1vw;
+  left: 1vw;
+  height: 8vw;
+}
+#topArea > span {
+  background-color: rgba(255,255,255,0.34);
+  padding: 5px 14px;
 }
 #consoleMessage {
   font-size: 115%;
@@ -51,7 +65,11 @@ hr {
   margin: 0px 10px 0px 40px;
   font-variant: small-caps;
   text-decoration: none;
-  float: right;
+  position: absolute;
+  top: 2vw;
+  right: 3vw;
+  display: none;
+  max-width: 40vw;
 }
 #gamearea, #hiddenGameArea {
   font-family: monospace;
@@ -59,7 +77,7 @@ hr {
   position: absolute;
   /* top: 100px; */
   /* left: -50px; */
-  top: 3vw;
+  top: 10vw;
   width: 100vw;
   height: 100vw;
   background-color: black;
@@ -174,7 +192,7 @@ hr {
   z-index: 10000000;
   text-align: center;
   padding: 0px;
-  font-size: 26px !important;
+  font-size: 17px !important;
   display: none;
   color: white;
   margin-top: 15vw;
@@ -470,33 +488,38 @@ button:focus, input[type='button']:focus {outline:0;}
   /* top: 0px;
   left: 259px;
   width: 120px; */
-  background-color: grey;
   overflow: hidden;
   /*box-shadow: 4px 4px 20px rgba(255,255,255,0.3);*/
   cursor: default;
-  border-top: 1px solid black;
   z-index: 1;
   display: none;
+  width: 90vw;
 }
-#usersAndColors table {
+#usersAndColors > div {
+  display: flex;
+  margin-right: 8px;
+}
+/* #usersAndColors > div > div {
   border-top: 0 !important;
   background-color: #eee;
 }
-#usersAndColors > div {
-  display: none;
-}
 #usersAndColors table {
   width: 100%;
-}
-#usersAndColors tr {
+} */
+#usersAndColors > div > div {
   border-bottom: 1px solid black;
   border-right: 1px solid black;
+  display: flex;
+  padding: 4px 10px;
+  background-color: #827777;
+  margin-right: 8px;
 }
-#usersAndColors table div {
+#usersAndColors > div > div > div > div {
   width: 20px;
   height: 20px;
   border-radius: 10px;
   border: 1px solid black;
+  margin-right: 4px;
 }
 
 #usersAndColors table tr td:first-child {
@@ -508,7 +531,7 @@ button:focus, input[type='button']:focus {outline:0;}
 #infoPanel {
   font-family: monospace;
   position: absolute;
-  top: 103vw;
+  top: 110vw;
   width: 100%;
   background-color: #c0bbbb;
   overflow: hidden;

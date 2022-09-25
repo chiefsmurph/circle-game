@@ -218,6 +218,7 @@ var changeAudio = function(c) {
 
 };
 
+let lastRoomChange;
 var chooseRoom = function(roomToGo) {
 
   roomToGo = roomToGo || $('#customRoomName').val();
@@ -225,6 +226,7 @@ var chooseRoom = function(roomToGo) {
   $('#statusPanel').fadeOut(950);
   $('#roomChooser').fadeOut(950);
   curRoom = roomToGo;
+  lastRoomChange = Date.now();
 
   if (['small','medium','large'].indexOf(curRoom) !== -1) {
     changeAudio(curRoom);
@@ -314,9 +316,13 @@ var setStatus = function(text, length, cb) {
   console.log(text);
   $('#statusPanel').show();
   $('#statusPanel').html(text);
+  const startNow = Date.now();
 
   if (length) {
     setTimeout(function() {
+      if (lastRoomChange > startNow) {
+        return;
+      }
       $('#statusPanel').fadeOut(200, cb);
     }, length-200);
   }
@@ -352,7 +358,7 @@ var showTitleScreen = function(cb) {
 
 var saySomething = function(txt) {
   $('#consoleMessage').text('says "' + txt + '"');
-  $('#consoleMessage').show();
+  $('#consoleMessage').css({ display: 'block' });
   setTimeout(function() {
     $('#consoleMessage').fadeOut(3000);
   }, 4000);
@@ -389,14 +395,14 @@ var backToRoomChooser = function() {
   $('#roomChooser').show();
   setStatus('Choose a room');
 
-  $('#usersAndColors div').slideUp(500, function() {
+  $('#usersAndColors').slideUp(500, function() {
     // $('#chatPanel').animate({'left':'189px'}, 700, function() {
     //   if (curRoom === 'lobby') {    // make sure
     //     $('#chatArea').empty();
     //     $('#chatPanel').addClass('hider');
     //   }
     // });
-    $('#usersAndColors table').empty();
+    // $('#usersAndColors table').empty();
     $('#usersAndColors').hide();
 
   });
@@ -406,6 +412,7 @@ var backToRoomChooser = function() {
   console.log('leaving room');
   $('#curRoom').text('');
   curRoom = 'lobby';
+  lastRoomChange = Date.now();
 
   $('#backRoomButton').prop('disabled', true);
 
@@ -470,19 +477,19 @@ var renderHStables = function(data) {
 socket.on('usersColors', function(data) {
   console.log('usercolors ' + JSON.stringify(data.usersColors));
 
-  var usersColsTable = $('#usersAndColors table');
-  usersColsTable.empty();
+  var usersColContainer = $('#usersAndColors div');
+  usersColContainer.empty();
 
   for (var user in data.usersColors) {
-    var newTR = $('<tr></tr>');
-    newTR.append('<td><div style="background-color: ' + data.usersColors[user].color + '"></div></td>');  // for the circle
-    newTR.append('<td>' + data.usersColors[user].username + '</td>');  // for the username
-    usersColsTable.append(newTR);
+    var newTR = $('<div></div>');
+    newTR.append('<div><div style="background-color: ' + data.usersColors[user].color + '"></div></div>');  // for the circle
+    newTR.append('<div>' + data.usersColors[user].username + '</div>');  // for the username
+    usersColContainer.prepend(newTR);
   }
-  usersColsTable.html($('tr',usersColsTable).get().reverse());
+  // usersColsTable.html($('tr',usersColsTable).get().reverse());
   // slideright usercolors
-  $('#usersAndColors').show();
-  $('#usersAndColors div').slideDown();
+  // $('#usersAndColors').css({ display: 'flex' });
+  $('#usersAndColors').slideDown();
 
 });
 
@@ -523,8 +530,12 @@ socket.on('username-feedback', function(data) {
     setTimeout(function() {
       $('#loginScreen').hide();
       moveToLobby();
-    }, 700);
+    }, 1200);
 
+
+  } else {
+
+    $('input#username').focus();
 
   }
 
@@ -758,7 +769,7 @@ var calculateWinner = function() {
 
 var start = function() {
 
-  $('#splashscreen').fadeOut();
+  $('#splashscreen').fadeOut(1000);
 
   $('#infoPanel').fadeIn(250);
   $('#hiddenGameArea').fadeIn(250);
@@ -1245,7 +1256,7 @@ $(function() {
 
   preloadAudio();
 
-  start();
+  setTimeout(() => start(), 3000);
 
   //END INITS
 
