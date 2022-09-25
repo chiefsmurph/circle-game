@@ -746,10 +746,10 @@ var Room = function(options) {
           });
         } else {
           console.log('eh');
-          next();
+          return next();
         }
       } else {
-        next();
+        return next();
       }
 
 
@@ -1281,11 +1281,11 @@ io.sockets.on('connection', function (socket) {
 
       socket.on('requestTopPlayers', function() {
       console.log('request');
-      var queryText = 'SELECT username, score FROM highscores WHERE score > 100 ORDER BY score desc LIMIT 10';
+      var queryText = 'SELECT username, score FROM highscores WHERE score > 100 ORDER BY score desc';
       pool.query(queryText, function(err, result) {
 
         users = result.rows;
-        socket.emit('sentTopPlayers', {topPlayers: users, force: true});
+        socket.emit('sentTopPlayers', {topPlayers: users.slice(0, 10), force: true});
         //console.log(users)
 
       });
