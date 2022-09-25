@@ -516,7 +516,7 @@ socket.on('username-feedback', function(data) {
     setTimeout(function() {
       $('#loginScreen').hide();
       moveToLobby();
-    }, 700);
+    }, 1200);
 
 
   }

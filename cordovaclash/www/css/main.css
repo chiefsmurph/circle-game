@@ -185,6 +185,7 @@ hr {
 #loginScreen #userfield {
   height: 45px;
   color: black;
+  background-color: #000;
 }
 #loginScreen #username {
   height: 45px;
@@ -463,7 +464,7 @@ button:focus, input[type='button']:focus {outline:0;}
 }
 #usersAndColors {
   font-family: monospace;
-  margin: 0 auto 20px;
+  margin: 8px auto;
   position: relative;
   /* top: 0px;
   left: 259px;
