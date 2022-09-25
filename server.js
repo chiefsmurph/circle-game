@@ -238,7 +238,7 @@ var Bot = function(options) {
           shootCircle();
         }
 
-      }, myskillspeed + randCoefficient * 20);
+      }, myskillspeed + randCoefficient * 60);
 
     }
 
