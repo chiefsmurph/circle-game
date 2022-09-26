@@ -520,7 +520,30 @@ socket.on('highScores', function(data) {
 
 });
 
-socket.on('username-feedback', usernameFeedback);
+socket.on('username-feedback', function(data) {
+
+  $('#username-response').removeClass('good bad');
+  $('#username-response').addClass(data.res);
+  $('#username-response').text('response: ' + data.msg);
+
+  if (data.res === 'good') {
+
+    // $('#createuser').prop("disabled",true);
+    console.debug(data);
+    setUserObj(data);
+    setTimeout(function() {
+      $('#loginScreen').hide();
+      moveToLobby();
+    }, 1200);
+
+
+  } else {
+
+    $('input#username').focus();
+
+  }
+
+});
 
 socket.on('login-feedback', function(data) {
 
