@@ -1,3 +1,7 @@
 node_modules
 .DS_Store
 config.js
+
+# box-side manual backups, not source
+*.pre-frame
+*.pre-desktop

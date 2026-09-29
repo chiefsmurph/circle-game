@@ -18,7 +18,7 @@ console.log({ pgString });
 
 var port = process.env.PORT || 5000; // Use the port that Heroku
 const server = app.listen(port);
-const io = require('socket.io')(server);
+const io = require('socket.io')(server, { path: '/circleclash/socket.io' });
 
 console.log('listening for http and socket requests on port ' + port);
 
@@ -92,9 +92,10 @@ app.get('/clearScores', function(req, res, next) {
 
 // INIT HIGH SCORE TABLE
 async function createTables() {
-  await pool.query('CREATE TABLE highscores (scoreId serial primary key, username VARCHAR(20) not null, handshake VARCHAR(40), dateset varchar(40), games INT, points INT, score INT)');
-  await pool.query('CREATE TABLE players (playerId serial primary key, username VARCHAR(20) not null, handshake VARCHAR(40), dateset VARCHAR(20) not null, starscaught INT)');
+  await pool.query('CREATE TABLE IF NOT EXISTS highscores (scoreId serial primary key, username VARCHAR(20) not null, handshake VARCHAR(40), dateset varchar(40), games INT, points INT, score INT)');
+  await pool.query('CREATE TABLE IF NOT EXISTS players (playerId serial primary key, username VARCHAR(20) not null, handshake VARCHAR(40), dateset VARCHAR(20) not null, starscaught INT)');
 }
+createTables().then(() => console.log('circle-game tables ready')).catch(e => console.error('createTables:', e.message));
 
 // CONFIG
 

@@ -775,11 +775,6 @@ var start = function() {
 
   $('#splashscreen').fadeOut(1000);
 
-  if (!isMobile) {
-    alert('Sorry Circle Clash is online available on mobile devices.  Go get your phone and join on there :-)');
-    return;
-  }
-
   $('#infoPanel').fadeIn(250);
   $('#hiddenGameArea').fadeIn(250);
   $('#topArea').fadeIn(250);
